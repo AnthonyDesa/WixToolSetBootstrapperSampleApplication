@@ -179,9 +179,30 @@ namespace InstallerUI
         }
         private void HandleFirstIntallCommand(object commandParameter)
         {
-            engine.StringVariables["InstallFirstInstaller"] = commandParameter.ToString();
-            engine.Log(LogLevel.Verbose, $"::InstallFirstInstaller = {engine.StringVariables["InstallFirstInstaller"]} & commandParameter={commandParameter}");
+            engine.StringVariables["FirstInstaller"] = commandParameter.ToString();
+            engine.Log(LogLevel.Verbose, $"::FirstInstaller = {engine.StringVariables["FirstInstaller"]} & commandParameter={commandParameter}");
         }
+
+        public ICommand SecondInstallerCommand
+        {
+            get { return new DelegateCommand<string>(HandleSecondIntallCommand); }
+        }
+        private void HandleSecondIntallCommand(object commandParameter)
+        {
+            engine.StringVariables["SecondInstaller"] = commandParameter.ToString();
+            engine.Log(LogLevel.Verbose, $"::SecondInstaller = {engine.StringVariables["SecondInstaller"]} & commandParameter={commandParameter}");
+        }
+
+        public ICommand MoleculeProfilerCommand
+        {
+            get { return new DelegateCommand<string>(HandleMoleculeProfilerCommand); }
+        }
+        private void HandleMoleculeProfilerCommand(object commandParameter)
+        {
+            engine.StringVariables["MoleculeProfiler"] = commandParameter.ToString();
+            engine.Log(LogLevel.Verbose, $"::MoleculeProfiler = {engine.StringVariables["MoleculeProfiler"]} & commandParameter={commandParameter}");
+        }
+
 
         private InstallationState StateValue;
 		public InstallationState State

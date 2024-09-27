@@ -2,7 +2,7 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
 	 xmlns:bal="http://schemas.microsoft.com/wix/BalExtension"
    xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
-  <Bundle Name="Bootstrapper" Version="1.0.0.0" Manufacturer="Rainer Stropek" UpgradeCode="06A19F6F-688C-44A6-B3D3-26F72DE50689"
+  <Bundle Name="Bootstrapper" Version="1.0.0.0" Manufacturer="Sciex" UpgradeCode="06A19F6F-688C-44A6-B3D3-26F72DE50689"
 			DisableModify="no">
     <BootstrapperApplicationRef Id="ManagedBootstrapperApplicationHost">
       <Payload Name="BootstrapperCore.config" SourceFile="$(var.InstallerUI.TargetDir)InstallerUI.BootstrapperCore.config" />
@@ -25,9 +25,9 @@
     <!-- Variables modified by custom WPF UI -->
     <Variable bal:Overridable="yes" Name="Prerequisite" Value=""/>
     <Variable bal:Overridable="yes" Name="InstallLevel" Value="1"/>
-    <Variable bal:Overridable="yes" Name="InstallMoleculeProfiler" Value="0"/>
-    <Variable bal:Overridable="yes" Name="InstallFirstInstaller" Value="0"/>
-    <Variable bal:Overridable="yes" Name="InstallSecondInstaller" Value="0"/>
+    <Variable bal:Overridable="yes" Name="MoleculeProfiler" Value="Undefined"/>
+    <Variable bal:Overridable="yes" Name="FirstInstaller" Value="Undefined"/>
+    <Variable bal:Overridable="yes" Name="SecondInstaller" Value="Undefined"/>
 
     <!--https://teamcity.netadds.net/repository/download/SciexPdv_LayeredBuilds_ApplicationsAndProducts_BuildInstallers/59464259:id/
                       output.zip!/Setup/Install/postgresql-16.2-1-windows-x64.exe-->
@@ -44,7 +44,7 @@
                   Permanent="no"
                   Vital="yes"
                   SuppressSignatureVerification="no"
-                  InstallCondition="InstallMoleculeProfiler = &quot;Install&quot; OR InstallMoleculeProfiler = &quot;Update&quot;">
+                  InstallCondition="MoleculeProfiler = &quot;Install&quot; OR MoleculeProfiler = &quot;Update&quot;">
         <RemotePayload
           ProductName="Sciex Molecule Profiler Bootstrapper"
           Description="Sciex Molecule Profiler Bootstrapper"
@@ -57,14 +57,14 @@
       <MsiPackage Id="FirstInstaller" 
         SourceFile="$(var.FirstInstaller.TargetPath)" 
         Visible="yes"
-        InstallCondition="InstallFirstInstaller = &quot;Install&quot; OR InstallFirstInstaller = &quot;Update&quot;">
+        InstallCondition="FirstInstaller = &quot;Install&quot; OR FirstInstaller = &quot;Update&quot;">
         <MsiProperty Name="PREREQUISITE" Value="[Prerequisite]"/>
         <MsiProperty Name="INSTALLLEVEL" Value="[InstallLevel]"/>
       </MsiPackage>
       <MsiPackage Id="SecondInstaller" 
         SourceFile="$(var.SecondInstaller.TargetPath)" 
         Visible="yes"
-        InstallCondition="InstallSecondInstaller = &quot;1&quot;">
+        InstallCondition="SecondInstaller = &quot;Install&quot; OR SecondInstaller = &quot;Update&quot;">
         <MsiProperty Name="PREREQUISITE" Value="[Prerequisite]"/>
         <MsiProperty Name="INSTALLLEVEL" Value="[InstallLevel]"/>
       </MsiPackage>
