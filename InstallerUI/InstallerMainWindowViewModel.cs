@@ -2,6 +2,7 @@
 using Microsoft.Practices.Prism.Mvvm;
 using Microsoft.Tools.WindowsInstallerXml.Bootstrapper;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.ComponentModel.Composition;
 using System.IO;
@@ -37,8 +38,10 @@ namespace InstallerUI
 				() => engine.Plan(LaunchAction.Uninstall),
 				() => !this.Installing && this.State == InstallationState.DetectedPresent);
 
-			// Setup event handlers
-			bootstrapper.DetectBegin += (_, ea) =>
+            //this.FirstInstallerCommandValue = new DelegateCommand<string>(HandleFirstIntallCommand);
+
+            // Setup event handlers
+            bootstrapper.DetectBegin += (_, ea) =>
 				{
 					this.LogEvent("DetectBegin", ea);
 
@@ -122,6 +125,7 @@ namespace InstallerUI
                 SetupEventHandlersForLogging();
         }
 
+
 		private void SetupEventHandlersForLogging()
 		{
 			this.bootstrapper.Startup += (_, ea) => this.LogEvent("Startup");
@@ -169,7 +173,17 @@ namespace InstallerUI
 		private DelegateCommand UninstallCommandValue;
 		public ICommand UninstallCommand { get { return this.UninstallCommandValue; } }
 
-		private InstallationState StateValue;
+        public ICommand FirstInstallerCommand
+        {
+            get { return new DelegateCommand<string>(HandleFirstIntallCommand); }
+        }
+        private void HandleFirstIntallCommand(object commandParameter)
+        {
+            engine.StringVariables["InstallFirstInstaller"] = commandParameter.ToString();
+            engine.Log(LogLevel.Verbose, $"::InstallFirstInstaller = {engine.StringVariables["InstallFirstInstaller"]} & commandParameter={commandParameter}");
+        }
+
+        private InstallationState StateValue;
 		public InstallationState State
 		{
 			get { return this.StateValue; }
@@ -221,17 +235,17 @@ namespace InstallerUI
 			}
 		}
 
-        private bool FirstInstallerSelectionValue;
-        public bool FirstInstallerSelection
-        {
-            get { return this.FirstInstallerSelectionValue; }
-            set
-            {
-                engine.StringVariables["InstallFirstInstaller"] = value ? "1":"0";
-				engine.Log(LogLevel.Verbose, $"::InstallFirstInstaller = {engine.StringVariables["InstallFirstInstaller"]} & value={value}");
-                this.SetProperty(ref this.FirstInstallerSelectionValue, value);
-            }
-        }
+    //    private bool FirstInstallerSelectionValue;
+    //    public bool FirstInstallerSelection
+    //    {
+    //        get { return this.FirstInstallerSelectionValue; }
+    //        set
+    //        {
+    //            engine.StringVariables["InstallFirstInstaller"] = value ? "1":"0";
+				//engine.Log(LogLevel.Verbose, $"::InstallFirstInstaller = {engine.StringVariables["InstallFirstInstaller"]} & value={value}");
+    //            this.SetProperty(ref this.FirstInstallerSelectionValue, value);
+    //        }
+    //    }
 
         private bool SecondInstallerSelectionValue;
         public bool SecondInstallerSelection

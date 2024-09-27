@@ -44,7 +44,7 @@
                   Permanent="no"
                   Vital="yes"
                   SuppressSignatureVerification="no"
-                  InstallCondition="InstallMoleculeProfiler = &quot;1&quot;">
+                  InstallCondition="InstallMoleculeProfiler = &quot;Install&quot; OR InstallMoleculeProfiler = &quot;Update&quot;">
         <RemotePayload
           ProductName="Sciex Molecule Profiler Bootstrapper"
           Description="Sciex Molecule Profiler Bootstrapper"
@@ -57,7 +57,7 @@
       <MsiPackage Id="FirstInstaller" 
         SourceFile="$(var.FirstInstaller.TargetPath)" 
         Visible="yes"
-        InstallCondition="InstallFirstInstaller = &quot;1&quot;">
+        InstallCondition="InstallFirstInstaller = &quot;Install&quot; OR InstallFirstInstaller = &quot;Update&quot;">
         <MsiProperty Name="PREREQUISITE" Value="[Prerequisite]"/>
         <MsiProperty Name="INSTALLLEVEL" Value="[InstallLevel]"/>
       </MsiPackage>

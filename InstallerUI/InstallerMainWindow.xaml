@@ -48,14 +48,14 @@
         </StackPanel>
         <ProgressBar Grid.Row="5" Value="{Binding Path=GlobalProgress, Mode=OneWay}" Minimum="0" Maximum="100" Margin="5,5,0,5" />
         <Label Content="FirstInstaller" Grid.Row="6" Margin="5,2,74,0" Height="26" VerticalAlignment="Top"/>
-        <RadioButton Command="{Binding Path=FirstInstallerSelection, Mode=TwoWay}" GroupName="FirstInstaller" CommandParameter="Skip" Grid.Row="6" Margin="95,0,0,37" Height="20" VerticalAlignment="Bottom">Skip</RadioButton>
-        <RadioButton Command="{Binding Path=FirstInstallerSelection, Mode=TwoWay}" GroupName="FirstInstaller" CommandParameter="Keep" Grid.Row="6" Margin="165,0,0,37" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left">Keep</RadioButton>
-        <RadioButton Command="{Binding Path=FirstInstallerSelection, Mode=TwoWay}" GroupName="FirstInstaller" CommandParameter="Install" Grid.Row="6" Margin="225,0,0,35" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left">Install</RadioButton>
-        <RadioButton Command="{Binding Path=FirstInstallerSelection, Mode=TwoWay}" GroupName="FirstInstaller" CommandParameter="UnInstall" Grid.Row="6" Margin="295,0,0,35" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left">UnInstall</RadioButton>
-        <RadioButton Command="{Binding Path=FirstInstallerSelection, Mode=TwoWay}" GroupName="FirstInstaller" CommandParameter="Remove" Grid.Row="6" Margin="95,0,0,15" Height="17" VerticalAlignment="Bottom" HorizontalAlignment="Left">Remove</RadioButton>
-        <RadioButton Command="{Binding Path=FirstInstallerSelection, Mode=TwoWay}" GroupName="FirstInstaller" CommandParameter="Keep" Grid.Row="6" Margin="165,33,0,15" HorizontalAlignment="Left">Update</RadioButton>
+        <RadioButton Command="{Binding Path=FirstInstallerCommand}" GroupName="FirstInstaller" CommandParameter="Skip" Grid.Row="6" Margin="95,0,0,37" Height="20" VerticalAlignment="Bottom">Skip</RadioButton>
+        <RadioButton Command="{Binding Path=FirstInstallerCommand}" GroupName="FirstInstaller" CommandParameter="Keep" Grid.Row="6" Margin="165,0,0,37" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left">Keep</RadioButton>
+        <RadioButton Command="{Binding Path=FirstInstallerCommand}" GroupName="FirstInstaller" CommandParameter="Install" Grid.Row="6" Margin="225,0,0,35" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left">Install</RadioButton>
+        <RadioButton Command="{Binding Path=FirstInstallerCommand}" GroupName="FirstInstaller" CommandParameter="UnInstall" Grid.Row="6" Margin="295,0,0,35" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left">UnInstall</RadioButton>
+        <RadioButton Command="{Binding Path=FirstInstallerCommand}" GroupName="FirstInstaller" CommandParameter="Remove" Grid.Row="6" Margin="95,0,0,15" Height="17" VerticalAlignment="Bottom" HorizontalAlignment="Left">Remove</RadioButton>
+        <RadioButton Command="{Binding Path=FirstInstallerCommand}" GroupName="FirstInstaller" CommandParameter="Update" Grid.Row="6" Margin="165,33,0,15" HorizontalAlignment="Left">Update</RadioButton>
 
-        <CheckBox IsChecked="{Binding Path=SecondInstallerSelection, Mode=TwoWay}" Grid.Row="8" Margin="10,24,0,0" HorizontalAlignment="Left" Width="116" Height="15" VerticalAlignment="Top">SecondInstaller</CheckBox>
-        <CheckBox IsChecked="{Binding Path=MoleculeProfilerSelection, Mode=TwoWay}" Grid.Row="8" Margin="10,78,0,0" HorizontalAlignment="Left" Width="116" Height="15" VerticalAlignment="Top">Molecule Profiler</CheckBox>
+        <!--<CheckBox IsChecked="{Binding Path=SecondInstallerSelection, Mode=TwoWay}" Grid.Row="8" Margin="10,24,0,0" HorizontalAlignment="Left" Width="116" Height="15" VerticalAlignment="Top">SecondInstaller</CheckBox>
+        <CheckBox IsChecked="{Binding Path=MoleculeProfilerSelection, Mode=TwoWay}" Grid.Row="8" Margin="10,78,0,0" HorizontalAlignment="Left" Width="116" Height="15" VerticalAlignment="Top">Molecule Profiler</CheckBox>-->
     </Grid>
 </Window>
