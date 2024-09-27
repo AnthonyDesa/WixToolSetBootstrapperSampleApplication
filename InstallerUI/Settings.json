@@ -1,0 +1,11 @@
+{
+  "UrlSettings": [
+    {
+      "ApiServerUrl": "http:\\bla\bla\bla",
+      "DownloadUrlFragments": {
+        "hostName": "localhost",
+        "BuildNumber": "9494949999"
+      }
+    }
+  ]
+}
