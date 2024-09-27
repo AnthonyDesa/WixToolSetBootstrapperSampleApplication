@@ -220,9 +220,46 @@ namespace InstallerUI
 				this.UninstallCommandValue.RaiseCanExecuteChanged();
 			}
 		}
-		#endregion
 
-		private void DetectComplete(object sender, DetectCompleteEventArgs e)
+        private bool FirstInstallerSelectionValue;
+        public bool FirstInstallerSelection
+        {
+            get { return this.FirstInstallerSelectionValue; }
+            set
+            {
+                engine.StringVariables["InstallFirstInstaller"] = value ? "1":"0";
+				engine.Log(LogLevel.Verbose, $"::InstallFirstInstaller = {engine.StringVariables["InstallFirstInstaller"]} & value={value}");
+                this.SetProperty(ref this.FirstInstallerSelectionValue, value);
+            }
+        }
+
+        private bool SecondInstallerSelectionValue;
+        public bool SecondInstallerSelection
+        {
+            get { return this.SecondInstallerSelectionValue; }
+            set
+            {
+                engine.StringVariables["InstallSecondInstaller"] = value ? "1" : "0";
+                engine.Log(LogLevel.Verbose, $"::InstallSecondInstaller = {engine.StringVariables["InstallSecondInstaller"]} & value={value}");
+                this.SetProperty(ref this.SecondInstallerSelectionValue, value);
+            }
+        }
+
+        private bool MoleculeProfilerSelectionValue;
+        public bool MoleculeProfilerInstallerSelection
+        {
+            get { return this.MoleculeProfilerSelectionValue; }
+            set
+            {
+                engine.StringVariables["InstallMoleculeProfiler"] = value ? "1" : "0";
+                engine.Log(LogLevel.Verbose, $"::InstallMoleculeProfiler = {engine.StringVariables["InstallMoleculeProfiler"]} & value={value}");
+                this.SetProperty(ref this.MoleculeProfilerSelectionValue, value);
+            }
+        }
+
+        #endregion
+
+        private void DetectComplete(object sender, DetectCompleteEventArgs e)
 		{
 			// If necessary, parse the command line string before any planning
 			// (e.g. detect installation folder)

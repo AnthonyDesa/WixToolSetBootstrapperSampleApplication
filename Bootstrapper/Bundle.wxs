@@ -25,6 +25,9 @@
     <!-- Variables modified by custom WPF UI -->
     <Variable bal:Overridable="yes" Name="Prerequisite" Value=""/>
     <Variable bal:Overridable="yes" Name="InstallLevel" Value="1"/>
+    <Variable bal:Overridable="yes" Name="InstallMoleculeProfiler" Value="0"/>
+    <Variable bal:Overridable="yes" Name="InstallFirstInstaller" Value="0"/>
+    <Variable bal:Overridable="yes" Name="InstallSecondInstaller" Value="0"/>
 
     <!--https://teamcity.netadds.net/repository/download/SciexPdv_LayeredBuilds_ApplicationsAndProducts_BuildInstallers/59464259:id/
                       output.zip!/Setup/Install/postgresql-16.2-1-windows-x64.exe-->
@@ -40,7 +43,8 @@
                   Cache="yes"
                   Permanent="no"
                   Vital="yes"
-                  SuppressSignatureVerification="no">
+                  SuppressSignatureVerification="no"
+                  InstallCondition="InstallMoleculeProfiler = &quot;1&quot;">
         <RemotePayload
           ProductName="Sciex Molecule Profiler Bootstrapper"
           Description="Sciex Molecule Profiler Bootstrapper"
@@ -50,11 +54,17 @@
           Size="583544"
           Version="1.0.0.0"/>
       </ExePackage>
-      <MsiPackage Id="FirstInstaller" SourceFile="$(var.FirstInstaller.TargetPath)" Visible="yes">
+      <MsiPackage Id="FirstInstaller" 
+        SourceFile="$(var.FirstInstaller.TargetPath)" 
+        Visible="yes"
+        InstallCondition="InstallFirstInstaller = &quot;1&quot;">
         <MsiProperty Name="PREREQUISITE" Value="[Prerequisite]"/>
         <MsiProperty Name="INSTALLLEVEL" Value="[InstallLevel]"/>
       </MsiPackage>
-      <MsiPackage Id="SecondInstaller" SourceFile="$(var.SecondInstaller.TargetPath)" Visible="yes">
+      <MsiPackage Id="SecondInstaller" 
+        SourceFile="$(var.SecondInstaller.TargetPath)" 
+        Visible="yes"
+        InstallCondition="InstallSecondInstaller = &quot;1&quot;">
         <MsiProperty Name="PREREQUISITE" Value="[Prerequisite]"/>
         <MsiProperty Name="INSTALLLEVEL" Value="[InstallLevel]"/>
       </MsiPackage>
