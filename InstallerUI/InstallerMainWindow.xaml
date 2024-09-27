@@ -5,44 +5,57 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
 			 xmlns:vm="clr-namespace:InstallerUI"
              mc:Ignorable="d" 
-             Height="331" Width="400">
-	<Window.Resources>
-		<Style TargetType="Button">
-			<Setter Property="Margin" Value="5" />
-		</Style>
-		<Style TargetType="TextBlock" x:Key="H1">
-			<Setter Property="FontSize" Value="22" />
-			<Setter Property="Margin" Value="5,15,5,0" />
-		</Style>
-		<Style TargetType="ProgressBar">
-			<Setter Property="Height" Value="20" />
-			<Setter Property="Margin" Value="5" />
-		</Style>
-	</Window.Resources>
-    <Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" MinHeight="75" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
+             Height="501" Width="400">
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Margin" Value="5" />
+        </Style>
+        <Style TargetType="TextBlock" x:Key="H1">
+            <Setter Property="FontSize" Value="22" />
+            <Setter Property="Margin" Value="5,15,5,0" />
+        </Style>
+        <Style TargetType="ProgressBar">
+            <Setter Property="Height" Value="20" />
+            <Setter Property="Margin" Value="5" />
+        </Style>
+    </Window.Resources>
+    <Grid Height="483" VerticalAlignment="Top">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="0*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" MinHeight="75" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-		<TextBlock Text="WiX Toolset Bootstrapper Sample" Style="{StaticResource H1}" />
-		<Button Command="{Binding Path=InstallCommand, Mode=OneTime}" Grid.Row="1">Install Sample Applications</Button>
-		<Button Command="{Binding Path=UninstallCommand, Mode=OneTime}" Grid.Row="2">Uninstall</Button>
-		
-		<ProgressBar Grid.Row="3" Value="{Binding Path=LocalProgress, Mode=OneWay}" Minimum="0" Maximum="100"
-					 VerticalAlignment="Bottom"/>
-		<StackPanel Grid.Row="4" Orientation="Horizontal">
-			<TextBlock Text="Current Package: " Margin="10,0,0,0" />
-			<TextBlock Text="{Binding Path=CurrentPackage, Mode=OneWay}" />
-		</StackPanel>
-		<ProgressBar Grid.Row="5" Value="{Binding Path=GlobalProgress, Mode=OneWay}" Minimum="0" Maximum="100" />
-        <CheckBox IsChecked="{Binding Path=FirstInstallerSelection, Mode=TwoWay}" Grid.Row="6" Margin="5,5,305,5">FirstInstaller</CheckBox>
-        <CheckBox IsChecked="{Binding Path=SecondInstallerSelection, Mode=TwoWay}" Grid.Row="6" Margin="5,25,279,5">SecondInstaller</CheckBox>
-        <CheckBox IsChecked="{Binding Path=MoleculeProfilerSelection, Mode=TwoWay}" Grid.Row="6" Margin="5,45,279,5">Molecule Profiler</CheckBox>
+        <TextBlock Text="WiX Toolset Bootstrapper Sample" Style="{StaticResource H1}" Margin="5,15,0,0" />
+        <Button Command="{Binding Path=InstallCommand, Mode=OneTime}" Grid.Row="1" Margin="5,5,0,5">Install Sample Applications</Button>
+        <Button Command="{Binding Path=UninstallCommand, Mode=OneTime}" Grid.Row="2" Margin="5,5,0,5">Uninstall</Button>
+
+        <ProgressBar Grid.Row="3" Value="{Binding Path=LocalProgress, Mode=OneWay}" Minimum="0" Maximum="100"
+					 VerticalAlignment="Bottom" Margin="5,0,0,5" Height="20"/>
+        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,75,0,0" Grid.RowSpan="2">
+            <TextBlock Text="Current Package: " Margin="10,0,0,0" />
+            <TextBlock Text="{Binding Path=CurrentPackage, Mode=OneWay}" />
+        </StackPanel>
+        <ProgressBar Grid.Row="5" Value="{Binding Path=GlobalProgress, Mode=OneWay}" Minimum="0" Maximum="100" Margin="5,5,0,5" />
+        <Label Content="FirstInstaller" Grid.Row="6" Margin="5,2,74,0" Height="26" VerticalAlignment="Top"/>
+        <RadioButton Command="{Binding Path=FirstInstallerSelection, Mode=TwoWay}" GroupName="FirstInstaller" CommandParameter="Skip" Grid.Row="6" Margin="95,0,0,37" Height="20" VerticalAlignment="Bottom">Skip</RadioButton>
+        <RadioButton Command="{Binding Path=FirstInstallerSelection, Mode=TwoWay}" GroupName="FirstInstaller" CommandParameter="Keep" Grid.Row="6" Margin="165,0,0,37" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left">Keep</RadioButton>
+        <RadioButton Command="{Binding Path=FirstInstallerSelection, Mode=TwoWay}" GroupName="FirstInstaller" CommandParameter="Install" Grid.Row="6" Margin="225,0,0,35" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left">Install</RadioButton>
+        <RadioButton Command="{Binding Path=FirstInstallerSelection, Mode=TwoWay}" GroupName="FirstInstaller" CommandParameter="UnInstall" Grid.Row="6" Margin="295,0,0,35" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left">UnInstall</RadioButton>
+        <RadioButton Command="{Binding Path=FirstInstallerSelection, Mode=TwoWay}" GroupName="FirstInstaller" CommandParameter="Remove" Grid.Row="6" Margin="95,0,0,15" Height="17" VerticalAlignment="Bottom" HorizontalAlignment="Left">Remove</RadioButton>
+        <RadioButton Command="{Binding Path=FirstInstallerSelection, Mode=TwoWay}" GroupName="FirstInstaller" CommandParameter="Keep" Grid.Row="6" Margin="165,33,0,15" HorizontalAlignment="Left">Update</RadioButton>
+
+        <CheckBox IsChecked="{Binding Path=SecondInstallerSelection, Mode=TwoWay}" Grid.Row="8" Margin="10,24,0,0" HorizontalAlignment="Left" Width="116" Height="15" VerticalAlignment="Top">SecondInstaller</CheckBox>
+        <CheckBox IsChecked="{Binding Path=MoleculeProfilerSelection, Mode=TwoWay}" Grid.Row="8" Margin="10,78,0,0" HorizontalAlignment="Left" Width="116" Height="15" VerticalAlignment="Top">Molecule Profiler</CheckBox>
     </Grid>
 </Window>
