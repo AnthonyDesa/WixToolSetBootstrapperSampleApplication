@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "FirstInstaller", "FirstInstaller\FirstInstaller.wixproj", "{D739173A-AB17-4033-8F96-37320315C075}"
 EndProject
@@ -13,6 +13,10 @@ Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "Bootstrapper", "Bootstrappe
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InstallerUI", "InstallerUI\InstallerUI.csproj", "{0F03C1AF-8F3F-474C-949F-29F1189B3698}"
+EndProject
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "FirstInstallerBootstrapper", "FirstInstallerBootstrapper\FirstInstallerBootstrapper.wixproj", "{717B8215-109A-4F8E-9FD0-5F974125F577}"
+EndProject
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "SecondInstallerBootstrapper", "SecondInstallerBootstrapper\SecondInstallerBootstrapper.wixproj", "{47B3FF0F-A33F-4DD5-B8BE-D5CC0EBB0134}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -64,11 +68,36 @@ Global
 		{0F03C1AF-8F3F-474C-949F-29F1189B3698}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{0F03C1AF-8F3F-474C-949F-29F1189B3698}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{0F03C1AF-8F3F-474C-949F-29F1189B3698}.Release|x86.ActiveCfg = Release|Any CPU
+		{717B8215-109A-4F8E-9FD0-5F974125F577}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{717B8215-109A-4F8E-9FD0-5F974125F577}.Debug|Any CPU.Build.0 = Debug|x86
+		{717B8215-109A-4F8E-9FD0-5F974125F577}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{717B8215-109A-4F8E-9FD0-5F974125F577}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{717B8215-109A-4F8E-9FD0-5F974125F577}.Debug|x86.ActiveCfg = Debug|x86
+		{717B8215-109A-4F8E-9FD0-5F974125F577}.Debug|x86.Build.0 = Debug|x86
+		{717B8215-109A-4F8E-9FD0-5F974125F577}.Release|Any CPU.ActiveCfg = Release|x86
+		{717B8215-109A-4F8E-9FD0-5F974125F577}.Release|Any CPU.Build.0 = Release|x86
+		{717B8215-109A-4F8E-9FD0-5F974125F577}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{717B8215-109A-4F8E-9FD0-5F974125F577}.Release|Mixed Platforms.Build.0 = Release|x86
+		{717B8215-109A-4F8E-9FD0-5F974125F577}.Release|x86.ActiveCfg = Release|x86
+		{717B8215-109A-4F8E-9FD0-5F974125F577}.Release|x86.Build.0 = Release|x86
+		{47B3FF0F-A33F-4DD5-B8BE-D5CC0EBB0134}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{47B3FF0F-A33F-4DD5-B8BE-D5CC0EBB0134}.Debug|Any CPU.Build.0 = Debug|x86
+		{47B3FF0F-A33F-4DD5-B8BE-D5CC0EBB0134}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{47B3FF0F-A33F-4DD5-B8BE-D5CC0EBB0134}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{47B3FF0F-A33F-4DD5-B8BE-D5CC0EBB0134}.Debug|x86.ActiveCfg = Debug|x86
+		{47B3FF0F-A33F-4DD5-B8BE-D5CC0EBB0134}.Debug|x86.Build.0 = Debug|x86
+		{47B3FF0F-A33F-4DD5-B8BE-D5CC0EBB0134}.Release|Any CPU.ActiveCfg = Release|x86
+		{47B3FF0F-A33F-4DD5-B8BE-D5CC0EBB0134}.Release|Any CPU.Build.0 = Release|x86
+		{47B3FF0F-A33F-4DD5-B8BE-D5CC0EBB0134}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{47B3FF0F-A33F-4DD5-B8BE-D5CC0EBB0134}.Release|Mixed Platforms.Build.0 = Release|x86
+		{47B3FF0F-A33F-4DD5-B8BE-D5CC0EBB0134}.Release|x86.ActiveCfg = Release|x86
+		{47B3FF0F-A33F-4DD5-B8BE-D5CC0EBB0134}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.0\lib\NET35
+		SolutionGuid = {403B527A-DE99-4B18-968B-B84BD887A6F9}
 	EndGlobalSection
 EndGlobal

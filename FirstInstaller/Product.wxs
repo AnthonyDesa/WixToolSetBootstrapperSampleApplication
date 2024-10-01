@@ -7,9 +7,9 @@
 		<MediaTemplate EmbedCab="yes" />
 
 		<!-- For demo purposes, the variable PREREQUISITE has to be set -->
-		<Condition Message="Variable not set">
+		<!--<Condition Message="Variable not set">
 			Installed Or PREREQUISITE
-		</Condition>
+		</Condition>-->
 
 		<PropertyRef Id="NETFRAMEWORK45" />
 		<Condition Message=".NET 4.5 has to be installed">

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Bundle Name="FirstInstallerBootstrapper" Version="1.0.0.0" Manufacturer="SciexOS" UpgradeCode="717b8215-109a-4f8e-9fd0-5f974125f577">
+		<BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense" />
+
+		<Chain>
+			<!-- TODO: Define the list of chained packages. -->
+			<!-- <MsiPackage SourceFile="path\to\your.msi" /> -->
+      <MsiPackage Id="FirstInstallerMsi"
+                  SourceFile="$(var.FirstInstaller.TargetPath)"
+                  Compressed="yes"
+                  Vital="yes"
+                  Cache="yes"
+                  Visible ="yes">
+      </MsiPackage>
+		</Chain>
+	</Bundle>
+</Wix>

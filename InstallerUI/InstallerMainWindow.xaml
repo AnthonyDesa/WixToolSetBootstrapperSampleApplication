@@ -63,13 +63,13 @@
         <RadioButton Command="{Binding Path=SecondInstallerCommand}" GroupName="SecondInstaller" CommandParameter="Remove" Grid.Row="7" Margin="95,0,0,15" Height="17" VerticalAlignment="Bottom" HorizontalAlignment="Left">Remove</RadioButton>
         <RadioButton Command="{Binding Path=SecondInstallerCommand}" GroupName="SecondInstaller" CommandParameter="Update" Grid.Row="7" Margin="165,33,0,15" HorizontalAlignment="Left">Update</RadioButton>
 
-        <Label Content="Mole Profiler" Grid.Row="8" Margin="5,2,74,0" Height="26" VerticalAlignment="Top"/>
-        <RadioButton Command="{Binding Path=MoleculeProfilerCommand}" GroupName="MoleculeProfilerInstaller" CommandParameter="Skip" IsChecked="True" Grid.Row="8" Margin="95,0,0,37" Height="20" VerticalAlignment="Bottom">Skip</RadioButton>
-        <RadioButton Command="{Binding Path=MoleculeProfilerCommand}" GroupName="MoleculeProfilerInstaller" CommandParameter="Keep" Grid.Row="8" Margin="165,0,0,37" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left">Keep</RadioButton>
-        <RadioButton Command="{Binding Path=MoleculeProfilerCommand}" GroupName="MoleculeProfilerInstaller" CommandParameter="Install" Grid.Row="8" Margin="225,0,0,35" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left">Install</RadioButton>
-        <RadioButton Command="{Binding Path=MoleculeProfilerCommand}" GroupName="MoleculeProfilerInstaller" CommandParameter="UnInstall" Grid.Row="8" Margin="295,0,0,35" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left">UnInstall</RadioButton>
-        <RadioButton Command="{Binding Path=MoleculeProfilerCommand}" GroupName="MoleculeProfilerInstaller" CommandParameter="Remove" Grid.Row="8" Margin="95,0,0,15" Height="17" VerticalAlignment="Bottom" HorizontalAlignment="Left">Remove</RadioButton>
-        <RadioButton Command="{Binding Path=MoleculeProfilerCommand}" GroupName="MoleculeProfilerInstaller" CommandParameter="Update" Grid.Row="8" Margin="165,33,0,15" HorizontalAlignment="Left">Update</RadioButton>
+        <Label Content="FI Bootstapper" Grid.Row="8" Margin="5,2,74,0" Height="26" VerticalAlignment="Top"/>
+        <RadioButton Command="{Binding Path=FIBootStapperCommand}" GroupName="FIBootStapperInstaller" CommandParameter="Skip" IsChecked="True" Grid.Row="8" Margin="95,0,0,37" Height="20" VerticalAlignment="Bottom">Skip</RadioButton>
+        <RadioButton Command="{Binding Path=FIBootStapperCommand}" GroupName="FIBootStapperInstaller" CommandParameter="Keep" Grid.Row="8" Margin="165,0,0,37" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left">Keep</RadioButton>
+        <RadioButton Command="{Binding Path=FIBootStapperCommand}" GroupName="FIBootStapperInstaller" CommandParameter="Install" Grid.Row="8" Margin="225,0,0,35" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left">Install</RadioButton>
+        <RadioButton Command="{Binding Path=FIBootStapperCommand}" GroupName="FIBootStapperInstaller" CommandParameter="UnInstall" Grid.Row="8" Margin="295,0,0,35" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left">UnInstall</RadioButton>
+        <RadioButton Command="{Binding Path=FIBootStapperCommand}" GroupName="FIBootStapperInstaller" CommandParameter="Remove" Grid.Row="8" Margin="95,0,0,15" Height="17" VerticalAlignment="Bottom" HorizontalAlignment="Left">Remove</RadioButton>
+        <RadioButton Command="{Binding Path=FIBootStapperCommand}" GroupName="FIBootStapperInstaller" CommandParameter="Update" Grid.Row="8" Margin="165,33,0,15" HorizontalAlignment="Left">Update</RadioButton>
 
     </Grid>
 </Window>

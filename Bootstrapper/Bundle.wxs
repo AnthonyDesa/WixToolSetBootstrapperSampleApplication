@@ -17,15 +17,15 @@
 
     <!-- Check if the Molecule Profiler is installed. This is to make sure that uninstall removes the SciexMoleculeProfileBootstrapper.exe -->
     <util:FileSearch
-      Id='FileSearchCheckIfMoleculeProfileIsInstalled'
-      Variable="IsMoleculeProfileInstalled"
+      Id='FileSearchCheckIfFirstInstallerInstalled'
+      Variable="IsFirstInstallerInstalled"
       Result="exists"
-      Path="[ProgramFilesFolder]\SciexMoleculeProfiler\SciexMoleculeProfiler.txt"/>
+      Path="[ProgramFilesFolder]\CustomBurnUISample\First Installer\FirstInstallerReadMe.txt"/>
 
     <!-- Variables modified by custom WPF UI -->
     <Variable bal:Overridable="yes" Name="Prerequisite" Value=""/>
     <Variable bal:Overridable="yes" Name="InstallLevel" Value="1"/>
-    <Variable bal:Overridable="yes" Name="MoleculeProfiler" Value="Undefined"/>
+    <Variable bal:Overridable="yes" Name="FirstInstallerBootStrapper" Value="Undefined"/>
     <Variable bal:Overridable="yes" Name="FirstInstaller" Value="Undefined"/>
     <Variable bal:Overridable="yes" Name="SecondInstaller" Value="Undefined"/>
 
@@ -33,27 +33,6 @@
                       output.zip!/Setup/Install/postgresql-16.2-1-windows-x64.exe-->
     <Chain>
       <PackageGroupRef Id='NetFx45Web' />
-      <ExePackage Id="SciexMoleculeProfilerBootstrapper"
-                  Name="SciexMoleculeProfilerBootstrapper.exe"
-                  DownloadUrl="http://{0}/MyMsi/SciexMoleculeProfiler/SciexMoleculeProfilerBootstrapper.exe"
-                  InstallCommand="/S"
-                  UninstallCommand="/uninstall /quiet"
-                  DetectCondition="IsMoleculeProfileInstalled"
-                  Compressed="no"
-                  Cache="yes"
-                  Permanent="no"
-                  Vital="yes"
-                  SuppressSignatureVerification="no"
-                  InstallCondition="MoleculeProfiler = &quot;Install&quot; OR MoleculeProfiler = &quot;Update&quot;">
-        <RemotePayload
-          ProductName="Sciex Molecule Profiler Bootstrapper"
-          Description="Sciex Molecule Profiler Bootstrapper"
-          Hash="1D4950F227C8DC662A668F0F5901AC89421F49A9"
-          CertificatePublicKey="126C892FD591AD2CE058EC194DB5CE85E528A9BB"
-          CertificateThumbprint="AA9325AB2EDFF4A5D745205CBD25B440CB89FDEB"
-          Size="583544"
-          Version="1.0.0.0"/>
-      </ExePackage>
       <MsiPackage Id="FirstInstaller" 
         SourceFile="$(var.FirstInstaller.TargetPath)" 
         Visible="yes"
@@ -68,6 +47,27 @@
         <MsiProperty Name="PREREQUISITE" Value="[Prerequisite]"/>
         <MsiProperty Name="INSTALLLEVEL" Value="[InstallLevel]"/>
       </MsiPackage>
+      <ExePackage Id="FirstInstallerBootstrapper"
+                  Name="FirstInstallerBootstrapper.exe.exe"
+                  DownloadUrl="http://{0}/MyMsi/CustomBurnUI/FirstInstallerBootstrapper.exe"
+                  InstallCommand="/S"
+                  UninstallCommand="/uninstall /quiet"
+                  DetectCondition="IsFirstInstallerInstalled"
+                  Compressed="no"
+                  Cache="yes"
+                  Permanent="no"
+                  Vital="yes"
+                  SuppressSignatureVerification="no"
+                  InstallCondition="FirstInstallerBootStrapper = &quot;Install&quot; OR FirstInstallerBootStrapper = &quot;Update&quot;">
+        <RemotePayload
+          ProductName="FirstInstallerBootstrapper"
+          Description="FirstInstallerBootstrapper"
+          Hash="3F9D579DD097846FB15CF92FC88584DC3A2D232C"
+          CertificatePublicKey="126C892FD591AD2CE058EC194DB5CE85E528A9BB"
+          CertificateThumbprint="AA9325AB2EDFF4A5D745205CBD25B440CB89FDEB"
+          Size="586072"
+          Version="1.0.0.0"/>
+      </ExePackage>
     </Chain>
   </Bundle>
 

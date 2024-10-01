@@ -193,14 +193,14 @@ namespace InstallerUI
             engine.Log(LogLevel.Verbose, $"::SecondInstaller = {engine.StringVariables["SecondInstaller"]} & commandParameter={commandParameter}");
         }
 
-        public ICommand MoleculeProfilerCommand
+        public ICommand FIBootStapperCommand
         {
-            get { return new DelegateCommand<string>(HandleMoleculeProfilerCommand); }
+            get { return new DelegateCommand<string>(HandleFIBootStapperCommand); }
         }
-        private void HandleMoleculeProfilerCommand(object commandParameter)
+        private void HandleFIBootStapperCommand(object commandParameter)
         {
-            engine.StringVariables["MoleculeProfiler"] = commandParameter.ToString();
-            engine.Log(LogLevel.Verbose, $"::MoleculeProfiler = {engine.StringVariables["MoleculeProfiler"]} & commandParameter={commandParameter}");
+            engine.StringVariables["FirstInstallerBootStrapper"] = commandParameter.ToString();
+            engine.Log(LogLevel.Verbose, $"::FirstInstallerBootStrapper = {engine.StringVariables["FirstInstallerBootStrapper"]} & commandParameter={commandParameter}");
         }
 
 
