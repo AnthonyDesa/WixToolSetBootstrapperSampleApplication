@@ -32,10 +32,10 @@
     <!-- Variables modified by custom WPF UI -->
     <Variable bal:Overridable="yes" Name="Prerequisite" Value=""/>
     <Variable bal:Overridable="yes" Name="InstallLevel" Value="1"/>
-    <Variable bal:Overridable="yes" Name="FirstInstaller" Value="Undefined"/>
-    <Variable bal:Overridable="yes" Name="SecondInstaller" Value="Undefined"/>
-    <Variable bal:Overridable="yes" Name="FirstInstallerBootStrapper" Value="Undefined"/>
-    <Variable bal:Overridable="yes" Name="SecondInstallerBootStrapper" Value="Undefined"/>
+    <Variable bal:Overridable="yes" Name="FirstInstaller" Value="Skip"/>
+    <Variable bal:Overridable="yes" Name="SecondInstaller" Value="Skip"/>
+    <Variable bal:Overridable="yes" Name="FirstInstallerBootStrapper" Value="Skip"/>
+    <Variable bal:Overridable="yes" Name="SecondInstallerBootStrapper" Value="Skip"/>
 
     <!--https://teamcity.netadds.net/repository/download/SciexPdv_LayeredBuilds_ApplicationsAndProducts_BuildInstallers/59464259:id/
                       output.zip!/Setup/Install/postgresql-16.2-1-windows-x64.exe-->

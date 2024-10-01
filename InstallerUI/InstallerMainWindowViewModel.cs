@@ -33,10 +33,10 @@ namespace InstallerUI
 			// Setup commands
 			this.InstallCommandValue = new DelegateCommand(
 				() => engine.Plan(LaunchAction.Install),
-				() => !this.Installing && this.State == InstallationState.DetectedAbsent);
+				() => !this.Installing);// && this.State == InstallationState.DetectedAbsent);
 			this.UninstallCommandValue = new DelegateCommand(
 				() => engine.Plan(LaunchAction.Uninstall),
-				() => !this.Installing && this.State == InstallationState.DetectedPresent);
+				() => !this.Installing);// && this.State == InstallationState.DetectedPresent);
 
             //this.FirstInstallerCommandValue = new DelegateCommand<string>(HandleFirstIntallCommand);
 
@@ -122,7 +122,21 @@ namespace InstallerUI
                     }
                     ea.Result = Result.Download;
                 };
-                SetupEventHandlersForLogging();
+
+            bootstrapper.PlanPackageBegin += (_, ea) =>
+            {
+				
+                this.LogEvent($"PlanPackageBegin Selection={engine.StringVariables[ea.PackageId]} ea.State={ea.State} ea.PackageId={ea.PackageId} Command.Action {bootstrapper.Command.Action}", ea);
+				if (ea.State == RequestState.Absent // Not selected to be installed i.e. InstallCondition in BootStrapper
+                    & this.bootstrapper.Command.Action == LaunchAction.Install 
+                    & (engine.StringVariables[ea.PackageId] == "Keep" || engine.StringVariables[ea.PackageId] == "Skip"))
+                {
+					//Prevent from uninstalling the package and only uninstall if the package is selected to be uninstalled
+					this.LogEvent($"PlanPackageBegin::{ea.PackageId} Setting RequestState to None i.e. No Action...");
+                    ea.State = RequestState.None;
+                }
+            };
+            SetupEventHandlersForLogging();
         }
 
 
@@ -154,7 +168,7 @@ namespace InstallerUI
 			this.bootstrapper.PlanBegin += (_, ea) => this.LogEvent("PlanBegin", ea);
 			this.bootstrapper.PlanCompatiblePackage += (_, ea) => this.LogEvent("PlanCompatiblePackage", ea);
 			this.bootstrapper.PlanMsiFeature += (_, ea) => this.LogEvent("PlanMsiFeature", ea);
-			this.bootstrapper.PlanPackageBegin += (_, ea) => this.LogEvent("PlanPackageBegin", ea);
+			//this.bootstrapper.PlanPackageBegin += (_, ea) => this.LogEvent("PlanPackageBegin", ea);
 			this.bootstrapper.PlanPackageComplete += (_, ea) => this.LogEvent("PlanPackageComplete", ea);
 			this.bootstrapper.PlanRelatedBundle += (_, ea) => this.LogEvent("PlanRelatedBundle", ea);
 			this.bootstrapper.PlanTargetMsiPackage += (_, ea) => this.LogEvent("PlanTargetMsiPackage", ea);
