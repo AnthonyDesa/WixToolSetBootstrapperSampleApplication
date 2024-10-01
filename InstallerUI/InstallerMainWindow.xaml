@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
 			 xmlns:vm="clr-namespace:InstallerUI"
              mc:Ignorable="d" 
-             Height="501" Width="400">
+             Height="551" Width="400">
     <Window.Resources>
         <Style TargetType="Button">
             <Setter Property="Margin" Value="5" />
@@ -29,6 +29,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" MinHeight="75" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -70,6 +71,14 @@
         <RadioButton Command="{Binding Path=FIBootStapperCommand}" GroupName="FIBootStapperInstaller" CommandParameter="UnInstall" Grid.Row="8" Margin="295,0,0,35" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left">UnInstall</RadioButton>
         <RadioButton Command="{Binding Path=FIBootStapperCommand}" GroupName="FIBootStapperInstaller" CommandParameter="Remove" Grid.Row="8" Margin="95,0,0,15" Height="17" VerticalAlignment="Bottom" HorizontalAlignment="Left">Remove</RadioButton>
         <RadioButton Command="{Binding Path=FIBootStapperCommand}" GroupName="FIBootStapperInstaller" CommandParameter="Update" Grid.Row="8" Margin="165,33,0,15" HorizontalAlignment="Left">Update</RadioButton>
+
+        <Label Content="SI Bootstapper" Grid.Row="9" Margin="5,2,74,0" Height="26" VerticalAlignment="Top"/>
+        <RadioButton Command="{Binding Path=SIBootStapperCommand}" GroupName="SIBootStapperInstaller" CommandParameter="Skip" IsChecked="True" Grid.Row="9" Margin="95,0,0,37" Height="20" VerticalAlignment="Bottom">Skip</RadioButton>
+        <RadioButton Command="{Binding Path=SIBootStapperCommand}" GroupName="SIBootStapperInstaller" CommandParameter="Keep" Grid.Row="9" Margin="165,0,0,37" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left">Keep</RadioButton>
+        <RadioButton Command="{Binding Path=SIBootStapperCommand}" GroupName="SIBootStapperInstaller" CommandParameter="Install" Grid.Row="9" Margin="225,0,0,35" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left">Install</RadioButton>
+        <RadioButton Command="{Binding Path=SIBootStapperCommand}" GroupName="SIBootStapperInstaller" CommandParameter="UnInstall" Grid.Row="9" Margin="295,0,0,35" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left">UnInstall</RadioButton>
+        <RadioButton Command="{Binding Path=SIBootStapperCommand}" GroupName="SIBootStapperInstaller" CommandParameter="Remove" Grid.Row="9" Margin="95,0,0,15" Height="17" VerticalAlignment="Bottom" HorizontalAlignment="Left">Remove</RadioButton>
+        <RadioButton Command="{Binding Path=SIBootStapperCommand}" GroupName="SIBootStapperInstaller" CommandParameter="Update" Grid.Row="9" Margin="165,33,0,15" HorizontalAlignment="Left">Update</RadioButton>
 
     </Grid>
 </Window>

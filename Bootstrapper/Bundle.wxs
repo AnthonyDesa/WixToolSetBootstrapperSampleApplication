@@ -15,19 +15,27 @@
       <PayloadGroupRef Id="LicensePayload"/>
     </BootstrapperApplicationRef>
 
-    <!-- Check if the Molecule Profiler is installed. This is to make sure that uninstall removes the SciexMoleculeProfileBootstrapper.exe -->
+    <!-- Check if FirstInstaller is installed. This is to make sure that uninstall removes the FirstInstaller when it is installed and also prevent installing if its already installed-->
     <util:FileSearch
       Id='FileSearchCheckIfFirstInstallerInstalled'
       Variable="IsFirstInstallerInstalled"
       Result="exists"
       Path="[ProgramFilesFolder]\CustomBurnUISample\First Installer\FirstInstallerReadMe.txt"/>
 
+    <!-- Check if SecondInstaller is installed. This is to make sure that uninstall removes the SecondInstaller when it is installed and also prevent installing if its already installed-->
+    <util:FileSearch
+      Id='FileSearchCheckIfSecondInstallerInstalled'
+      Variable="IsSecondInstallerInstalled"
+      Result="exists"
+      Path="[ProgramFilesFolder]\CustomBurnUISample\Second Installer\SecondInstallerReadMe.txt"/>
+
     <!-- Variables modified by custom WPF UI -->
     <Variable bal:Overridable="yes" Name="Prerequisite" Value=""/>
     <Variable bal:Overridable="yes" Name="InstallLevel" Value="1"/>
-    <Variable bal:Overridable="yes" Name="FirstInstallerBootStrapper" Value="Undefined"/>
     <Variable bal:Overridable="yes" Name="FirstInstaller" Value="Undefined"/>
     <Variable bal:Overridable="yes" Name="SecondInstaller" Value="Undefined"/>
+    <Variable bal:Overridable="yes" Name="FirstInstallerBootStrapper" Value="Undefined"/>
+    <Variable bal:Overridable="yes" Name="SecondInstallerBootStrapper" Value="Undefined"/>
 
     <!--https://teamcity.netadds.net/repository/download/SciexPdv_LayeredBuilds_ApplicationsAndProducts_BuildInstallers/59464259:id/
                       output.zip!/Setup/Install/postgresql-16.2-1-windows-x64.exe-->
@@ -48,7 +56,7 @@
         <MsiProperty Name="INSTALLLEVEL" Value="[InstallLevel]"/>
       </MsiPackage>
       <ExePackage Id="FirstInstallerBootstrapper"
-                  Name="FirstInstallerBootstrapper.exe.exe"
+                  Name="FirstInstallerBootstrapper.exe"
                   DownloadUrl="http://{0}/MyMsi/CustomBurnUI/FirstInstallerBootstrapper.exe"
                   InstallCommand="/S"
                   UninstallCommand="/uninstall /quiet"
@@ -66,6 +74,27 @@
           CertificatePublicKey="126C892FD591AD2CE058EC194DB5CE85E528A9BB"
           CertificateThumbprint="AA9325AB2EDFF4A5D745205CBD25B440CB89FDEB"
           Size="586072"
+          Version="1.0.0.0"/>
+      </ExePackage>
+      <ExePackage Id="SecondInstallerBootstrapper"
+                  Name="SecondInstallerBootstrapper.exe"
+                  DownloadUrl="http://{0}/MyMsi/CustomBurnUI/SecondInstallerBootstrapper.exe"
+                  InstallCommand="/S"
+                  UninstallCommand="/uninstall /quiet"
+                  DetectCondition="IsSecondInstallerInstalled"
+                  Compressed="no"
+                  Cache="yes"
+                  Permanent="no"
+                  Vital="yes"
+                  SuppressSignatureVerification="no"
+                  InstallCondition="SecondInstallerBootStrapper = &quot;Install&quot; OR SecondInstallerBootStrapper = &quot;Update&quot;">
+        <RemotePayload
+          ProductName="SecondInstallerBootstrapper"
+          Description="SecondInstallerBootstrapper"
+          Hash="EA923B18F48C44637FD3295BC03EB4028ED88C07"
+          CertificatePublicKey="126C892FD591AD2CE058EC194DB5CE85E528A9BB"
+          CertificateThumbprint="AA9325AB2EDFF4A5D745205CBD25B440CB89FDEB"
+          Size="586192"
           Version="1.0.0.0"/>
       </ExePackage>
     </Chain>

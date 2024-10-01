@@ -203,6 +203,16 @@ namespace InstallerUI
             engine.Log(LogLevel.Verbose, $"::FirstInstallerBootStrapper = {engine.StringVariables["FirstInstallerBootStrapper"]} & commandParameter={commandParameter}");
         }
 
+        public ICommand SIBootStapperCommand
+        {
+            get { return new DelegateCommand<string>(HandleSIBootStapperCommand); }
+        }
+        private void HandleSIBootStapperCommand(object commandParameter)
+        {
+            engine.StringVariables["SecondInstallerBootStrapper"] = commandParameter.ToString();
+            engine.Log(LogLevel.Verbose, $"::SecondInstallerBootStrapper = {engine.StringVariables["SecondInstallerBootStrapper"]} & commandParameter={commandParameter}");
+        }
+
 
         private InstallationState StateValue;
 		public InstallationState State
