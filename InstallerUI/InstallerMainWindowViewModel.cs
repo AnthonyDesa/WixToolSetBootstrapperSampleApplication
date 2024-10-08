@@ -296,6 +296,18 @@ namespace InstallerUI
                 $"::SecondInstaller = {engine.StringVariables["SecondInstaller"]} & commandParameter={commandParameter}");
         }
 
+        public ICommand ThirdInstallerCommand
+        {
+            get { return new DelegateCommand<string>(HandleThirdIntallCommand); }
+        }
+
+        private void HandleThirdIntallCommand(object commandParameter)
+        {
+            engine.StringVariables["ThirdInstaller"] = commandParameter.ToString();
+            engine.Log(LogLevel.Verbose,
+                $"::ThirdInstaller = {engine.StringVariables["ThirdInstaller"]} & commandParameter={commandParameter}");
+        }
+
         public ICommand FIBootStapperCommand
         {
             get { return new DelegateCommand<string>(HandleFIBootStapperCommand); }
@@ -331,7 +343,7 @@ namespace InstallerUI
             //2). Check What user is Uninstalling
             //3). Check what user is Installing
             //4). Check if anything is left installed
-            //5). If nothing is left installed on Client Computer the Call Uninstall otherwise call Install
+            //5). If nothing is left installed on Client Computer then Call Uninstall otherwise call Install
 
             //1). Check what is already installed on users computer (Registry is not updated immediately after calling the Install command)
             var installedModules = GetModulesInstalledOnClientComputer();
@@ -342,6 +354,9 @@ namespace InstallerUI
             var userSelection = new Dictionary<string, string>();
             userSelection.Add("FirstInstaller", engine.StringVariables["FirstInstaller"]);
             userSelection.Add("SecondInstaller", engine.StringVariables["SecondInstaller"]);
+            userSelection.Add("ThirdInstaller", engine.StringVariables["ThirdInstaller"]);
+            userSelection.Add("FourthInstaller", engine.StringVariables["FourthInstaller"]);
+            userSelection.Add("FifthInstaller", engine.StringVariables["FifthInstaller"]);
             userSelection.Add("FirstInstallerBootStrapper", engine.StringVariables["FirstInstallerBootStrapper"]);
             userSelection.Add("SecondInstallerBootStrapper", engine.StringVariables["SecondInstallerBootStrapper"]);
             var unInstalledSelected = userSelection.Where(x => x.Value.ToLower() == "UnInstall".ToLower()).Select(x => x.Key).ToList();
@@ -499,7 +514,13 @@ namespace InstallerUI
                             if (!string.IsNullOrWhiteSpace(_softwareName))
                             {
                                 if (_softwareName.ToLower().Contains("FirstInstaller".ToLower())
-                                    || _softwareName.ToLower().Contains("SecondInstaller".ToLower()))
+                                    || _softwareName.ToLower().Contains("SecondInstaller".ToLower())
+                                    || _softwareName.ToLower().Contains("ThirdInstaller".ToLower())
+                                    || _softwareName.ToLower().Contains("FourthInstaller".ToLower())
+                                    || _softwareName.ToLower().Contains("FifthInstaller".ToLower())
+                                    || _softwareName.ToLower().Contains("FirstInstallerBootStrapper".ToLower())
+                                    || _softwareName.ToLower().Contains("SecondInstallerBootStrapper".ToLower())
+                                    )
                                 {
                                     installedModules.Add(new Tuple<string, string, string>(a, _softwareName,
                                         subkey.GetValue("DisplayVersion").ToString()));

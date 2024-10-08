@@ -36,6 +36,9 @@
     <Variable bal:Overridable="yes" Name="InstallLevel" Value="1"/>
     <Variable bal:Overridable="yes" Name="FirstInstaller" Value="Skip"/>
     <Variable bal:Overridable="yes" Name="SecondInstaller" Value="Skip"/>
+    <Variable bal:Overridable="yes" Name="ThirdInstaller" Value="Skip"/>
+    <Variable bal:Overridable="yes" Name="FourthInstaller" Value="Skip"/>
+    <Variable bal:Overridable="yes" Name="FifthInstaller" Value="Skip"/>
     <Variable bal:Overridable="yes" Name="FirstInstallerBootStrapper" Value="Skip"/>
     <Variable bal:Overridable="yes" Name="SecondInstallerBootStrapper" Value="Skip"/>
 
@@ -54,6 +57,13 @@
         SourceFile="$(var.SecondInstaller.TargetPath)" 
         Visible="yes"
         InstallCondition="SecondInstaller = &quot;Install&quot; OR SecondInstaller = &quot;Update&quot;">
+        <MsiProperty Name="PREREQUISITE" Value="[Prerequisite]"/>
+        <MsiProperty Name="INSTALLLEVEL" Value="[InstallLevel]"/>
+      </MsiPackage>
+      <MsiPackage Id="ThirdInstaller"
+                  SourceFile="$(var.ThirdInstaller.TargetPath)"
+                  Visible="yes"
+                  InstallCondition="ThirdInstaller = &quot;Install&quot; OR ThirdInstaller = &quot;Update&quot;">
         <MsiProperty Name="PREREQUISITE" Value="[Prerequisite]"/>
         <MsiProperty Name="INSTALLLEVEL" Value="[InstallLevel]"/>
       </MsiPackage>

@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
 			 xmlns:vm="clr-namespace:InstallerUI"
              mc:Ignorable="d" 
-             Height="551" Width="400">
+             Height="550" Width="600">
     <Window.Resources>
         <Style TargetType="Button">
             <Setter Property="Margin" Value="5" />
@@ -19,9 +19,15 @@
             <Setter Property="Margin" Value="5" />
         </Style>
     </Window.Resources>
-    <Grid Height="483" VerticalAlignment="Top">
+    <Grid Height="683" VerticalAlignment="Top">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="99*"/>
+            <ColumnDefinition Width="72*"/>
+            <ColumnDefinition Width="86*"/>
+            <ColumnDefinition Width="86*"/>
+            <ColumnDefinition Width="86*"/>
+            <ColumnDefinition Width="86*"/>
+            <ColumnDefinition Width="86*"/>
             <ColumnDefinition Width="0*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -36,52 +42,79 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <TextBlock Text="WiX Toolset Bootstrapper Sample" Style="{StaticResource H1}" Margin="5,15,0,0" />
-        <Button Command="{Binding Path=InstallCommand, Mode=OneTime}" Grid.Row="1" Margin="5,5,0,5">Install Sample Applications</Button>
-        <Button Command="{Binding Path=UninstallCommand, Mode=OneTime}" Grid.Row="2" Margin="5,5,0,5">Uninstall</Button>
+        <TextBlock Grid.Row="0" Grid.ColumnSpan="7" Text="WiX Toolset Bootstrapper Sample" Style="{StaticResource H1}" Margin="5,15,0,0" />
+        <Button Command="{Binding Path=InstallCommand, Mode=OneTime}" Grid.Row="1" Grid.ColumnSpan="7" Margin="5,5,0,5">Install Sample Applications</Button>
+        <Button Command="{Binding Path=UninstallCommand, Mode=OneTime}" Grid.Row="2" Grid.ColumnSpan="7" Margin="5,5,0,5">Uninstall</Button>
 
-        <ProgressBar Grid.Row="3" Value="{Binding Path=LocalProgress, Mode=OneWay}" Minimum="0" Maximum="100"
+        <ProgressBar Grid.Row="3" Grid.ColumnSpan="7" Value="{Binding Path=LocalProgress, Mode=OneWay}" Minimum="0" Maximum="100"
 					 VerticalAlignment="Bottom" Margin="5,0,0,5" Height="20"/>
-        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,75,0,0" Grid.RowSpan="2">
+        <StackPanel Grid.Row="3" Grid.ColumnSpan="7" Orientation="Horizontal" Margin="0,75,0,0" Grid.RowSpan="2">
             <TextBlock Text="Current Package: " Margin="10,0,0,0" />
             <TextBlock Text="{Binding Path=CurrentPackage, Mode=OneWay}" />
         </StackPanel>
-        <ProgressBar Grid.Row="5" Value="{Binding Path=GlobalProgress, Mode=OneWay}" Minimum="0" Maximum="100" Margin="5,5,0,5" />
-        <Label Content="FirstInstaller" Grid.Row="6" Margin="5,2,74,0" Height="26" VerticalAlignment="Top"/>
-        <RadioButton Command="{Binding Path=FirstInstallerCommand}" GroupName="FirstInstaller" CommandParameter="Skip" IsChecked="True" Grid.Row="6" Margin="95,0,0,37" Height="20" VerticalAlignment="Bottom">Skip</RadioButton>
-        <RadioButton Command="{Binding Path=FirstInstallerCommand}" GroupName="FirstInstaller" CommandParameter="Keep" Grid.Row="6" Margin="165,0,0,37" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left">Keep</RadioButton>
-        <RadioButton Command="{Binding Path=FirstInstallerCommand}" GroupName="FirstInstaller" CommandParameter="Install" Grid.Row="6" Margin="225,0,0,35" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left">Install</RadioButton>
-        <RadioButton Command="{Binding Path=FirstInstallerCommand}" GroupName="FirstInstaller" CommandParameter="UnInstall" Grid.Row="6" Margin="295,0,0,35" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left">UnInstall</RadioButton>
-        <RadioButton Command="{Binding Path=FirstInstallerCommand}" GroupName="FirstInstaller" CommandParameter="Remove" Grid.Row="6" Margin="95,0,0,15" Height="17" VerticalAlignment="Bottom" HorizontalAlignment="Left">Remove</RadioButton>
-        <RadioButton Command="{Binding Path=FirstInstallerCommand}" GroupName="FirstInstaller" CommandParameter="Update" Grid.Row="6" Margin="165,33,0,15" HorizontalAlignment="Left">Update</RadioButton>
+        <ProgressBar Grid.Row="5" Grid.ColumnSpan="7" Value="{Binding Path=GlobalProgress, Mode=OneWay}" Minimum="0" Maximum="100" Margin="5,5,0,5" />
+        <Label Grid.Column="0" Content="FirstInstaller" Grid.Row="6" Margin="0,5,0,0" HorizontalAlignment="Left"/>
+        <RadioButton Grid.Column="1" Command="{Binding Path=FirstInstallerCommand}" GroupName="FirstInstaller" CommandParameter="Skip" IsChecked="True" Grid.Row="6" Margin="5,10,0,0">Skip</RadioButton>
+        <RadioButton Grid.Column="2"  Command="{Binding Path=FirstInstallerCommand}" GroupName="FirstInstaller" CommandParameter="Keep" Grid.Row="6" Margin="5,10,0,0">Keep</RadioButton>
+        <RadioButton Grid.Column="3" Command="{Binding Path=FirstInstallerCommand}" GroupName="FirstInstaller" CommandParameter="Install" Grid.Row="6" Margin="5,10,0,0">Install</RadioButton>
+        <RadioButton Grid.Column="4" Command="{Binding Path=FirstInstallerCommand}" GroupName="FirstInstaller" CommandParameter="UnInstall" Grid.Row="6" Margin="5,10,0,0">UnInstall</RadioButton>
+        <RadioButton Grid.Column="5" Command="{Binding Path=FirstInstallerCommand}" GroupName="FirstInstaller" CommandParameter="Remove" Grid.Row="6" Margin="5,10,0,0">Remove</RadioButton>
+        <RadioButton Grid.Column="6" Command="{Binding Path=FirstInstallerCommand}" GroupName="FirstInstaller" CommandParameter="Update" Grid.Row="6" Margin="5,10,0,0">Update</RadioButton>
 
-        <Label Content="SecondInstaller" Grid.Row="7" Margin="5,2,74,0" Height="26" VerticalAlignment="Top"/>
-        <RadioButton Command="{Binding Path=SecondInstallerCommand}" GroupName="SecondInstaller" CommandParameter="Skip" IsChecked="True" Grid.Row="7" Margin="95,0,0,37" Height="20" VerticalAlignment="Bottom">Skip</RadioButton>
-        <RadioButton Command="{Binding Path=SecondInstallerCommand}" GroupName="SecondInstaller" CommandParameter="Keep" Grid.Row="7" Margin="165,0,0,37" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left">Keep</RadioButton>
-        <RadioButton Command="{Binding Path=SecondInstallerCommand}" GroupName="SecondInstaller" CommandParameter="Install" Grid.Row="7" Margin="225,0,0,35" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left">Install</RadioButton>
-        <RadioButton Command="{Binding Path=SecondInstallerCommand}" GroupName="SecondInstaller" CommandParameter="UnInstall" Grid.Row="7" Margin="295,0,0,35" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left">UnInstall</RadioButton>
-        <RadioButton Command="{Binding Path=SecondInstallerCommand}" GroupName="SecondInstaller" CommandParameter="Remove" Grid.Row="7" Margin="95,0,0,15" Height="17" VerticalAlignment="Bottom" HorizontalAlignment="Left">Remove</RadioButton>
-        <RadioButton Command="{Binding Path=SecondInstallerCommand}" GroupName="SecondInstaller" CommandParameter="Update" Grid.Row="7" Margin="165,33,0,15" HorizontalAlignment="Left">Update</RadioButton>
+        <Label Grid.Column="0" Content="SecondInstaller" Grid.Row="7" Margin="0,5,0,0" HorizontalAlignment="Left" />
+        <RadioButton Grid.Column="1"  Command="{Binding Path=SecondInstallerCommand}" GroupName="SecondInstaller" CommandParameter="Skip" IsChecked="True" Grid.Row="7" Margin="5,10,0,0">Skip</RadioButton>
+        <RadioButton Grid.Column="2" Command="{Binding Path=SecondInstallerCommand}" GroupName="SecondInstaller" CommandParameter="Keep" Grid.Row="7" Margin="5,10,0,0">Keep</RadioButton>
+        <RadioButton Grid.Column="3" Command="{Binding Path=SecondInstallerCommand}" GroupName="SecondInstaller" CommandParameter="Install" Grid.Row="7" Margin="5,10,0,0">Install</RadioButton>
+        <RadioButton Grid.Column="4" Command="{Binding Path=SecondInstallerCommand}" GroupName="SecondInstaller" CommandParameter="UnInstall" Grid.Row="7" Margin="5,10,0,0">UnInstall</RadioButton>
+        <RadioButton Grid.Column="5" Command="{Binding Path=SecondInstallerCommand}" GroupName="SecondInstaller" CommandParameter="Remove" Grid.Row="7" Margin="5,10,0,0">Remove</RadioButton>
+        <RadioButton Grid.Column="6" Command="{Binding Path=SecondInstallerCommand}" GroupName="SecondInstaller" CommandParameter="Update" Grid.Row="7" Margin="5,10,0,0">Update</RadioButton>
 
-        <Label Content="FI Bootstapper" Grid.Row="8" Margin="5,2,74,0" Height="26" VerticalAlignment="Top"/>
-        <RadioButton Command="{Binding Path=FIBootStapperCommand}" GroupName="FIBootStapperInstaller" CommandParameter="Skip" IsChecked="True" Grid.Row="8" Margin="95,0,0,37" Height="20" VerticalAlignment="Bottom">Skip</RadioButton>
-        <RadioButton Command="{Binding Path=FIBootStapperCommand}" GroupName="FIBootStapperInstaller" CommandParameter="Keep" Grid.Row="8" Margin="165,0,0,37" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left">Keep</RadioButton>
-        <RadioButton Command="{Binding Path=FIBootStapperCommand}" GroupName="FIBootStapperInstaller" CommandParameter="Install" Grid.Row="8" Margin="225,0,0,35" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left">Install</RadioButton>
-        <RadioButton Command="{Binding Path=FIBootStapperCommand}" GroupName="FIBootStapperInstaller" CommandParameter="UnInstall" Grid.Row="8" Margin="295,0,0,35" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left">UnInstall</RadioButton>
-        <RadioButton Command="{Binding Path=FIBootStapperCommand}" GroupName="FIBootStapperInstaller" CommandParameter="Remove" Grid.Row="8" Margin="95,0,0,15" Height="17" VerticalAlignment="Bottom" HorizontalAlignment="Left">Remove</RadioButton>
-        <RadioButton Command="{Binding Path=FIBootStapperCommand}" GroupName="FIBootStapperInstaller" CommandParameter="Update" Grid.Row="8" Margin="165,33,0,15" HorizontalAlignment="Left">Update</RadioButton>
+        <Label Grid.Column="0" Content="ThirdInstaller" Grid.Row="8" Margin="0,5,0,0" HorizontalAlignment="Left"/>
+        <RadioButton Grid.Column="1"  Command="{Binding Path=ThirdInstallerCommand}" GroupName="ThirdInstaller" CommandParameter="Skip" IsChecked="True" Grid.Row="8" Margin="5,10,0,0">Skip</RadioButton>
+        <RadioButton Grid.Column="2" Command="{Binding Path=ThirdInstallerCommand}" GroupName="ThirdInstaller" CommandParameter="Keep" Grid.Row="8" Margin="5,10,0,0">Keep</RadioButton>
+        <RadioButton Grid.Column="3" Command="{Binding Path=ThirdInstallerCommand}" GroupName="ThirdInstaller" CommandParameter="Install" Grid.Row="8" Margin="5,10,0,0">Install</RadioButton>
+        <RadioButton Grid.Column="4" Command="{Binding Path=ThirdInstallerCommand}" GroupName="ThirdInstaller" CommandParameter="UnInstall" Grid.Row="8" Margin="5,10,0,0">UnInstall</RadioButton>
+        <RadioButton Grid.Column="5" Command="{Binding Path=ThirdInstallerCommand}" GroupName="ThirdInstaller" CommandParameter="Remove" Grid.Row="8" Margin="5,10,0,0">Remove</RadioButton>
+        <RadioButton Grid.Column="6" Command="{Binding Path=ThirdInstallerCommand}" GroupName="ThirdInstaller" CommandParameter="Update" Grid.Row="8" Margin="5,10,0,0">Update</RadioButton>
 
-        <Label Content="SI Bootstapper" Grid.Row="9" Margin="5,2,74,0" Height="26" VerticalAlignment="Top"/>
-        <RadioButton Command="{Binding Path=SIBootStapperCommand}" GroupName="SIBootStapperInstaller" CommandParameter="Skip" IsChecked="True" Grid.Row="9" Margin="95,0,0,37" Height="20" VerticalAlignment="Bottom">Skip</RadioButton>
-        <RadioButton Command="{Binding Path=SIBootStapperCommand}" GroupName="SIBootStapperInstaller" CommandParameter="Keep" Grid.Row="9" Margin="165,0,0,37" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left">Keep</RadioButton>
-        <RadioButton Command="{Binding Path=SIBootStapperCommand}" GroupName="SIBootStapperInstaller" CommandParameter="Install" Grid.Row="9" Margin="225,0,0,35" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left">Install</RadioButton>
-        <RadioButton Command="{Binding Path=SIBootStapperCommand}" GroupName="SIBootStapperInstaller" CommandParameter="UnInstall" Grid.Row="9" Margin="295,0,0,35" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left">UnInstall</RadioButton>
-        <RadioButton Command="{Binding Path=SIBootStapperCommand}" GroupName="SIBootStapperInstaller" CommandParameter="Remove" Grid.Row="9" Margin="95,0,0,15" Height="17" VerticalAlignment="Bottom" HorizontalAlignment="Left">Remove</RadioButton>
-        <RadioButton Command="{Binding Path=SIBootStapperCommand}" GroupName="SIBootStapperInstaller" CommandParameter="Update" Grid.Row="9" Margin="165,33,0,15" HorizontalAlignment="Left">Update</RadioButton>
+        <Label Grid.Column="0" Content="FourthInstaller" Grid.Row="9" Margin="0,5,0,0" HorizontalAlignment="Left"/>
+        <RadioButton Grid.Column="1" Command="{Binding Path=FourthInstallerCommand}" GroupName="FourthInstaller" CommandParameter="Skip" IsChecked="True" Grid.Row="9" Margin="5,10,0,0">Skip</RadioButton>
+        <RadioButton Grid.Column="2" Command="{Binding Path=FourthInstallerCommand}" GroupName="FourthInstaller" CommandParameter="Keep" Grid.Row="9" Margin="5,10,0,0">Keep</RadioButton>
+        <RadioButton Grid.Column="3" Command="{Binding Path=FourthInstallerCommand}" GroupName="FourthInstaller" CommandParameter="Install" Grid.Row="9" Margin="5,10,0,0">Install</RadioButton>
+        <RadioButton Grid.Column="4" Command="{Binding Path=FourthInstallerCommand}" GroupName="FourthInstaller" CommandParameter="UnInstall" Grid.Row="9" Margin="5,10,0,0">UnInstall</RadioButton>
+        <RadioButton Grid.Column="5" Command="{Binding Path=FourthInstallerCommand}" GroupName="FourthInstaller" CommandParameter="Remove" Grid.Row="9" Margin="5,10,0,0">Remove</RadioButton>
+        <RadioButton Grid.Column="6" Command="{Binding Path=FourthInstallerCommand}" GroupName="FourthInstaller" CommandParameter="Update" Grid.Row="9" Margin="5,10,0,0">Update</RadioButton>
 
-        <Button Command="{Binding Path=ApplyCommand, Mode=OneTime}" Grid.Row="10" Margin="5,0,0,-29" Height="35" VerticalAlignment="Bottom" >Apply</Button>
+        <Label Grid.Column="0"  Content="FifthInstaller" Grid.Row="10" Margin="0,5,0,0" HorizontalAlignment="Left"/>
+        <RadioButton Grid.Column="1"  Command="{Binding Path=FifthInstallerCommand}" GroupName="FifthInstaller" CommandParameter="Skip" IsChecked="True" Grid.Row="10" Margin="5,10,0,0">Skip</RadioButton>
+        <RadioButton Grid.Column="2"  Command="{Binding Path=FifthInstallerCommand}" GroupName="FifthInstaller" CommandParameter="Keep" Grid.Row="10" Margin="5,10,0,0" >Keep</RadioButton>
+        <RadioButton Grid.Column="3"  Command="{Binding Path=FifthInstallerCommand}" GroupName="FifthInstaller" CommandParameter="Install" Grid.Row="10" Margin="5,10,0,0">Install</RadioButton>
+        <RadioButton Grid.Column="4"  Command="{Binding Path=FifthInstallerCommand}" GroupName="FifthInstaller" CommandParameter="UnInstall" Grid.Row="10" Margin="5,10,0,0">UnInstall</RadioButton>
+        <RadioButton Grid.Column="5"  Command="{Binding Path=FifthInstallerCommand}" GroupName="FifthInstaller" CommandParameter="Remove" Grid.Row="10" Margin="5,10,0,0">Remove</RadioButton>
+        <RadioButton Grid.Column="6"  Command="{Binding Path=FifthInstallerCommand}" GroupName="FifthInstaller" CommandParameter="Update" Grid.Row="10" Margin="5,10,0,0">Update</RadioButton>
+
+        <Label Grid.Column="0" Content="FI Bootstapper" Grid.Row="11" Margin="0,5,0,0" HorizontalAlignment="Left"/>
+        <RadioButton Grid.Column="1" Command="{Binding Path=FIBootStapperCommand}" GroupName="FIBootStapperInstaller" CommandParameter="Skip" IsChecked="True" Grid.Row="11" Margin="5,10,0,0">Skip</RadioButton>
+        <RadioButton Grid.Column="2" Command="{Binding Path=FIBootStapperCommand}" GroupName="FIBootStapperInstaller" CommandParameter="Keep" Grid.Row="11" Margin="5,10,0,0">Keep</RadioButton>
+        <RadioButton Grid.Column="3" Command="{Binding Path=FIBootStapperCommand}" GroupName="FIBootStapperInstaller" CommandParameter="Install" Grid.Row="11" Margin="5,10,0,0">Install</RadioButton>
+        <RadioButton Grid.Column="4" Command="{Binding Path=FIBootStapperCommand}" GroupName="FIBootStapperInstaller" CommandParameter="UnInstall" Grid.Row="11" Margin="5,10,0,0">UnInstall</RadioButton>
+        <RadioButton Grid.Column="5" Command="{Binding Path=FIBootStapperCommand}" GroupName="FIBootStapperInstaller" CommandParameter="Remove" Grid.Row="11" Margin="5,10,0,0">Remove</RadioButton>
+        <RadioButton Grid.Column="6" Command="{Binding Path=FIBootStapperCommand}" GroupName="FIBootStapperInstaller" CommandParameter="Update" Grid.Row="11" Margin="5,10,0,0">Update</RadioButton>
+
+        <Label Grid.Column="0" Content="SI Bootstapper" Grid.Row="12" Margin="0,5,0,0" HorizontalAlignment="Left"/>
+        <RadioButton Grid.Column="1" Command="{Binding Path=SIBootStapperCommand}" GroupName="SIBootStapperInstaller" CommandParameter="Skip" IsChecked="True" Grid.Row="12" Margin="5,10,0,0">Skip</RadioButton>
+        <RadioButton Grid.Column="2" Command="{Binding Path=SIBootStapperCommand}" GroupName="SIBootStapperInstaller" CommandParameter="Keep" Grid.Row="12" Margin="5,10,0,0">Keep</RadioButton>
+        <RadioButton Grid.Column="3" Command="{Binding Path=SIBootStapperCommand}" GroupName="SIBootStapperInstaller" CommandParameter="Install" Grid.Row="12" Margin="5,10,0,0">Install</RadioButton>
+        <RadioButton Grid.Column="4" Command="{Binding Path=SIBootStapperCommand}" GroupName="SIBootStapperInstaller" CommandParameter="UnInstall" Grid.Row="12" Margin="5,10,0,0">UnInstall</RadioButton>
+        <RadioButton Grid.Column="5" Command="{Binding Path=SIBootStapperCommand}" GroupName="SIBootStapperInstaller" CommandParameter="Remove" Grid.Row="12" Margin="5,10,0,0">Remove</RadioButton>
+        <RadioButton Grid.Column="6" Command="{Binding Path=SIBootStapperCommand}" GroupName="SIBootStapperInstaller" CommandParameter="Update" Grid.Row="12" Margin="5,10,0,0">Update</RadioButton>
+
+        <Button Grid.Column="0" Command="{Binding Path=ApplyCommand, Mode=OneTime}" Grid.Row="13" Margin="0,30,5,0" Height="35" Background="Aqua" Grid.ColumnSpan="7" FontWeight="Bold" >Apply</Button>
 
     </Grid>
 </Window>

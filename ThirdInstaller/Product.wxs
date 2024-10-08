@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Product Id="*" Name="ThirdInstaller" Language="1033" Version="1.0.0.0" Manufacturer="Sciex" UpgradeCode="9c00f82c-984d-4720-a22d-61f3dfca185c">
+		<Package InstallerVersion="400" Compressed="yes" InstallScope="perMachine" />
+
+		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+		<MediaTemplate EmbedCab="yes" />
+
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER" Name="CustomBurnUISample">
+          <Directory Id="ThirdInstaller" Name="Third Installer" />
+        </Directory>
+			</Directory>
+		</Directory>
+
+  <DirectoryRef Id="ThirdInstaller">
+    <Component Guid="*" Id="CMP_ThirdInstallerReadMe">
+      <File Id="FILE_ThirdInstallerReadMe" Source="ThirdInstallerReadMe.txt" KeyPath="yes" />
+    </Component>
+  </DirectoryRef>
+
+  <Feature Id="ProductFeature" Title="ThirdInstaller" Level="1">
+    <ComponentRef Id="CMP_ThirdInstallerReadMe"/>
+  </Feature>
+  </Product>
+</Wix>

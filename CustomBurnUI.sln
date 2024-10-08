@@ -18,6 +18,8 @@ Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "FirstInstallerBootstrapper"
 EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "SecondInstallerBootstrapper", "SecondInstallerBootstrapper\SecondInstallerBootstrapper.wixproj", "{47B3FF0F-A33F-4DD5-B8BE-D5CC0EBB0134}"
 EndProject
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "ThirdInstaller", "ThirdInstaller\ThirdInstaller.wixproj", "{7A8CED37-854F-456F-87CF-730B91813688}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -92,12 +94,24 @@ Global
 		{47B3FF0F-A33F-4DD5-B8BE-D5CC0EBB0134}.Release|Mixed Platforms.Build.0 = Release|x86
 		{47B3FF0F-A33F-4DD5-B8BE-D5CC0EBB0134}.Release|x86.ActiveCfg = Release|x86
 		{47B3FF0F-A33F-4DD5-B8BE-D5CC0EBB0134}.Release|x86.Build.0 = Release|x86
+		{7A8CED37-854F-456F-87CF-730B91813688}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{7A8CED37-854F-456F-87CF-730B91813688}.Debug|Any CPU.Build.0 = Debug|x86
+		{7A8CED37-854F-456F-87CF-730B91813688}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{7A8CED37-854F-456F-87CF-730B91813688}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{7A8CED37-854F-456F-87CF-730B91813688}.Debug|x86.ActiveCfg = Debug|x86
+		{7A8CED37-854F-456F-87CF-730B91813688}.Debug|x86.Build.0 = Debug|x86
+		{7A8CED37-854F-456F-87CF-730B91813688}.Release|Any CPU.ActiveCfg = Release|x86
+		{7A8CED37-854F-456F-87CF-730B91813688}.Release|Any CPU.Build.0 = Release|x86
+		{7A8CED37-854F-456F-87CF-730B91813688}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{7A8CED37-854F-456F-87CF-730B91813688}.Release|Mixed Platforms.Build.0 = Release|x86
+		{7A8CED37-854F-456F-87CF-730B91813688}.Release|x86.ActiveCfg = Release|x86
+		{7A8CED37-854F-456F-87CF-730B91813688}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.0\lib\NET35
 		SolutionGuid = {403B527A-DE99-4B18-968B-B84BD887A6F9}
+		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.0\lib\NET35
 	EndGlobalSection
 EndGlobal
