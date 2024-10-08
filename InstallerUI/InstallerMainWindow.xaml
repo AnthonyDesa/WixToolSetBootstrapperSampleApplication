@@ -59,60 +59,60 @@
         </StackPanel>
         <ProgressBar Grid.Row="5" Grid.ColumnSpan="7" Value="{Binding Path=GlobalProgress, Mode=OneWay}" Minimum="0" Maximum="100" Margin="5,5,0,5" />
         <Label Grid.Column="0" Content="FirstInstaller" Grid.Row="6" Margin="0,5,0,0" HorizontalAlignment="Left"/>
-        <RadioButton Grid.Column="1" Command="{Binding Path=FirstInstallerCommand}" GroupName="FirstInstaller" CommandParameter="Skip" IsChecked="True" Grid.Row="6" Margin="5,10,0,0">Skip</RadioButton>
-        <RadioButton Grid.Column="2"  Command="{Binding Path=FirstInstallerCommand}" GroupName="FirstInstaller" CommandParameter="Keep" Grid.Row="6" Margin="5,10,0,0">Keep</RadioButton>
-        <RadioButton Grid.Column="3" Command="{Binding Path=FirstInstallerCommand}" GroupName="FirstInstaller" CommandParameter="Install" Grid.Row="6" Margin="5,10,0,0">Install</RadioButton>
-        <RadioButton Grid.Column="4" Command="{Binding Path=FirstInstallerCommand}" GroupName="FirstInstaller" CommandParameter="UnInstall" Grid.Row="6" Margin="5,10,0,0">UnInstall</RadioButton>
-        <RadioButton Grid.Column="5" Command="{Binding Path=FirstInstallerCommand}" GroupName="FirstInstaller" CommandParameter="Remove" Grid.Row="6" Margin="5,10,0,0">Remove</RadioButton>
-        <RadioButton Grid.Column="6" Command="{Binding Path=FirstInstallerCommand}" GroupName="FirstInstaller" CommandParameter="Update" Grid.Row="6" Margin="5,10,0,0">Update</RadioButton>
+        <RadioButton Grid.Column="1" Command="{Binding Path=FirstInstallerCommand}" GroupName="FirstInstaller" CommandParameter="Skip" IsChecked="{Binding FirstInstallerIsSkipChecked, Mode=TwoWay}" Grid.Row="6" Margin="5,10,0,0">Skip</RadioButton>
+        <RadioButton Grid.Column="2"  Command="{Binding Path=FirstInstallerCommand}" GroupName="FirstInstaller" CommandParameter="Keep" IsChecked="{Binding FirstInstallerIsKeepChecked, Mode=TwoWay}" Grid.Row="6" Margin="5,10,0,0">Keep</RadioButton>
+        <RadioButton Grid.Column="3" Command="{Binding Path=FirstInstallerCommand}" GroupName="FirstInstaller" CommandParameter="Install" IsChecked="{Binding FirstInstallerIsInstallChecked, Mode=TwoWay}" Grid.Row="6" Margin="5,10,0,0">Install</RadioButton>
+        <RadioButton Grid.Column="4" Command="{Binding Path=FirstInstallerCommand}" GroupName="FirstInstaller" CommandParameter="UnInstall" IsChecked="{Binding FirstInstallerIsUnInstallChecked, Mode=TwoWay}" Grid.Row="6" Margin="5,10,0,0">UnInstall</RadioButton>
+        <RadioButton Grid.Column="5" Command="{Binding Path=FirstInstallerCommand}" GroupName="FirstInstaller" CommandParameter="Remove" IsChecked="{Binding FirstInstallerIsRemoveChecked, Mode=TwoWay}" Grid.Row="6" Margin="5,10,0,0">Remove</RadioButton>
+        <RadioButton Grid.Column="6" Command="{Binding Path=FirstInstallerCommand}" GroupName="FirstInstaller" CommandParameter="Update" IsChecked="{Binding FirstInstallerIsUpdateChecked, Mode=TwoWay}" Grid.Row="6" Margin="5,10,0,0">Update</RadioButton>
 
         <Label Grid.Column="0" Content="SecondInstaller" Grid.Row="7" Margin="0,5,0,0" HorizontalAlignment="Left" />
-        <RadioButton Grid.Column="1"  Command="{Binding Path=SecondInstallerCommand}" GroupName="SecondInstaller" CommandParameter="Skip" IsChecked="True" Grid.Row="7" Margin="5,10,0,0">Skip</RadioButton>
-        <RadioButton Grid.Column="2" Command="{Binding Path=SecondInstallerCommand}" GroupName="SecondInstaller" CommandParameter="Keep" Grid.Row="7" Margin="5,10,0,0">Keep</RadioButton>
-        <RadioButton Grid.Column="3" Command="{Binding Path=SecondInstallerCommand}" GroupName="SecondInstaller" CommandParameter="Install" Grid.Row="7" Margin="5,10,0,0">Install</RadioButton>
-        <RadioButton Grid.Column="4" Command="{Binding Path=SecondInstallerCommand}" GroupName="SecondInstaller" CommandParameter="UnInstall" Grid.Row="7" Margin="5,10,0,0">UnInstall</RadioButton>
-        <RadioButton Grid.Column="5" Command="{Binding Path=SecondInstallerCommand}" GroupName="SecondInstaller" CommandParameter="Remove" Grid.Row="7" Margin="5,10,0,0">Remove</RadioButton>
-        <RadioButton Grid.Column="6" Command="{Binding Path=SecondInstallerCommand}" GroupName="SecondInstaller" CommandParameter="Update" Grid.Row="7" Margin="5,10,0,0">Update</RadioButton>
+        <RadioButton Grid.Column="1"  Command="{Binding Path=SecondInstallerCommand}" GroupName="SecondInstaller" CommandParameter="Skip" IsChecked="{Binding SecondInstallerIsSkipChecked, Mode=TwoWay}" Grid.Row="7" Margin="5,10,0,0">Skip</RadioButton>
+        <RadioButton Grid.Column="2" Command="{Binding Path=SecondInstallerCommand}" GroupName="SecondInstaller" CommandParameter="Keep" IsChecked="{Binding SecondInstallerIsKeepChecked, Mode=TwoWay}" Grid.Row="7" Margin="5,10,0,0">Keep</RadioButton>
+        <RadioButton Grid.Column="3" Command="{Binding Path=SecondInstallerCommand}" GroupName="SecondInstaller" CommandParameter="Install" IsChecked="{Binding SecondInstallerIsInstallChecked, Mode=TwoWay}" Grid.Row="7" Margin="5,10,0,0">Install</RadioButton>
+        <RadioButton Grid.Column="4" Command="{Binding Path=SecondInstallerCommand}" GroupName="SecondInstaller" CommandParameter="UnInstall" IsChecked="{Binding SecondInstallerIsUnInstallChecked, Mode=TwoWay}" Grid.Row="7" Margin="5,10,0,0">UnInstall</RadioButton>
+        <RadioButton Grid.Column="5" Command="{Binding Path=SecondInstallerCommand}" GroupName="SecondInstaller" CommandParameter="Remove" IsChecked="{Binding SecondInstallerIsRemoveChecked, Mode=TwoWay}" Grid.Row="7" Margin="5,10,0,0">Remove</RadioButton>
+        <RadioButton Grid.Column="6" Command="{Binding Path=SecondInstallerCommand}" GroupName="SecondInstaller" CommandParameter="Update" IsChecked="{Binding SecondInstallerIsUpdateChecked, Mode=TwoWay}"  Grid.Row="7" Margin="5,10,0,0">Update</RadioButton>
 
         <Label Grid.Column="0" Content="ThirdInstaller" Grid.Row="8" Margin="0,5,0,0" HorizontalAlignment="Left"/>
-        <RadioButton Grid.Column="1"  Command="{Binding Path=ThirdInstallerCommand}" GroupName="ThirdInstaller" CommandParameter="Skip" IsChecked="True" Grid.Row="8" Margin="5,10,0,0">Skip</RadioButton>
-        <RadioButton Grid.Column="2" Command="{Binding Path=ThirdInstallerCommand}" GroupName="ThirdInstaller" CommandParameter="Keep" Grid.Row="8" Margin="5,10,0,0">Keep</RadioButton>
-        <RadioButton Grid.Column="3" Command="{Binding Path=ThirdInstallerCommand}" GroupName="ThirdInstaller" CommandParameter="Install" Grid.Row="8" Margin="5,10,0,0">Install</RadioButton>
-        <RadioButton Grid.Column="4" Command="{Binding Path=ThirdInstallerCommand}" GroupName="ThirdInstaller" CommandParameter="UnInstall" Grid.Row="8" Margin="5,10,0,0">UnInstall</RadioButton>
-        <RadioButton Grid.Column="5" Command="{Binding Path=ThirdInstallerCommand}" GroupName="ThirdInstaller" CommandParameter="Remove" Grid.Row="8" Margin="5,10,0,0">Remove</RadioButton>
-        <RadioButton Grid.Column="6" Command="{Binding Path=ThirdInstallerCommand}" GroupName="ThirdInstaller" CommandParameter="Update" Grid.Row="8" Margin="5,10,0,0">Update</RadioButton>
+        <RadioButton Grid.Column="1"  Command="{Binding Path=ThirdInstallerCommand}" GroupName="ThirdInstaller" CommandParameter="Skip"  IsChecked="{Binding ThirdInstallerIsSkipChecked, Mode=TwoWay}" Grid.Row="8" Margin="5,10,0,0">Skip</RadioButton>
+        <RadioButton Grid.Column="2" Command="{Binding Path=ThirdInstallerCommand}" GroupName="ThirdInstaller" CommandParameter="Keep" IsChecked="{Binding ThirdInstallerIsKeepChecked, Mode=TwoWay}"  Grid.Row="8" Margin="5,10,0,0">Keep</RadioButton>
+        <RadioButton Grid.Column="3" Command="{Binding Path=ThirdInstallerCommand}" GroupName="ThirdInstaller" CommandParameter="Install" IsChecked="{Binding ThirdInstallerIsInstallChecked, Mode=TwoWay}" Grid.Row="8" Margin="5,10,0,0">Install</RadioButton>
+        <RadioButton Grid.Column="4" Command="{Binding Path=ThirdInstallerCommand}" GroupName="ThirdInstaller" CommandParameter="UnInstall" IsChecked="{Binding ThirdInstallerIsUnInstallChecked, Mode=TwoWay}" Grid.Row="8" Margin="5,10,0,0">UnInstall</RadioButton>
+        <RadioButton Grid.Column="5" Command="{Binding Path=ThirdInstallerCommand}" GroupName="ThirdInstaller" CommandParameter="Remove" IsChecked="{Binding ThirdInstallerIsRemoveChecked, Mode=TwoWay}" Grid.Row="8" Margin="5,10,0,0">Remove</RadioButton>
+        <RadioButton Grid.Column="6" Command="{Binding Path=ThirdInstallerCommand}" GroupName="ThirdInstaller" CommandParameter="Update" IsChecked="{Binding ThirdInstallerIsUpdateChecked, Mode=TwoWay}"  Grid.Row="8" Margin="5,10,0,0">Update</RadioButton>
 
         <Label Grid.Column="0" Content="FourthInstaller" Grid.Row="9" Margin="0,5,0,0" HorizontalAlignment="Left"/>
-        <RadioButton Grid.Column="1" Command="{Binding Path=FourthInstallerCommand}" GroupName="FourthInstaller" CommandParameter="Skip" IsChecked="True" Grid.Row="9" Margin="5,10,0,0">Skip</RadioButton>
-        <RadioButton Grid.Column="2" Command="{Binding Path=FourthInstallerCommand}" GroupName="FourthInstaller" CommandParameter="Keep" Grid.Row="9" Margin="5,10,0,0">Keep</RadioButton>
-        <RadioButton Grid.Column="3" Command="{Binding Path=FourthInstallerCommand}" GroupName="FourthInstaller" CommandParameter="Install" Grid.Row="9" Margin="5,10,0,0">Install</RadioButton>
-        <RadioButton Grid.Column="4" Command="{Binding Path=FourthInstallerCommand}" GroupName="FourthInstaller" CommandParameter="UnInstall" Grid.Row="9" Margin="5,10,0,0">UnInstall</RadioButton>
-        <RadioButton Grid.Column="5" Command="{Binding Path=FourthInstallerCommand}" GroupName="FourthInstaller" CommandParameter="Remove" Grid.Row="9" Margin="5,10,0,0">Remove</RadioButton>
-        <RadioButton Grid.Column="6" Command="{Binding Path=FourthInstallerCommand}" GroupName="FourthInstaller" CommandParameter="Update" Grid.Row="9" Margin="5,10,0,0">Update</RadioButton>
+        <RadioButton Grid.Column="1" Command="{Binding Path=FourthInstallerCommand}" GroupName="FourthInstaller" CommandParameter="Skip" IsChecked="{Binding FourthInstallerIsSkipChecked, Mode=TwoWay}" Grid.Row="9" Margin="5,10,0,0">Skip</RadioButton>
+        <RadioButton Grid.Column="2" Command="{Binding Path=FourthInstallerCommand}" GroupName="FourthInstaller" CommandParameter="Keep" IsChecked="{Binding FourthInstallerIsKeepChecked, Mode=TwoWay}" Grid.Row="9" Margin="5,10,0,0">Keep</RadioButton>
+        <RadioButton Grid.Column="3" Command="{Binding Path=FourthInstallerCommand}" GroupName="FourthInstaller" CommandParameter="Install" IsChecked="{Binding FourthInstallerIsInstallChecked, Mode=TwoWay}"  Grid.Row="9" Margin="5,10,0,0">Install</RadioButton>
+        <RadioButton Grid.Column="4" Command="{Binding Path=FourthInstallerCommand}" GroupName="FourthInstaller" CommandParameter="UnInstall" IsChecked="{Binding FourthInstallerIsUnInstallChecked, Mode=TwoWay}" Grid.Row="9" Margin="5,10,0,0">UnInstall</RadioButton>
+        <RadioButton Grid.Column="5" Command="{Binding Path=FourthInstallerCommand}" GroupName="FourthInstaller" CommandParameter="Remove" IsChecked="{Binding FourthInstallerIsRemoveChecked, Mode=TwoWay}" Grid.Row="9" Margin="5,10,0,0">Remove</RadioButton>
+        <RadioButton Grid.Column="6" Command="{Binding Path=FourthInstallerCommand}" GroupName="FourthInstaller" CommandParameter="Update" IsChecked="{Binding FourthInstallerIsUpdateChecked, Mode=TwoWay}" Grid.Row="9" Margin="5,10,0,0">Update</RadioButton>
 
         <Label Grid.Column="0"  Content="FifthInstaller" Grid.Row="10" Margin="0,5,0,0" HorizontalAlignment="Left"/>
-        <RadioButton Grid.Column="1"  Command="{Binding Path=FifthInstallerCommand}" GroupName="FifthInstaller" CommandParameter="Skip" IsChecked="True" Grid.Row="10" Margin="5,10,0,0">Skip</RadioButton>
-        <RadioButton Grid.Column="2"  Command="{Binding Path=FifthInstallerCommand}" GroupName="FifthInstaller" CommandParameter="Keep" Grid.Row="10" Margin="5,10,0,0" >Keep</RadioButton>
-        <RadioButton Grid.Column="3"  Command="{Binding Path=FifthInstallerCommand}" GroupName="FifthInstaller" CommandParameter="Install" Grid.Row="10" Margin="5,10,0,0">Install</RadioButton>
-        <RadioButton Grid.Column="4"  Command="{Binding Path=FifthInstallerCommand}" GroupName="FifthInstaller" CommandParameter="UnInstall" Grid.Row="10" Margin="5,10,0,0">UnInstall</RadioButton>
-        <RadioButton Grid.Column="5"  Command="{Binding Path=FifthInstallerCommand}" GroupName="FifthInstaller" CommandParameter="Remove" Grid.Row="10" Margin="5,10,0,0">Remove</RadioButton>
-        <RadioButton Grid.Column="6"  Command="{Binding Path=FifthInstallerCommand}" GroupName="FifthInstaller" CommandParameter="Update" Grid.Row="10" Margin="5,10,0,0">Update</RadioButton>
+        <RadioButton Grid.Column="1"  Command="{Binding Path=FifthInstallerCommand}" GroupName="FifthInstaller" CommandParameter="Skip" IsChecked="{Binding FifthInstallerIsSkipChecked, Mode=TwoWay}" Grid.Row="10" Margin="5,10,0,0">Skip</RadioButton>
+        <RadioButton Grid.Column="2"  Command="{Binding Path=FifthInstallerCommand}" GroupName="FifthInstaller" CommandParameter="Keep" IsChecked="{Binding FifthInstallerIsKeepChecked, Mode=TwoWay}" Grid.Row="10" Margin="5,10,0,0" >Keep</RadioButton>
+        <RadioButton Grid.Column="3"  Command="{Binding Path=FifthInstallerCommand}" GroupName="FifthInstaller" CommandParameter="Install" IsChecked="{Binding FifthInstallerIsInstallChecked, Mode=TwoWay}"  Grid.Row="10" Margin="5,10,0,0">Install</RadioButton>
+        <RadioButton Grid.Column="4"  Command="{Binding Path=FifthInstallerCommand}" GroupName="FifthInstaller" CommandParameter="UnInstall" IsChecked="{Binding FifthInstallerIsUnInstallChecked, Mode=TwoWay}" Grid.Row="10" Margin="5,10,0,0">UnInstall</RadioButton>
+        <RadioButton Grid.Column="5"  Command="{Binding Path=FifthInstallerCommand}" GroupName="FifthInstaller" CommandParameter="Remove"  IsChecked="{Binding FifthInstallerIsRemoveChecked, Mode=TwoWay}"  Grid.Row="10" Margin="5,10,0,0">Remove</RadioButton>
+        <RadioButton Grid.Column="6"  Command="{Binding Path=FifthInstallerCommand}" GroupName="FifthInstaller" CommandParameter="Update" IsChecked="{Binding FifthInstallerIsUpdateChecked, Mode=TwoWay}"  Grid.Row="10" Margin="5,10,0,0">Update</RadioButton>
 
         <Label Grid.Column="0" Content="FI Bootstapper" Grid.Row="11" Margin="0,5,0,0" HorizontalAlignment="Left"/>
-        <RadioButton Grid.Column="1" Command="{Binding Path=FIBootStapperCommand}" GroupName="FIBootStapperInstaller" CommandParameter="Skip" IsChecked="True" Grid.Row="11" Margin="5,10,0,0">Skip</RadioButton>
-        <RadioButton Grid.Column="2" Command="{Binding Path=FIBootStapperCommand}" GroupName="FIBootStapperInstaller" CommandParameter="Keep" Grid.Row="11" Margin="5,10,0,0">Keep</RadioButton>
-        <RadioButton Grid.Column="3" Command="{Binding Path=FIBootStapperCommand}" GroupName="FIBootStapperInstaller" CommandParameter="Install" Grid.Row="11" Margin="5,10,0,0">Install</RadioButton>
-        <RadioButton Grid.Column="4" Command="{Binding Path=FIBootStapperCommand}" GroupName="FIBootStapperInstaller" CommandParameter="UnInstall" Grid.Row="11" Margin="5,10,0,0">UnInstall</RadioButton>
-        <RadioButton Grid.Column="5" Command="{Binding Path=FIBootStapperCommand}" GroupName="FIBootStapperInstaller" CommandParameter="Remove" Grid.Row="11" Margin="5,10,0,0">Remove</RadioButton>
-        <RadioButton Grid.Column="6" Command="{Binding Path=FIBootStapperCommand}" GroupName="FIBootStapperInstaller" CommandParameter="Update" Grid.Row="11" Margin="5,10,0,0">Update</RadioButton>
+        <RadioButton Grid.Column="1" Command="{Binding Path=FIBootStapperCommand}" GroupName="FIBootStapperInstaller" CommandParameter="Skip" IsChecked="{Binding FIBootStapperInstallerIsSkipChecked, Mode=TwoWay}"  Grid.Row="11" Margin="5,10,0,0">Skip</RadioButton>
+        <RadioButton Grid.Column="2" Command="{Binding Path=FIBootStapperCommand}" GroupName="FIBootStapperInstaller" CommandParameter="Keep" IsChecked="{Binding FIBootStapperInstallerIsKeepChecked, Mode=TwoWay}" Grid.Row="11" Margin="5,10,0,0">Keep</RadioButton>
+        <RadioButton Grid.Column="3" Command="{Binding Path=FIBootStapperCommand}" GroupName="FIBootStapperInstaller" CommandParameter="Install" IsChecked="{Binding FIBootStapperInstallerIsInstallChecked, Mode=TwoWay}" Grid.Row="11" Margin="5,10,0,0">Install</RadioButton>
+        <RadioButton Grid.Column="4" Command="{Binding Path=FIBootStapperCommand}" GroupName="FIBootStapperInstaller" CommandParameter="UnInstall"  IsChecked="{Binding FIBootStapperInstallerIsUnInstallChecked, Mode=TwoWay}" Grid.Row="11" Margin="5,10,0,0">UnInstall</RadioButton>
+        <RadioButton Grid.Column="5" Command="{Binding Path=FIBootStapperCommand}" GroupName="FIBootStapperInstaller" CommandParameter="Remove"  IsChecked="{Binding FIBootStapperInstallerIsRemoveChecked, Mode=TwoWay}"  Grid.Row="11" Margin="5,10,0,0">Remove</RadioButton>
+        <RadioButton Grid.Column="6" Command="{Binding Path=FIBootStapperCommand}" GroupName="FIBootStapperInstaller" CommandParameter="Update" IsChecked="{Binding FIBootStapperInstallerIsUpdateChecked, Mode=TwoWay}" Grid.Row="11" Margin="5,10,0,0">Update</RadioButton>
 
         <Label Grid.Column="0" Content="SI Bootstapper" Grid.Row="12" Margin="0,5,0,0" HorizontalAlignment="Left"/>
-        <RadioButton Grid.Column="1" Command="{Binding Path=SIBootStapperCommand}" GroupName="SIBootStapperInstaller" CommandParameter="Skip" IsChecked="True" Grid.Row="12" Margin="5,10,0,0">Skip</RadioButton>
-        <RadioButton Grid.Column="2" Command="{Binding Path=SIBootStapperCommand}" GroupName="SIBootStapperInstaller" CommandParameter="Keep" Grid.Row="12" Margin="5,10,0,0">Keep</RadioButton>
-        <RadioButton Grid.Column="3" Command="{Binding Path=SIBootStapperCommand}" GroupName="SIBootStapperInstaller" CommandParameter="Install" Grid.Row="12" Margin="5,10,0,0">Install</RadioButton>
-        <RadioButton Grid.Column="4" Command="{Binding Path=SIBootStapperCommand}" GroupName="SIBootStapperInstaller" CommandParameter="UnInstall" Grid.Row="12" Margin="5,10,0,0">UnInstall</RadioButton>
-        <RadioButton Grid.Column="5" Command="{Binding Path=SIBootStapperCommand}" GroupName="SIBootStapperInstaller" CommandParameter="Remove" Grid.Row="12" Margin="5,10,0,0">Remove</RadioButton>
-        <RadioButton Grid.Column="6" Command="{Binding Path=SIBootStapperCommand}" GroupName="SIBootStapperInstaller" CommandParameter="Update" Grid.Row="12" Margin="5,10,0,0">Update</RadioButton>
+        <RadioButton Grid.Column="1" Command="{Binding Path=SIBootStapperCommand}" GroupName="SIBootStapperInstaller" CommandParameter="Skip" IsChecked="{Binding SIBootStapperInstallerIsSkipChecked, Mode=TwoWay}" Grid.Row="12" Margin="5,10,0,0">Skip</RadioButton>
+        <RadioButton Grid.Column="2" Command="{Binding Path=SIBootStapperCommand}" GroupName="SIBootStapperInstaller" CommandParameter="Keep" IsChecked="{Binding SIBootStapperInstallerIsKeepChecked, Mode=TwoWay}" Grid.Row="12" Margin="5,10,0,0">Keep</RadioButton>
+        <RadioButton Grid.Column="3" Command="{Binding Path=SIBootStapperCommand}" GroupName="SIBootStapperInstaller" CommandParameter="Install" IsChecked="{Binding SIBootStapperInstallerIsInstallChecked, Mode=TwoWay}" Grid.Row="12" Margin="5,10,0,0">Install</RadioButton>
+        <RadioButton Grid.Column="4" Command="{Binding Path=SIBootStapperCommand}" GroupName="SIBootStapperInstaller" CommandParameter="UnInstall" IsChecked="{Binding SIBootStapperInstallerIsUnInstallChecked, Mode=TwoWay}" Grid.Row="12" Margin="5,10,0,0">UnInstall</RadioButton>
+        <RadioButton Grid.Column="5" Command="{Binding Path=SIBootStapperCommand}" GroupName="SIBootStapperInstaller" CommandParameter="Remove" IsChecked="{Binding SIBootStapperInstallerIsRemoveChecked, Mode=TwoWay}" Grid.Row="12" Margin="5,10,0,0">Remove</RadioButton>
+        <RadioButton Grid.Column="6" Command="{Binding Path=SIBootStapperCommand}" GroupName="SIBootStapperInstaller" CommandParameter="Update" IsChecked="{Binding SIBootStapperInstallerIsUpdateChecked, Mode=TwoWay}" Grid.Row="12" Margin="5,10,0,0">Update</RadioButton>
 
         <Button Grid.Column="0" Command="{Binding Path=ApplyCommand, Mode=OneTime}" Grid.Row="13" Margin="0,30,5,0" Height="35" Background="Aqua" Grid.ColumnSpan="7" FontWeight="Bold" >Apply</Button>
 

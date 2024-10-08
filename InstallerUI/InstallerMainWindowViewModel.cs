@@ -212,6 +212,7 @@ namespace InstallerUI
 #endregion
 
             SetupEventHandlersForLogging();
+            SelectUnInstallIfInstalled();
         }
 
 
@@ -473,8 +474,249 @@ namespace InstallerUI
             }
         }
 
+        //FirstInstaller
+        private bool _firstInstallerIsSkipChecked = true;
+        public bool FirstInstallerIsSkipChecked
+        {
+            get { return this._firstInstallerIsSkipChecked; }
+            set
+            {
+                this.SetProperty(ref this._firstInstallerIsSkipChecked, value);
+                if (value)
+                {
+                    engine.StringVariables["FirstInstaller"] = "Skip";
+                }
+            }
+        }
+
+        private bool _firstInstallerIsUnInstallChecked = false;
+        public bool FirstInstallerIsUnInstallChecked
+        {
+            get { return this._firstInstallerIsUnInstallChecked; }
+            set
+            {
+                this.SetProperty(ref this._firstInstallerIsUnInstallChecked, value);
+                if(value)
+                {
+                    engine.StringVariables["FirstInstaller"] = "UnInstall";
+                }
+            }
+        }
+
+        //SecondInstaller
+        private bool _secondInstallerIsSkipChecked = true;
+        public bool SecondInstallerIsSkipChecked
+        {
+            get { return this._secondInstallerIsSkipChecked; }
+            set
+            {
+                this.SetProperty(ref this._secondInstallerIsSkipChecked, value);
+                if (value)
+                {
+                    engine.StringVariables["SecondInstaller"] = "Skip";
+                }
+            }
+        }
+
+        private bool _secondInstallerIsUnInstallChecked = false;
+        public bool SecondInstallerIsUnInstallChecked
+        {
+            get { return this._secondInstallerIsUnInstallChecked; }
+            set
+            {
+                this.SetProperty(ref this._secondInstallerIsUnInstallChecked, value);
+                if (value)
+                {
+                    engine.StringVariables["SecondInstaller"] = "UnInstall";
+                }
+            }
+        }
+
+        //ThirdInstaller
+        private bool _thirdInstallerIsSkipChecked = true;
+        public bool ThirdInstallerIsSkipChecked
+        {
+            get { return this._thirdInstallerIsSkipChecked; }
+            set
+            {
+                this.SetProperty(ref this._thirdInstallerIsSkipChecked, value);
+                if (value)
+                {
+                    engine.StringVariables["ThirdInstaller"] = "Skip";
+                }
+            }
+        }
+
+        private bool _thirdInstallerIsUnInstallChecked = false;
+        public bool ThirdInstallerIsUnInstallChecked
+        {
+            get { return this._thirdInstallerIsUnInstallChecked; }
+            set
+            {
+                this.SetProperty(ref this._thirdInstallerIsUnInstallChecked, value);
+                if (value)
+                {
+                    engine.StringVariables["ThirdInstaller"] = "UnInstall";
+                }
+            }
+        }
+
+        //FourthInstaller
+        private bool _fourthInstallerIsSkipChecked = true;
+        public bool FourthInstallerIsSkipChecked
+        {
+            get { return this._fourthInstallerIsSkipChecked; }
+            set
+            {
+                this.SetProperty(ref this._fourthInstallerIsSkipChecked, value);
+                if (value)
+                {
+                    engine.StringVariables["FourthInstaller"] = "Skip";
+                }
+            }
+        }
+
+        private bool _fourthInstallerIsUnInstallChecked = false;
+        public bool FourthInstallerIsUnInstallChecked
+        {
+            get { return this._fourthInstallerIsUnInstallChecked; }
+            set
+            {
+                this.SetProperty(ref this._fourthInstallerIsUnInstallChecked, value);
+                if (value)
+                {
+                    engine.StringVariables["FourthInstaller"] = "UnInstall";
+                }
+            }
+        }
+
+        //FifthInstaller
+        private bool _fifthInstallerIsSkipChecked = true;
+        public bool FifthInstallerIsSkipChecked
+        {
+            get { return this._fifthInstallerIsSkipChecked; }
+            set
+            {
+                this.SetProperty(ref this._fifthInstallerIsSkipChecked, value);
+                if (value)
+                {
+                    engine.StringVariables["FifthInstaller"] = "Skip";
+                }
+            }
+        }
+
+        private bool _fifthInstallerIsUnInstallChecked = false;
+        public bool FifthInstallerIsUnInstallChecked
+        {
+            get { return this._fifthInstallerIsUnInstallChecked; }
+            set
+            {
+                this.SetProperty(ref this._fifthInstallerIsUnInstallChecked, value);
+                if (value)
+                {
+                    engine.StringVariables["FifthInstaller"] = "UnInstall";
+                }
+            }
+        }
+
+        //FIBootStapper
+        private bool _fIBootStapperInstallerIsSkipChecked = true;
+        public bool FIBootStapperInstallerIsSkipChecked
+        {
+            get { return this._fIBootStapperInstallerIsSkipChecked; }
+            set
+            {
+                this.SetProperty(ref this._fIBootStapperInstallerIsSkipChecked, value);
+                if (value)
+                {
+                    engine.StringVariables["FirstInstallerBootStrapper"] = "Skip";
+                }
+            }
+        }
+
+        private bool _fIBootStrapperInstallerIsUnInstallChecked = false;
+        public bool FIBootStapperInstallerIsUnInstallChecked
+        {
+            get { return this._fIBootStrapperInstallerIsUnInstallChecked; }
+            set
+            {
+                this.SetProperty(ref this._fIBootStrapperInstallerIsUnInstallChecked, value);
+                if (value)
+                {
+                    engine.StringVariables["FirstInstallerBootStrapper"] = "UnInstall";
+                }
+            }
+        }
+
+        //SIBootStapper
+        private bool _sIBootStapperInstallerIsSkipChecked = true;
+        public bool SIBootStapperInstallerIsSkipChecked
+        {
+            get { return this._sIBootStapperInstallerIsSkipChecked; }
+            set
+            {
+                this.SetProperty(ref this._sIBootStapperInstallerIsSkipChecked, value);
+                if (value)
+                {
+                    engine.StringVariables["SecondInstallerBootStrapper"] = "Skip";
+                }
+            }
+        }
+
+        private bool _sIBootStrapperInstallerIsUnInstallChecked = false;
+        public bool SIBootStapperInstallerIsUnInstallChecked
+        {
+            get { return this._sIBootStrapperInstallerIsUnInstallChecked; }
+            set
+            {
+                this.SetProperty(ref this._sIBootStrapperInstallerIsUnInstallChecked, value);
+                if (value)
+                {
+                    engine.StringVariables["SecondInstallerBootStrapper"] = "UnInstall";
+                }
+            }
+        }
+
         #endregion
 
+        private void SelectUnInstallIfInstalled()
+        {
+            //Select all packages that are installed on client's computer
+            var installedPackages = GetModulesInstalledOnClientComputer();
+            var installedPackagesName = installedPackages.Select(x => x.Item2).ToList();
+            installedPackagesName.ForEach(x =>
+            {
+                engine.Log(LogLevel.Verbose, $"Installed Package Name = {x}");
+                if (x.ToLower().Contains("FirstInstaller".ToLower()))
+                {
+                    FirstInstallerIsUnInstallChecked = true;
+                }
+                if (x.ToLower().Contains("SecondInstaller".ToLower()))
+                {
+                    SecondInstallerIsUnInstallChecked = true;
+                }
+                if (x.ToLower().Contains("ThirdInstaller".ToLower()))
+                {
+                    ThirdInstallerIsUnInstallChecked = true;
+                }
+                if (x.ToLower().Contains("FourthInstaller".ToLower()))
+                {
+                    FourthInstallerIsUnInstallChecked = true;
+                }
+                if (x.ToLower().Contains("FifthInstaller".ToLower()))
+                {
+                    FifthInstallerIsUnInstallChecked = true;
+                }
+                if (x.ToLower().Contains("FirstInstallerBootStrapper".ToLower()))
+                {
+                    FIBootStapperInstallerIsUnInstallChecked = true;
+                }
+                if (x.ToLower().Contains("SecondInstallerBootStrapper".ToLower()))
+                {
+                    SIBootStapperInstallerIsUnInstallChecked = true;
+                }
+            });
+        }
         private void DetectComplete(object sender, DetectCompleteEventArgs e)
         {
             // If necessary, parse the command line string before any planning
@@ -482,6 +724,7 @@ namespace InstallerUI
             if (LaunchAction.Uninstall == this.bootstrapper.Command.Action)
             {
                 this.engine.Log(LogLevel.Verbose, "Invoking automatic plan for uninstall");
+                SelectUnInstallIfInstalled();
                 //this.engine.Plan(LaunchAction.Uninstall);
             }
             else if (e.Status >= 0 /* Success */)
