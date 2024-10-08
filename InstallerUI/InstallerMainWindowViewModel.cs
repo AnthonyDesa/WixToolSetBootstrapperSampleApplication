@@ -329,10 +329,14 @@ namespace InstallerUI
         {
             //1). Check what is already installed on users computer
             //2). Check What user is Uninstalling
-            //3). If nothing is left installed on Client Computer the Call Uninstall (instead of Install)
+            //3). Check what user is Installing
+            //4). Check if anything is left installed
+            //5). If nothing is left installed on Client Computer the Call Uninstall otherwise call Install
 
-            //1). Check what is already installed on users computer
+            //1). Check what is already installed on users computer (Registry is not updated immediately after calling the Install command)
             var installedModules = GetModulesInstalledOnClientComputer();
+            var installedModuleName = string.Join(",", installedModules.Select(x => x.Item2).ToArray());
+            engine.Log(LogLevel.Verbose, $"HandleApplyCommand::Installed Modules = {installedModuleName}");
 
             //2). Check What user is Uninstalling
             var userSelection = new Dictionary<string, string>();
@@ -340,18 +344,27 @@ namespace InstallerUI
             userSelection.Add("SecondInstaller", engine.StringVariables["SecondInstaller"]);
             userSelection.Add("FirstInstallerBootStrapper", engine.StringVariables["FirstInstallerBootStrapper"]);
             userSelection.Add("SecondInstallerBootStrapper", engine.StringVariables["SecondInstallerBootStrapper"]);
-            var unInstalledSelected = userSelection.Where(x => x.Value.ToLower() == "UnIstall".ToLower()).Select(x => x.Key).ToList();
+            var unInstalledSelected = userSelection.Where(x => x.Value.ToLower() == "UnInstall".ToLower()).Select(x => x.Key).ToList();
+            engine.Log(LogLevel.Verbose, $"HandleApplyCommand::unInstalledSelected Modules = {string.Join(",",unInstalledSelected.ToArray())}");
 
-            //3). If nothing is left installed on Client Computer the Call Uninstall otherwise call Install
-            if (unInstalledSelected.Count == installedModules.Count)
+            //3). Check what user is Installing
+            var InstalledSelected = userSelection.Where(x => x.Value.ToLower() == "Install".ToLower()).Select(x => x.Key).ToList();
+            engine.Log(LogLevel.Verbose, $"HandleApplyCommand::InstalledSelected Modules = {string.Join(",", InstalledSelected.ToArray())}");
+
+            engine.Log(LogLevel.Verbose, "HandleApplyCommand::Install called");
+            engine.Plan(LaunchAction.Install);
+
+            //4). If nothing is left installed on Client Computer the Call Uninstall otherwise call Install
+            engine.Log(LogLevel.Verbose,$"installedModules.Count={installedModules.Count} unInstalledSelected.Count={unInstalledSelected.Count} InstalledSelected.Count={InstalledSelected.Count}" );
+            if (installedModules.Count == unInstalledSelected.Count)
             {
-                engine.Log(LogLevel.Verbose,"::Uninstall");
-                engine.Plan(LaunchAction.Uninstall);
-            }
-            else
-            {
-                engine.Log(LogLevel.Verbose, "::Install");
-                engine.Plan(LaunchAction.Install);
+                //User have selected to Uninstall all installed modules
+                //Have user selected to Installed any new module
+                if (InstalledSelected.Count == 0)
+                {
+                    engine.Log(LogLevel.Verbose, "HandleApplyCommand::UnInstall called");
+                    engine.Plan(LaunchAction.Uninstall);
+                }
             }
         }
 
