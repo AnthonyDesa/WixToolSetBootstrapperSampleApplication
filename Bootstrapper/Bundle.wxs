@@ -67,6 +67,20 @@
         <MsiProperty Name="PREREQUISITE" Value="[Prerequisite]"/>
         <MsiProperty Name="INSTALLLEVEL" Value="[InstallLevel]"/>
       </MsiPackage>
+      <MsiPackage Id="FourthInstaller"
+                  SourceFile="$(var.FourthInstaller.TargetPath)"
+                  Visible="yes"
+                  InstallCondition="FourthInstaller = &quot;Install&quot; OR FourthInstaller = &quot;Update&quot;">
+        <MsiProperty Name="PREREQUISITE" Value="[Prerequisite]"/>
+        <MsiProperty Name="INSTALLLEVEL" Value="[InstallLevel]"/>
+      </MsiPackage>
+      <MsiPackage Id="FifthInstaller"
+                  SourceFile="$(var.FifthInstaller.TargetPath)"
+                  Visible="yes"
+                  InstallCondition="FifthInstaller = &quot;Install&quot; OR FifthInstaller = &quot;Update&quot;">
+        <MsiProperty Name="PREREQUISITE" Value="[Prerequisite]"/>
+        <MsiProperty Name="INSTALLLEVEL" Value="[InstallLevel]"/>
+      </MsiPackage>
       <ExePackage Id="FirstInstallerBootstrapper"
                   Name="FirstInstallerBootstrapper.exe"
                   DownloadUrl="http://{0}/MyMsi/CustomBurnUI/FirstInstallerBootstrapper.exe"

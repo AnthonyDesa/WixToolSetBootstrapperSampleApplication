@@ -39,9 +39,25 @@
     </WixExtension>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\FifthInstaller\FifthInstaller.wixproj">
+      <Name>FifthInstaller</Name>
+      <Project>{24ddfdf9-55f8-4113-bc4c-e93c443678f0}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
     <ProjectReference Include="..\FirstInstaller\FirstInstaller.wixproj">
       <Name>FirstInstaller</Name>
       <Project>{d739173a-ab17-4033-8f96-37320315c075}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\FourthInstaller\FourthInstaller.wixproj">
+      <Name>FourthInstaller</Name>
+      <Project>{24c2b365-9d10-4fd0-af8e-790eef13ac0f}</Project>
       <Private>True</Private>
       <DoNotHarvest>True</DoNotHarvest>
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>

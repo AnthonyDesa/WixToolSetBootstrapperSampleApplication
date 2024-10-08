@@ -308,6 +308,30 @@ namespace InstallerUI
                 $"::ThirdInstaller = {engine.StringVariables["ThirdInstaller"]} & commandParameter={commandParameter}");
         }
 
+        public ICommand FourthInstallerCommand
+        {
+            get { return new DelegateCommand<string>(HandleFourthIntallCommand); }
+        }
+
+        private void HandleFourthIntallCommand(object commandParameter)
+        {
+            engine.StringVariables["FourthInstaller"] = commandParameter.ToString();
+            engine.Log(LogLevel.Verbose,
+                $"::FourthInstaller = {engine.StringVariables["FourthInstaller"]} & commandParameter={commandParameter}");
+        }
+
+        public ICommand FifthInstallerCommand
+        {
+            get { return new DelegateCommand<string>(HandleFifthIntallCommand); }
+        }
+
+        private void HandleFifthIntallCommand(object commandParameter)
+        {
+            engine.StringVariables["FifthInstaller"] = commandParameter.ToString();
+            engine.Log(LogLevel.Verbose,
+                $"::FifthInstaller = {engine.StringVariables["FifthInstaller"]} & commandParameter={commandParameter}");
+        }
+
         public ICommand FIBootStapperCommand
         {
             get { return new DelegateCommand<string>(HandleFIBootStapperCommand); }
@@ -366,20 +390,28 @@ namespace InstallerUI
             var InstalledSelected = userSelection.Where(x => x.Value.ToLower() == "Install".ToLower()).Select(x => x.Key).ToList();
             engine.Log(LogLevel.Verbose, $"HandleApplyCommand::InstalledSelected Modules = {string.Join(",", InstalledSelected.ToArray())}");
 
-            engine.Log(LogLevel.Verbose, "HandleApplyCommand::Install called");
-            engine.Plan(LaunchAction.Install);
-
             //4). If nothing is left installed on Client Computer the Call Uninstall otherwise call Install
             engine.Log(LogLevel.Verbose,$"installedModules.Count={installedModules.Count} unInstalledSelected.Count={unInstalledSelected.Count} InstalledSelected.Count={InstalledSelected.Count}" );
+            bool executeUninstall = false;
             if (installedModules.Count == unInstalledSelected.Count)
             {
                 //User have selected to Uninstall all installed modules
                 //Have user selected to Installed any new module
                 if (InstalledSelected.Count == 0)
                 {
-                    engine.Log(LogLevel.Verbose, "HandleApplyCommand::UnInstall called");
-                    engine.Plan(LaunchAction.Uninstall);
+                    executeUninstall = true;
                 }
+            }
+
+            if (executeUninstall)
+            {
+                engine.Log(LogLevel.Verbose, "HandleApplyCommand::UnInstall called");
+                engine.Plan(LaunchAction.Uninstall);
+            }
+            else
+            {
+                engine.Log(LogLevel.Verbose, "HandleApplyCommand::Install called");
+                engine.Plan(LaunchAction.Install);
             }
         }
 
