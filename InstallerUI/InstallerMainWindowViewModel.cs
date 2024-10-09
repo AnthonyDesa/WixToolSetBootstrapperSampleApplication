@@ -157,6 +157,13 @@ namespace InstallerUI
                         //Keep and Skip means do not install\uninstall the package
                         ea.State = RequestState.Present;
                     }
+
+                    if (engine.StringVariables[ea.PackageId] == "Repair")
+                    {
+                        this.LogEvent($"PlanPackageBegin::{ea.PackageId} ea.State is set to Repair...");
+                        //Keep and Skip means do not install\uninstall the package
+                        ea.State = RequestState.Repair;
+                    }
                 }
             };
 
@@ -358,6 +365,57 @@ namespace InstallerUI
                 $"::SecondInstallerBootStrapper. = {engine.StringVariables["SecondInstallerBootStrapper"]} & commandParameter={commandParameter}");
         }
 
+        public ICommand RepairCommand
+        {
+            get { return new DelegateCommand(HandleRepairCommand); }
+        }
+
+        private void HandleRepairCommand()
+        {
+            //check if any package have repair selected
+            IList<string> repairSelected = new List<string>();
+            if(FirstInstallerIsRepairChecked)
+                repairSelected.Add("FirstInstaller");
+            if (SecondInstallerIsRepairChecked)
+                repairSelected.Add("SecondInstaller");
+            if (ThirdInstallerIsRepairChecked)
+                repairSelected.Add("ThirdInstaller");
+            if (FourthInstallerIsRepairChecked)
+                repairSelected.Add("FourthInstaller");
+            if (FifthInstallerIsRepairChecked)
+                repairSelected.Add("FifthInstaller");
+            if (FIBootStapperInstallerIsRepairChecked)
+                repairSelected.Add("FirstInstallerBootStrapper");
+            if (SIBootStapperInstallerIsRepairChecked)
+                repairSelected.Add("SecondInstallerBootStrapper");
+
+            if (repairSelected.Count == 0)
+            {
+                interactionService.ShowMessageBox("No package selected for Repair");
+            }
+            else
+            {
+                //If not repair then set to skip
+                if (!FirstInstallerIsRepairChecked)
+                     FirstInstallerIsSkipChecked = true;
+                if (!SecondInstallerIsRepairChecked)
+                    SecondInstallerIsSkipChecked = true;
+                if (!ThirdInstallerIsRepairChecked)
+                    ThirdInstallerIsSkipChecked = true;
+                if (!FourthInstallerIsRepairChecked)
+                    FourthInstallerIsSkipChecked = true;
+                if (!FifthInstallerIsRepairChecked)
+                    FifthInstallerIsSkipChecked = true;
+                if (!FIBootStapperInstallerIsRepairChecked)
+                    FIBootStapperInstallerIsSkipChecked = true;
+                if (!SIBootStapperInstallerIsRepairChecked)
+                    SIBootStapperInstallerIsSkipChecked = true;
+                //interactionService.ShowMessageBox("Please note any package that is not set to repair is forced to skip");
+
+                engine.Plan(LaunchAction.Repair);
+            }
+        }
+
         public ICommand ApplyCommand
         {
             get { return new DelegateCommand(HandleApplyCommand); }
@@ -509,6 +567,25 @@ namespace InstallerUI
         }
         #endregion
 
+        #region Repair
+        private bool _firstInstallerIsRepairChecked = false;
+        public bool FirstInstallerIsRepairChecked
+        {
+            get
+            {
+                return this._firstInstallerIsRepairChecked;
+            }
+            set
+            {
+                this.SetProperty(ref this._firstInstallerIsRepairChecked, value);
+                if (value)
+                {
+                    engine.StringVariables["FirstInstaller"] = "Repair";
+                }
+            }
+        }
+        #endregion
+
         #region  IsEnabled
         private bool _firstInstallerIsInstallEnabled = true;
         public bool FirstInstallerIsInstallEnabled
@@ -601,6 +678,25 @@ namespace InstallerUI
                 }
             }
         }
+
+        #region Repair
+        private bool _secondInstallerIsRepairChecked = false;
+        public bool SecondInstallerIsRepairChecked
+        {
+            get
+            {
+                return this._secondInstallerIsRepairChecked;
+            }
+            set
+            {
+                this.SetProperty(ref this._secondInstallerIsRepairChecked, value);
+                if (value)
+                {
+                    engine.StringVariables["SecondInstaller"] = "Repair";
+                }
+            }
+        }
+        #endregion
 
         #region  IsEnabled
         private bool _secondInstallerIsInstallEnabled = true;
@@ -695,6 +791,25 @@ namespace InstallerUI
             }
         }
 
+        #region Repair
+        private bool _thirdInstallerIsRepairChecked = false;
+        public bool ThirdInstallerIsRepairChecked
+        {
+            get
+            {
+                return this._thirdInstallerIsRepairChecked;
+            }
+            set
+            {
+                this.SetProperty(ref this._thirdInstallerIsRepairChecked, value);
+                if (value)
+                {
+                    engine.StringVariables["ThirdInstaller"] = "Repair";
+                }
+            }
+        }
+        #endregion
+
         #region  IsEnabled
         private bool _thirdInstallerIsInstallEnabled = true;
         public bool ThirdInstallerIsInstallEnabled
@@ -788,6 +903,25 @@ namespace InstallerUI
             }
         }
 
+        #region Repair
+        private bool _fourthInstallerIsRepairChecked = false;
+        public bool FourthInstallerIsRepairChecked
+        {
+            get
+            {
+                return this._fourthInstallerIsRepairChecked;
+            }
+            set
+            {
+                this.SetProperty(ref this._fourthInstallerIsRepairChecked, value);
+                if (value)
+                {
+                    engine.StringVariables["FourthInstaller"] = "Repair";
+                }
+            }
+        }
+        #endregion
+
         #region  IsEnabled
         private bool _fourthInstallerIsInstallEnabled = true;
         public bool FourthInstallerIsInstallEnabled
@@ -879,6 +1013,25 @@ namespace InstallerUI
                 }
             }
         }
+
+        #region Repair
+        private bool _fifthInstallerIsRepairChecked = false;
+        public bool FifthInstallerIsRepairChecked
+        {
+            get
+            {
+                return this._fifthInstallerIsRepairChecked;
+            }
+            set
+            {
+                this.SetProperty(ref this._fifthInstallerIsRepairChecked, value);
+                if (value)
+                {
+                    engine.StringVariables["FifthInstaller"] = "Repair";
+                }
+            }
+        }
+        #endregion
 
         #region  IsEnabled
         private bool _fifthInstallerIsInstallEnabled = true;
@@ -972,6 +1125,25 @@ namespace InstallerUI
             }
         }
 
+        #region Repair
+        private bool _fIBootStrapperInstallerIsRepairChecked = false;
+        public bool FIBootStapperInstallerIsRepairChecked
+        {
+            get
+            {
+                return this._fIBootStrapperInstallerIsRepairChecked;
+            }
+            set
+            {
+                this.SetProperty(ref this._fIBootStrapperInstallerIsRepairChecked, value);
+                if (value)
+                {
+                    engine.StringVariables["FirstInstallerBootStrapper"] = "Repair";
+                }
+            }
+        }
+        #endregion
+
         #region  IsEnabled
         private bool _fIBootStrapperInstallerIsInstallEnabled = true;
         public bool FIBootStrapperInstallerIsInstallEnabled //FIBootStapperInstallerIsSkipEnabled
@@ -1063,8 +1235,27 @@ namespace InstallerUI
                 }
             }
         }
+
+        #region Repair
+        private bool _sIBootStrapperInstallerIsRepairChecked = false;
+        public bool SIBootStapperInstallerIsRepairChecked
+        {
+            get
+            {
+                return this._sIBootStrapperInstallerIsRepairChecked;
+            }
+            set
+            {
+                this.SetProperty(ref this._sIBootStrapperInstallerIsRepairChecked, value);
+                if (value)
+                {
+                    engine.StringVariables["SecondInstallerBootStrapper"] = "Repair";
+                }
+            }
+        }
         #endregion
-        
+        #endregion
+
         #region  IsEnabled
         private bool _sIBootStrapperInstallerIsInstallEnabled = true;
         public bool SIBootStrapperInstallerIsInstallEnabled

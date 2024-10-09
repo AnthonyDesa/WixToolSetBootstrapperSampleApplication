@@ -114,7 +114,8 @@
         <RadioButton Grid.Column="5" Command="{Binding Path=SIBootStapperCommand}" GroupName="SIBootStapperInstaller" CommandParameter="Repair" IsEnabled="{Binding SIBootStrapperInstallerIsRepairEnabled,Mode=OneWay}" IsChecked="{Binding SIBootStapperInstallerIsRepairChecked, Mode=TwoWay}" Grid.Row="12" Margin="5,10,0,0">Repair</RadioButton>
         <RadioButton Grid.Column="6" Command="{Binding Path=SIBootStapperCommand}" GroupName="SIBootStapperInstaller" CommandParameter="Update" IsEnabled="{Binding SIBootStrapperInstallerIsUpdateEnabled,Mode=OneWay}" IsChecked="{Binding SIBootStapperInstallerIsUpdateChecked, Mode=TwoWay}" Grid.Row="12" Margin="5,10,0,0">Update</RadioButton>
 
-        <Button Grid.Column="0" Command="{Binding Path=ApplyCommand, Mode=OneTime}" Grid.Row="13" Margin="0,30,5,0" Height="35" Background="Aqua" Grid.ColumnSpan="7" FontWeight="Bold" >Apply</Button>
+        <Button Grid.Column="1" Command="{Binding Path=ApplyCommand, Mode=OneTime}" Grid.Row="13" Margin="0,30,5,0" Height="35" Background="Aqua" Grid.ColumnSpan="2" FontWeight="Bold" >Apply</Button>
+        <Button Grid.Column="4" Command="{Binding Path=RepairCommand, Mode=OneTime}" Grid.Row="13" Margin="0,30,5,0" Height="35" Background="Aqua" Grid.ColumnSpan="2" FontWeight="Bold" >Repair</Button>
 
     </Grid>
 </Window>

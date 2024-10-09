@@ -49,35 +49,35 @@
       <MsiPackage Id="FirstInstaller" 
         SourceFile="$(var.FirstInstaller.TargetPath)" 
         Visible="yes"
-        InstallCondition="FirstInstaller = &quot;Install&quot; OR FirstInstaller = &quot;Update&quot;">
+        InstallCondition="FirstInstaller = &quot;Install&quot; OR FirstInstaller = &quot;Update&quot; OR FirstInstaller = &quot;Repair&quot;">
         <MsiProperty Name="PREREQUISITE" Value="[Prerequisite]"/>
         <MsiProperty Name="INSTALLLEVEL" Value="[InstallLevel]"/>
       </MsiPackage>
       <MsiPackage Id="SecondInstaller" 
         SourceFile="$(var.SecondInstaller.TargetPath)" 
         Visible="yes"
-        InstallCondition="SecondInstaller = &quot;Install&quot; OR SecondInstaller = &quot;Update&quot;">
+        InstallCondition="SecondInstaller = &quot;Install&quot; OR SecondInstaller = &quot;Update&quot; OR FirstInstaller = &quot;Repair&quot;">
         <MsiProperty Name="PREREQUISITE" Value="[Prerequisite]"/>
         <MsiProperty Name="INSTALLLEVEL" Value="[InstallLevel]"/>
       </MsiPackage>
       <MsiPackage Id="ThirdInstaller"
                   SourceFile="$(var.ThirdInstaller.TargetPath)"
                   Visible="yes"
-                  InstallCondition="ThirdInstaller = &quot;Install&quot; OR ThirdInstaller = &quot;Update&quot;">
+                  InstallCondition="ThirdInstaller = &quot;Install&quot; OR ThirdInstaller = &quot;Update&quot; OR FirstInstaller = &quot;Repair&quot;">
         <MsiProperty Name="PREREQUISITE" Value="[Prerequisite]"/>
         <MsiProperty Name="INSTALLLEVEL" Value="[InstallLevel]"/>
       </MsiPackage>
       <MsiPackage Id="FourthInstaller"
                   SourceFile="$(var.FourthInstaller.TargetPath)"
                   Visible="yes"
-                  InstallCondition="FourthInstaller = &quot;Install&quot; OR FourthInstaller = &quot;Update&quot;">
+                  InstallCondition="FourthInstaller = &quot;Install&quot; OR FourthInstaller = &quot;Update&quot; OR FirstInstaller = &quot;Repair&quot;">
         <MsiProperty Name="PREREQUISITE" Value="[Prerequisite]"/>
         <MsiProperty Name="INSTALLLEVEL" Value="[InstallLevel]"/>
       </MsiPackage>
       <MsiPackage Id="FifthInstaller"
                   SourceFile="$(var.FifthInstaller.TargetPath)"
                   Visible="yes"
-                  InstallCondition="FifthInstaller = &quot;Install&quot; OR FifthInstaller = &quot;Update&quot;">
+                  InstallCondition="FifthInstaller = &quot;Install&quot; OR FifthInstaller = &quot;Update&quot; OR FirstInstaller = &quot;Repair&quot;">
         <MsiProperty Name="PREREQUISITE" Value="[Prerequisite]"/>
         <MsiProperty Name="INSTALLLEVEL" Value="[InstallLevel]"/>
       </MsiPackage>
@@ -92,7 +92,7 @@
                   Permanent="no"
                   Vital="yes"
                   SuppressSignatureVerification="no"
-                  InstallCondition="FirstInstallerBootStrapper = &quot;Install&quot; OR FirstInstallerBootStrapper = &quot;Update&quot;">
+                  InstallCondition="FirstInstallerBootStrapper = &quot;Install&quot; OR FirstInstallerBootStrapper = &quot;Update&quot;  OR FirstInstaller = &quot;Repair&quot;">
         <RemotePayload
           ProductName="FirstInstallerBootstrapper"
           Description="FirstInstallerBootstrapper"
@@ -113,7 +113,7 @@
                   Permanent="no"
                   Vital="yes"
                   SuppressSignatureVerification="no"
-                  InstallCondition="SecondInstallerBootStrapper = &quot;Install&quot; OR SecondInstallerBootStrapper = &quot;Update&quot;">
+                  InstallCondition="SecondInstallerBootStrapper = &quot;Install&quot; OR SecondInstallerBootStrapper = &quot;Update&quot;  OR FirstInstaller = &quot;Repair&quot;">
         <RemotePayload
           ProductName="SecondInstallerBootstrapper"
           Description="SecondInstallerBootstrapper"
