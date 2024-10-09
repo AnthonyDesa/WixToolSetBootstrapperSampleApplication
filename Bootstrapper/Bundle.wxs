@@ -83,7 +83,7 @@
       </MsiPackage>
       <ExePackage Id="FirstInstallerBootstrapper"
                   Name="FirstInstallerBootstrapper.exe"
-                  DownloadUrl="http://{0}/MyMsi/CustomBurnUI/FirstInstallerBootstrapper.exe"
+                  DownloadUrl="http://localhost/MyMsi/CustomBurnUI/Versions/1.0.0.0/FirstInstallerBootstrapper.exe"
                   InstallCommand="/S"
                   UninstallCommand="/uninstall /quiet"
                   DetectCondition="IsFirstInstallerInstalled"
@@ -104,7 +104,7 @@
       </ExePackage>
       <ExePackage Id="SecondInstallerBootstrapper"
                   Name="SecondInstallerBootstrapper.exe"
-                  DownloadUrl="http://{0}/MyMsi/CustomBurnUI/SecondInstallerBootstrapper.exe"
+                  DownloadUrl="http://localhost/MyMsi/CustomBurnUI/SecondInstallerBootstrapper.exe"
                   InstallCommand="/S"
                   UninstallCommand="/uninstall /quiet"
                   DetectCondition="IsSecondInstallerInstalled"

@@ -213,6 +213,7 @@ namespace InstallerUI
 
             SetupEventHandlersForLogging();
             SelectUnInstallIfInstalled();
+            SelectInstallIfNotInstalled();
         }
 
 
@@ -474,7 +475,9 @@ namespace InstallerUI
             }
         }
 
-        //FirstInstaller
+        #region  FirstInstaller
+        
+        #region IsChecked
         private bool _firstInstallerIsSkipChecked = true;
         public bool FirstInstallerIsSkipChecked
         {
@@ -488,7 +491,9 @@ namespace InstallerUI
                 }
             }
         }
-
+        #endregion
+        
+        #region Unistall
         private bool _firstInstallerIsUnInstallChecked = false;
         public bool FirstInstallerIsUnInstallChecked
         {
@@ -502,8 +507,73 @@ namespace InstallerUI
                 }
             }
         }
+        #endregion
 
-        //SecondInstaller
+        #region  IsEnabled
+        private bool _firstInstallerIsInstallEnabled = true;
+        public bool FirstInstallerIsInstallEnabled
+        {
+            get { return this._firstInstallerIsInstallEnabled; }
+            set
+            {
+                this.SetProperty(ref this._firstInstallerIsInstallEnabled, value);
+            }
+        }
+
+        private bool _firstInstallerIsUnInstallEnabled = true;
+        public bool FirstInstallerIsUnInstallEnabled
+        {
+            get { return this._firstInstallerIsUnInstallEnabled; }
+            set
+            {
+                this.SetProperty(ref this._firstInstallerIsUnInstallEnabled, value);
+            }
+        }
+
+        private bool _firstInstallerIsSkipEnabled = true;
+        public bool FirstInstallerIsSkipEnabled
+        {
+            get { return this._firstInstallerIsSkipEnabled; }
+            set
+            {
+                this.SetProperty(ref this._firstInstallerIsSkipEnabled, value);
+            }
+        }
+
+        private bool _firstInstallerIsKeepEnabled = true;
+        public bool FirstInstallerIsKeepEnabled
+        {
+            get { return this._firstInstallerIsKeepEnabled; }
+            set
+            {
+                this.SetProperty(ref this._firstInstallerIsKeepEnabled, value);
+            }
+        }
+
+        private bool _firstInstallerIsRepairEnabled = true;
+        public bool FirstInstallerIsRepairEnabled
+        {
+            get { return this._firstInstallerIsRepairEnabled; }
+            set
+            {
+                this.SetProperty(ref this._firstInstallerIsRepairEnabled, value);
+            }
+        }
+
+        private bool _firstInstallerIsUpdateEnabled = true;
+        public bool FirstInstallerIsUpdateEnabled
+        {
+            get { return this._firstInstallerIsUpdateEnabled; }
+            set
+            {
+                this.SetProperty(ref this._firstInstallerIsUpdateEnabled, value);
+            }
+        }
+        #endregion
+
+        #endregion
+
+        #region SecondInstaller
         private bool _secondInstallerIsSkipChecked = true;
         public bool SecondInstallerIsSkipChecked
         {
@@ -532,7 +602,71 @@ namespace InstallerUI
             }
         }
 
-        //ThirdInstaller
+        #region  IsEnabled
+        private bool _secondInstallerIsInstallEnabled = true;
+        public bool SecondInstallerIsInstallEnabled
+        {
+            get { return this._secondInstallerIsInstallEnabled; }
+            set
+            {
+                this.SetProperty(ref this._secondInstallerIsInstallEnabled, value);
+            }
+        }
+
+        private bool _secondInstallerIsUnInstallEnabled = true;
+        public bool SecondInstallerIsUnInstallEnabled
+        {
+            get { return this._secondInstallerIsUnInstallEnabled; }
+            set
+            {
+                this.SetProperty(ref this._secondInstallerIsUnInstallEnabled, value);
+            }
+        }
+
+        private bool _secondInstallerIsSkipEnabled = true;
+        public bool SecondInstallerIsSkipEnabled
+        {
+            get { return this._secondInstallerIsSkipEnabled; }
+            set
+            {
+                this.SetProperty(ref this._secondInstallerIsSkipEnabled, value);
+            }
+        }
+
+        private bool _secondInstallerIsKeepEnabled = true;
+        public bool SecondInstallerIsKeepEnabled
+        {
+            get { return this._secondInstallerIsKeepEnabled; }
+            set
+            {
+                this.SetProperty(ref this._secondInstallerIsKeepEnabled, value);
+            }
+        }
+
+        private bool _secondInstallerIsRepairEnabled = true;
+        public bool SecondInstallerIsRepairEnabled
+        {
+            get { return this._secondInstallerIsRepairEnabled; }
+            set
+            {
+                this.SetProperty(ref this._secondInstallerIsRepairEnabled, value);
+            }
+        }
+
+        private bool _secondInstallerIsUpdateEnabled = true;
+        public bool SecondInstallerIsUpdateEnabled
+        {
+            get { return this._secondInstallerIsUpdateEnabled; }
+            set
+            {
+                this.SetProperty(ref this._secondInstallerIsUpdateEnabled, value);
+            }
+        }
+        #endregion
+
+        #endregion
+
+        #region  ThirdInstaller
         private bool _thirdInstallerIsSkipChecked = true;
         public bool ThirdInstallerIsSkipChecked
         {
@@ -561,7 +695,71 @@ namespace InstallerUI
             }
         }
 
-        //FourthInstaller
+        #region  IsEnabled
+        private bool _thirdInstallerIsInstallEnabled = true;
+        public bool ThirdInstallerIsInstallEnabled
+        {
+            get { return this._thirdInstallerIsInstallEnabled; }
+            set
+            {
+                this.SetProperty(ref this._thirdInstallerIsInstallEnabled, value);
+            }
+        }
+
+        private bool _thirdInstallerIsUnInstallEnabled = true;
+        public bool ThirdInstallerIsUnInstallEnabled
+        {
+            get { return this._thirdInstallerIsUnInstallEnabled; }
+            set
+            {
+                this.SetProperty(ref this._thirdInstallerIsUnInstallEnabled, value);
+            }
+        }
+
+        private bool _thirdInstallerIsSkipEnabled = true;
+        public bool ThirdInstallerIsSkipEnabled
+        {
+            get { return this._thirdInstallerIsSkipEnabled; }
+            set
+            {
+                this.SetProperty(ref this._thirdInstallerIsSkipEnabled, value);
+            }
+        }
+
+        private bool _thirdInstallerIsKeepEnabled = true;
+        public bool ThirdInstallerIsKeepEnabled
+        {
+            get { return this._thirdInstallerIsKeepEnabled; }
+            set
+            {
+                this.SetProperty(ref this._thirdInstallerIsKeepEnabled, value);
+            }
+        }
+
+        private bool _thirdInstallerIsRepairEnabled = true;
+        public bool ThirdInstallerIsRepairEnabled
+        {
+            get { return this._thirdInstallerIsRepairEnabled; }
+            set
+            {
+                this.SetProperty(ref this._thirdInstallerIsRepairEnabled, value);
+            }
+        }
+
+        private bool _thirdInstallerIsUpdateEnabled = true;
+        public bool ThirdInstallerIsUpdateEnabled
+        {
+            get { return this._thirdInstallerIsUpdateEnabled; }
+            set
+            {
+                this.SetProperty(ref this._thirdInstallerIsUpdateEnabled, value);
+            }
+        }
+        #endregion
+
+        #endregion
+
+        #region FourthInstaller
         private bool _fourthInstallerIsSkipChecked = true;
         public bool FourthInstallerIsSkipChecked
         {
@@ -590,7 +788,70 @@ namespace InstallerUI
             }
         }
 
-        //FifthInstaller
+        #region  IsEnabled
+        private bool _fourthInstallerIsInstallEnabled = true;
+        public bool FourthInstallerIsInstallEnabled
+        {
+            get { return this._fourthInstallerIsInstallEnabled; }
+            set
+            {
+                this.SetProperty(ref this._fourthInstallerIsInstallEnabled, value);
+            }
+        }
+
+        private bool _fourthInstallerIsUnInstallEnabled = true;
+        public bool FourthInstallerIsUnInstallEnabled
+        {
+            get { return this._fourthInstallerIsUnInstallEnabled; }
+            set
+            {
+                this.SetProperty(ref this._fourthInstallerIsUnInstallEnabled, value);
+            }
+        }
+
+        private bool _fourthInstallerIsSkipEnabled = true;
+        public bool FourthInstallerIsSkipEnabled
+        {
+            get { return this._fourthInstallerIsSkipEnabled; }
+            set
+            {
+                this.SetProperty(ref this._fourthInstallerIsSkipEnabled, value);
+            }
+        }
+
+        private bool _fourthInstallerIsKeepEnabled = true;
+        public bool FourthInstallerIsKeepEnabled
+        {
+            get { return this._fourthInstallerIsKeepEnabled; }
+            set
+            {
+                this.SetProperty(ref this._fourthInstallerIsKeepEnabled, value);
+            }
+        }
+
+        private bool _fourthInstallerIsRepairEnabled = true;
+        public bool FourthInstallerIsRepairEnabled
+        {
+            get { return this._fourthInstallerIsRepairEnabled; }
+            set
+            {
+                this.SetProperty(ref this._fourthInstallerIsRepairEnabled, value);
+            }
+        }
+
+        private bool _fourthInstallerIsUpdateEnabled = true;
+        public bool FourthInstallerIsUpdateEnabled
+        {
+            get { return this._fourthInstallerIsUpdateEnabled; }
+            set
+            {
+                this.SetProperty(ref this._fourthInstallerIsUpdateEnabled, value);
+            }
+        }
+        #endregion
+        #endregion
+
+        #region  FifthInstaller
         private bool _fifthInstallerIsSkipChecked = true;
         public bool FifthInstallerIsSkipChecked
         {
@@ -619,7 +880,70 @@ namespace InstallerUI
             }
         }
 
-        //FIBootStapper
+        #region  IsEnabled
+        private bool _fifthInstallerIsInstallEnabled = true;
+        public bool FifthInstallerIsInstallEnabled
+        {
+            get { return this._fifthInstallerIsInstallEnabled; }
+            set
+            {
+                this.SetProperty(ref this._fifthInstallerIsInstallEnabled, value);
+            }
+        }
+
+        private bool _fifthInstallerIsUnInstallEnabled = true;
+        public bool FifthInstallerIsUnInstallEnabled
+        {
+            get { return this._fifthInstallerIsUnInstallEnabled; }
+            set
+            {
+                this.SetProperty(ref this._fifthInstallerIsUnInstallEnabled, value);
+            }
+        }
+
+        private bool _fifthInstallerIsSkipEnabled = true;
+        public bool FifthInstallerIsSkipEnabled
+        {
+            get { return this._fifthInstallerIsSkipEnabled; }
+            set
+            {
+                this.SetProperty(ref this._fifthInstallerIsSkipEnabled, value);
+            }
+        }
+
+        private bool _fifthInstallerIsKeepEnabled = true;
+        public bool FifthInstallerIsKeepEnabled
+        {
+            get { return this._fifthInstallerIsKeepEnabled; }
+            set
+            {
+                this.SetProperty(ref this._fifthInstallerIsKeepEnabled, value);
+            }
+        }
+
+        private bool _fifthInstallerIsRepairEnabled = true;
+        public bool FifthInstallerIsRepairEnabled
+        {
+            get { return this._fifthInstallerIsRepairEnabled; }
+            set
+            {
+                this.SetProperty(ref this._fifthInstallerIsRepairEnabled, value);
+            }
+        }
+
+        private bool _fifthInstallerIsUpdateEnabled = true;
+        public bool FifthInstallerIsUpdateEnabled
+        {
+            get { return this._fifthInstallerIsUpdateEnabled; }
+            set
+            {
+                this.SetProperty(ref this._fifthInstallerIsUpdateEnabled, value);
+            }
+        }
+        #endregion
+        #endregion
+
+        #region FIBootStapper
         private bool _fIBootStapperInstallerIsSkipChecked = true;
         public bool FIBootStapperInstallerIsSkipChecked
         {
@@ -648,7 +972,70 @@ namespace InstallerUI
             }
         }
 
-        //SIBootStapper
+        #region  IsEnabled
+        private bool _fIBootStrapperInstallerIsInstallEnabled = true;
+        public bool FIBootStrapperInstallerIsInstallEnabled //FIBootStapperInstallerIsSkipEnabled
+        {
+            get { return this._fIBootStrapperInstallerIsInstallEnabled; }
+            set
+            {
+                this.SetProperty(ref this._fIBootStrapperInstallerIsInstallEnabled, value);
+            }
+        }
+
+        private bool _fIBootStrapperInstallerIsUnInstallEnabled = true;
+        public bool FIBootStrapperInstallerIsUnInstallEnabled
+        {
+            get { return this._fIBootStrapperInstallerIsUnInstallEnabled; }
+            set
+            {
+                this.SetProperty(ref this._fIBootStrapperInstallerIsUnInstallEnabled, value);
+            }
+        }
+
+        private bool _fIBootStrapperInstallerIsSkipEnabled = true;
+        public bool FIBootStrapperInstallerIsSkipEnabled
+        {
+            get { return this._fIBootStrapperInstallerIsSkipEnabled; }
+            set
+            {
+                this.SetProperty(ref this._fIBootStrapperInstallerIsSkipEnabled, value);
+            }
+        }
+
+        private bool _fIBootStrapperInstallerIsKeepEnabled = true;
+        public bool FIBootStrapperInstallerIsKeepEnabled
+        {
+            get { return this._fIBootStrapperInstallerIsKeepEnabled; }
+            set
+            {
+                this.SetProperty(ref this._fIBootStrapperInstallerIsKeepEnabled, value);
+            }
+        }
+
+        private bool _fIBootStrapperInstallerIsRepairEnabled = true;
+        public bool FIBootStrapperInstallerIsRepairEnabled
+        {
+            get { return this._fIBootStrapperInstallerIsRepairEnabled; }
+            set
+            {
+                this.SetProperty(ref this._fIBootStrapperInstallerIsRepairEnabled, value);
+            }
+        }
+
+        private bool _fIBootStrapperInstallerIsUpdateEnabled = true;
+        public bool FIBootStrapperInstallerIsUpdateEnabled
+        {
+            get { return this._fIBootStrapperInstallerIsUpdateEnabled; }
+            set
+            {
+                this.SetProperty(ref this._fIBootStrapperInstallerIsUpdateEnabled, value);
+            }
+        }
+        #endregion
+        #endregion
+
+        #region SIBootStapper
         private bool _sIBootStapperInstallerIsSkipChecked = true;
         public bool SIBootStapperInstallerIsSkipChecked
         {
@@ -676,8 +1063,167 @@ namespace InstallerUI
                 }
             }
         }
+        #endregion
+        
+        #region  IsEnabled
+        private bool _sIBootStrapperInstallerIsInstallEnabled = true;
+        public bool SIBootStrapperInstallerIsInstallEnabled
+        {
+            get { return this._sIBootStrapperInstallerIsInstallEnabled; }
+            set
+            {
+                this.SetProperty(ref this._sIBootStrapperInstallerIsInstallEnabled, value);
+            }
+        }
+
+        private bool _sIBootStrapperInstallerIsUnInstallEnabled = true;
+        public bool SIBootStrapperInstallerIsUnInstallEnabled
+        {
+            get { return this._sIBootStrapperInstallerIsUnInstallEnabled; }
+            set
+            {
+                this.SetProperty(ref this._sIBootStrapperInstallerIsUnInstallEnabled, value);
+            }
+        }
+
+        private bool _sIBootStrapperInstallerIsSkipEnabled = true;
+        public bool SIBootStrapperInstallerIsSkipEnabled
+        {
+            get { return this._sIBootStrapperInstallerIsSkipEnabled; }
+            set
+            {
+                this.SetProperty(ref this._sIBootStrapperInstallerIsSkipEnabled, value);
+            }
+        }
+
+        private bool _sIBootStrapperInstallerIsKeepEnabled = true;
+        public bool SIBootStrapperInstallerIsKeepEnabled
+        {
+            get { return this._sIBootStrapperInstallerIsKeepEnabled; }
+            set
+            {
+                this.SetProperty(ref this._sIBootStrapperInstallerIsKeepEnabled, value);
+            }
+        }
+
+        private bool _sIBootStrapperInstallerIsRepairEnabled = true;
+        public bool SIBootStrapperInstallerIsRepairEnabled
+        {
+            get { return this._sIBootStrapperInstallerIsRepairEnabled; }
+            set
+            {
+                this.SetProperty(ref this._sIBootStrapperInstallerIsRepairEnabled, value);
+            }
+        }
+
+        private bool _sIBootStrapperInstallerIsUpdateEnabled = true;
+        public bool SIBootStrapperInstallerIsUpdateEnabled
+        {
+            get { return this._sIBootStrapperInstallerIsUpdateEnabled; }
+            set
+            {
+                this.SetProperty(ref this._sIBootStrapperInstallerIsUpdateEnabled, value);
+            }
+        }
+        #endregion
 
         #endregion
+        private void SelectInstallIfNotInstalled()
+        {
+            //Select all packages that are installed on client's computer
+            var installedPackages = GetModulesInstalledOnClientComputer();
+            var installedPackagesName = installedPackages.Select(x => x.Item2).ToList();
+            var packageIds = GetPackageIds();
+
+            engine.Log(LogLevel.Verbose, $"SelectInstallIfNotInstalled::PackageIds1={string.Join(",",packageIds.ToArray())}");
+
+            //Remove all packages that are installed on client's computer
+            installedPackagesName.ForEach(x =>
+            {
+                engine.Log(LogLevel.Verbose, $"SelectInstallIfNotInstalled::Installed Package Name = {x}");
+                if (!packageIds.Remove(x))
+                {
+                    engine.Log(LogLevel.Verbose, $"SelectInstallIfNotInstalled::Remove Operation failed for {x}");
+                }
+            });
+            engine.Log(LogLevel.Verbose, $"SelectInstallIfNotInstalled::PackageIds2={string.Join(",", packageIds.ToArray())}");
+
+
+            //Packages that are not installed on client's computer
+            foreach (string x in packageIds)
+            {
+                engine.Log(LogLevel.Verbose, $"SelectInstallIfNotInstalled::Not Installed Package Name = {x}");
+                if (x.ToLower().Equals("FirstInstaller".ToLower()))
+                {
+                    engine.Log(LogLevel.Verbose, $"SelectInstallIfNotInstalled::Disabling {x}");
+                    FirstInstallerIsUnInstallEnabled = false;
+                    FirstInstallerIsKeepEnabled = false;
+                    FirstInstallerIsRepairEnabled = false;
+                    FirstInstallerIsUpdateEnabled = false;
+                }
+                if (x.ToLower().Equals("SecondInstaller".ToLower()))
+                {
+                    engine.Log(LogLevel.Verbose, $"SelectInstallIfNotInstalled::Disabling {x}");
+                    SecondInstallerIsUnInstallEnabled = false;
+                    SecondInstallerIsKeepEnabled = false;
+                    SecondInstallerIsRepairEnabled = false;
+                    SecondInstallerIsUpdateEnabled = false;
+                }
+                if (x.ToLower().Equals("ThirdInstaller".ToLower()))
+                {
+                    engine.Log(LogLevel.Verbose, $"SelectInstallIfNotInstalled::Disabling {x}");
+                    ThirdInstallerIsUnInstallEnabled = false;
+                    ThirdInstallerIsKeepEnabled = false;
+                    ThirdInstallerIsRepairEnabled = false;
+                    ThirdInstallerIsUpdateEnabled = false;
+                }
+                if (x.ToLower().Equals("FourthInstaller".ToLower()))
+                {
+                    engine.Log(LogLevel.Verbose, $"SelectInstallIfNotInstalled::Disabling {x}");
+                    FourthInstallerIsUnInstallEnabled = false;
+                    FourthInstallerIsKeepEnabled = false;
+                    FourthInstallerIsRepairEnabled = false;
+                    FourthInstallerIsUpdateEnabled = false;
+                }
+                if (x.ToLower().Equals("FifthInstaller".ToLower()))
+                {
+                    engine.Log(LogLevel.Verbose, $"SelectInstallIfNotInstalled::Disabling {x}");
+                    FifthInstallerIsUnInstallEnabled = false;
+                    FifthInstallerIsKeepEnabled = false;
+                    FifthInstallerIsRepairEnabled = false;
+                    FifthInstallerIsUpdateEnabled = false;
+                }
+                if (x.ToLower().Equals("FirstInstallerBootStrapper".ToLower()))
+                {
+                    engine.Log(LogLevel.Verbose, $"SelectInstallIfNotInstalled::Disabling {x}");
+                    FIBootStrapperInstallerIsUnInstallEnabled = false;
+                    FIBootStrapperInstallerIsKeepEnabled = false;
+                    FIBootStrapperInstallerIsRepairEnabled = false;
+                    FIBootStrapperInstallerIsUpdateEnabled = false;
+                }
+                if (x.ToLower().Equals("SecondInstallerBootStrapper".ToLower()))
+                {
+                    engine.Log(LogLevel.Verbose, $"SelectInstallIfNotInstalled::Disabling {x}");
+                    SIBootStrapperInstallerIsUnInstallEnabled = false;
+                    SIBootStrapperInstallerIsKeepEnabled = false;
+                    SIBootStrapperInstallerIsRepairEnabled = false;
+                    SIBootStrapperInstallerIsUpdateEnabled = false;
+                }
+            }
+        }
+
+        private IList<string> GetPackageIds()
+        {
+            IList<string> packageIds = new List<string>();
+            packageIds.Add("FirstInstaller");
+            packageIds.Add("SecondInstaller");
+            packageIds.Add("ThirdInstaller");
+            packageIds.Add("FourthInstaller");
+            packageIds.Add("FifthInstaller");
+            packageIds.Add("FirstInstallerBootStrapper");
+            packageIds.Add("SecondInstallerBootStrapper");
+            return packageIds;
+        }
 
         private void SelectUnInstallIfInstalled()
         {
@@ -686,34 +1232,55 @@ namespace InstallerUI
             var installedPackagesName = installedPackages.Select(x => x.Item2).ToList();
             installedPackagesName.ForEach(x =>
             {
-                engine.Log(LogLevel.Verbose, $"Installed Package Name = {x}");
+                engine.Log(LogLevel.Verbose, $"SelectUnInstallIfInstalled:Installed Package Name = {x}");
                 if (x.ToLower().Contains("FirstInstaller".ToLower()))
                 {
+                    engine.Log(LogLevel.Verbose, $"SelectUnInstallIfInstalled:1Installed Package Name = {x}");
                     FirstInstallerIsUnInstallChecked = true;
+                    FirstInstallerIsInstallEnabled = false;
+                    FirstInstallerIsSkipEnabled = false;
                 }
                 if (x.ToLower().Contains("SecondInstaller".ToLower()))
                 {
+                    engine.Log(LogLevel.Verbose, $"SelectUnInstallIfInstalled:2Installed Package Name = {x}");
                     SecondInstallerIsUnInstallChecked = true;
+                    SecondInstallerIsInstallEnabled = false;
+                    SecondInstallerIsSkipEnabled = false;
                 }
                 if (x.ToLower().Contains("ThirdInstaller".ToLower()))
                 {
+                    engine.Log(LogLevel.Verbose, $"SelectUnInstallIfInstalled:3Installed Package Name = {x}");
                     ThirdInstallerIsUnInstallChecked = true;
+                    ThirdInstallerIsInstallEnabled = false;
+                    ThirdInstallerIsSkipEnabled = false;
                 }
                 if (x.ToLower().Contains("FourthInstaller".ToLower()))
                 {
+                    engine.Log(LogLevel.Verbose, $"SelectUnInstallIfInstalled:4Installed Package Name = {x}");
                     FourthInstallerIsUnInstallChecked = true;
+                    FourthInstallerIsInstallEnabled = false;
+                    FourthInstallerIsSkipEnabled = false;
                 }
                 if (x.ToLower().Contains("FifthInstaller".ToLower()))
                 {
+                    engine.Log(LogLevel.Verbose, $"SelectUnInstallIfInstalled:5Installed Package Name = {x}");
                     FifthInstallerIsUnInstallChecked = true;
+                    FifthInstallerIsInstallEnabled = false;
+                    FifthInstallerIsSkipEnabled = false;
                 }
                 if (x.ToLower().Contains("FirstInstallerBootStrapper".ToLower()))
                 {
+                    engine.Log(LogLevel.Verbose, $"SelectUnInstallIfInstalled:6Installed Package Name = {x}");
                     FIBootStapperInstallerIsUnInstallChecked = true;
+                    FIBootStrapperInstallerIsInstallEnabled = false;
+                    FIBootStrapperInstallerIsSkipEnabled = false;
                 }
                 if (x.ToLower().Contains("SecondInstallerBootStrapper".ToLower()))
                 {
+                    engine.Log(LogLevel.Verbose, $"SelectUnInstallIfInstalled:7Installed Package Name = {x}");
                     SIBootStapperInstallerIsUnInstallChecked = true;
+                    SIBootStrapperInstallerIsInstallEnabled = false;
+                    SIBootStrapperInstallerIsSkipEnabled = false;
                 }
             });
         }
