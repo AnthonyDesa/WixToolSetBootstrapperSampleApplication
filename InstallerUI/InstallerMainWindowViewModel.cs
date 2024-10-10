@@ -19,6 +19,7 @@ namespace InstallerUI
     {
         private BootstrapperApplication bootstrapper;
         private Engine engine;
+        private Dictionary<string,string> _userSelectionDic = new Dictionary<string,string>();
 
         [Import] private IUIInteractionService interactionService = null;
 
@@ -137,31 +138,31 @@ namespace InstallerUI
             bootstrapper.PlanPackageBegin += (_, ea) =>
             {
                 this.LogEvent(
-                    $"PlanPackageBegin Selection={engine.StringVariables[ea.PackageId]} ea.State={ea.State} ea.PackageId={ea.PackageId} Command.Action {bootstrapper.Command.Action}",
+                    $"PlanPackageBegin Selection={_userSelectionDic[ea.PackageId]} ea.State={ea.State} ea.PackageId={ea.PackageId} Command.Action {bootstrapper.Command.Action}",
                     ea);
                 if (bootstrapper.Command.Action == LaunchAction.Install ||
                     bootstrapper.Command.Action == LaunchAction.Modify ||
                     bootstrapper.Command.Action == LaunchAction.Uninstall)
                 {
                     //Note LaunchAction.Install and LaunchAction.UnInstall both will have bootstrapper.Commnad.Action as Install
-                    if (engine.StringVariables[ea.PackageId] == "Skip")
+                    if (_userSelectionDic[ea.PackageId] == UserSelectionEnum.Skip.ToString())
                     {
                         this.LogEvent($"PlanPackageBegin::{ea.PackageId} ea.State is set to None...");
-                        //Keep and Skip means do not install\uninstall the package
+                        //Skip means do not install the package
                         ea.State = RequestState.None;
                     }
 
-                    if (engine.StringVariables[ea.PackageId] == "Keep")
+                    if (_userSelectionDic[ea.PackageId] == UserSelectionEnum.Keep.ToString())
                     {
                         this.LogEvent($"PlanPackageBegin::{ea.PackageId} ea.State is set to Present...");
-                        //Keep and Skip means do not install\uninstall the package
+                        //Keep means package is already installed do not uninstall the package
                         ea.State = RequestState.Present;
                     }
 
-                    if (engine.StringVariables[ea.PackageId] == "Repair")
+                    if (_userSelectionDic[ea.PackageId] == UserSelectionEnum.Repair.ToString())
                     {
                         this.LogEvent($"PlanPackageBegin::{ea.PackageId} ea.State is set to Repair...");
-                        //Keep and Skip means do not install\uninstall the package
+                        //Repair means package is already installed but is broken. Fix the broken package
                         ea.State = RequestState.Repair;
                     }
                 }
@@ -221,6 +222,12 @@ namespace InstallerUI
             SetupEventHandlersForLogging();
             SelectUnInstallIfInstalled();
             SelectInstallIfNotInstalled();
+
+            //Initialize User Selection.
+            Packages.GetPackageIdsAsEnum().ToList().ForEach(x => {
+                if (!_userSelectionDic.ContainsKey(x.ToString()))
+                    _userSelectionDic.Add(x.ToString(),engine.StringVariables[x.ToString()]);
+            });
         }
 
 
@@ -288,9 +295,10 @@ namespace InstallerUI
 
         private void HandleFirstIntallCommand(object commandParameter)
         {
-            engine.StringVariables["FirstInstaller"] = commandParameter.ToString();
-            engine.Log(LogLevel.Verbose,
-                $"::FirstInstaller = {engine.StringVariables["FirstInstaller"]} & commandParameter={commandParameter}");
+            string key = PackageIdEnum.FirstInstaller.ToString();
+            engine.StringVariables[key] = commandParameter.ToString();
+            _userSelectionDic[key] = commandParameter.ToString();
+            engine.Log(LogLevel.Verbose, $"::{key} = {_userSelectionDic[key]} & commandParameter={commandParameter}");
         }
 
         public ICommand SecondInstallerCommand
@@ -300,9 +308,10 @@ namespace InstallerUI
 
         private void HandleSecondIntallCommand(object commandParameter)
         {
-            engine.StringVariables["SecondInstaller"] = commandParameter.ToString();
-            engine.Log(LogLevel.Verbose,
-                $"::SecondInstaller = {engine.StringVariables["SecondInstaller"]} & commandParameter={commandParameter}");
+            string key = PackageIdEnum.SecondInstaller.ToString();
+            engine.StringVariables[key] = commandParameter.ToString();
+            _userSelectionDic[key] = commandParameter.ToString();
+            engine.Log(LogLevel.Verbose, $"::{key} = {_userSelectionDic[key]} & commandParameter={commandParameter}");
         }
 
         public ICommand ThirdInstallerCommand
@@ -312,9 +321,10 @@ namespace InstallerUI
 
         private void HandleThirdIntallCommand(object commandParameter)
         {
-            engine.StringVariables["ThirdInstaller"] = commandParameter.ToString();
-            engine.Log(LogLevel.Verbose,
-                $"::ThirdInstaller = {engine.StringVariables["ThirdInstaller"]} & commandParameter={commandParameter}");
+            string key = PackageIdEnum.ThirdInstaller.ToString();
+            engine.StringVariables[key] = commandParameter.ToString();
+            _userSelectionDic[key] = commandParameter.ToString();
+            engine.Log(LogLevel.Verbose, $"::{key} = {_userSelectionDic[key]} & commandParameter={commandParameter}");
         }
 
         public ICommand FourthInstallerCommand
@@ -324,9 +334,10 @@ namespace InstallerUI
 
         private void HandleFourthIntallCommand(object commandParameter)
         {
-            engine.StringVariables["FourthInstaller"] = commandParameter.ToString();
-            engine.Log(LogLevel.Verbose,
-                $"::FourthInstaller = {engine.StringVariables["FourthInstaller"]} & commandParameter={commandParameter}");
+            string key = PackageIdEnum.FourthInstaller.ToString();
+            engine.StringVariables[key] = commandParameter.ToString();
+            _userSelectionDic[key] = commandParameter.ToString();
+            engine.Log(LogLevel.Verbose, $"::{key} = {_userSelectionDic[key]} & commandParameter={commandParameter}");
         }
 
         public ICommand FifthInstallerCommand
@@ -336,9 +347,10 @@ namespace InstallerUI
 
         private void HandleFifthIntallCommand(object commandParameter)
         {
-            engine.StringVariables["FifthInstaller"] = commandParameter.ToString();
-            engine.Log(LogLevel.Verbose,
-                $"::FifthInstaller = {engine.StringVariables["FifthInstaller"]} & commandParameter={commandParameter}");
+            string key = PackageIdEnum.FifthInstaller.ToString();
+            engine.StringVariables[key] = commandParameter.ToString();
+            _userSelectionDic[key] = commandParameter.ToString();
+            engine.Log(LogLevel.Verbose, $"::{key} = {_userSelectionDic[key]} & commandParameter={commandParameter}");
         }
 
         public ICommand FIBootStapperCommand
@@ -348,9 +360,10 @@ namespace InstallerUI
 
         private void HandleFIBootStapperCommand(object commandParameter)
         {
-            engine.StringVariables["FirstInstallerBootStrapper"] = commandParameter.ToString();
-            engine.Log(LogLevel.Verbose,
-                $"::FirstInstallerBootStrapper = {engine.StringVariables["FirstInstallerBootStrapper"]} & commandParameter={commandParameter}");
+            string key = PackageIdEnum.FirstInstallerBootStrapper.ToString();
+            engine.StringVariables[key] = commandParameter.ToString();
+            _userSelectionDic[key] = commandParameter.ToString();
+            engine.Log(LogLevel.Verbose, $"::{key} = {_userSelectionDic[key]} & commandParameter={commandParameter}");
         }
 
         public ICommand SIBootStapperCommand
@@ -360,9 +373,10 @@ namespace InstallerUI
 
         private void HandleSIBootStapperCommand(object commandParameter)
         {
-            engine.StringVariables["SecondInstallerBootStrapper"] = commandParameter.ToString();
-            engine.Log(LogLevel.Verbose,
-                $"::SecondInstallerBootStrapper. = {engine.StringVariables["SecondInstallerBootStrapper"]} & commandParameter={commandParameter}");
+            string key = PackageIdEnum.SecondInstallerBootStrapper.ToString();
+            engine.StringVariables[key] = commandParameter.ToString();
+            _userSelectionDic[key] = commandParameter.ToString();
+            engine.Log(LogLevel.Verbose, $"::{key} = {_userSelectionDic[key]} & commandParameter={commandParameter}");
         }
 
         public ICommand RepairCommand
@@ -374,44 +388,22 @@ namespace InstallerUI
         {
             //check if any package have repair selected
             IList<string> repairSelected = new List<string>();
-            if(FirstInstallerIsRepairChecked)
-                repairSelected.Add("FirstInstaller");
-            if (SecondInstallerIsRepairChecked)
-                repairSelected.Add("SecondInstaller");
-            if (ThirdInstallerIsRepairChecked)
-                repairSelected.Add("ThirdInstaller");
-            if (FourthInstallerIsRepairChecked)
-                repairSelected.Add("FourthInstaller");
-            if (FifthInstallerIsRepairChecked)
-                repairSelected.Add("FifthInstaller");
-            if (FIBootStapperInstallerIsRepairChecked)
-                repairSelected.Add("FirstInstallerBootStrapper");
-            if (SIBootStapperInstallerIsRepairChecked)
-                repairSelected.Add("SecondInstallerBootStrapper");
-
-            if (repairSelected.Count == 0)
+            if(!FirstInstallerIsRepairChecked 
+               || !SecondInstallerIsRepairChecked 
+               || !ThirdInstallerIsRepairChecked
+               || !FourthInstallerIsRepairChecked
+               || !FifthInstallerIsRepairChecked
+               || !FIBootStapperInstallerIsRepairChecked
+               || !SIBootStapperInstallerIsRepairChecked)
             {
                 interactionService.ShowMessageBox("No package selected for Repair");
             }
             else
             {
                 //If not repair then set to skip
-                if (!FirstInstallerIsRepairChecked)
-                     FirstInstallerIsSkipChecked = true;
-                if (!SecondInstallerIsRepairChecked)
-                    SecondInstallerIsSkipChecked = true;
-                if (!ThirdInstallerIsRepairChecked)
-                    ThirdInstallerIsSkipChecked = true;
-                if (!FourthInstallerIsRepairChecked)
-                    FourthInstallerIsSkipChecked = true;
-                if (!FifthInstallerIsRepairChecked)
-                    FifthInstallerIsSkipChecked = true;
-                if (!FIBootStapperInstallerIsRepairChecked)
-                    FIBootStapperInstallerIsSkipChecked = true;
-                if (!SIBootStapperInstallerIsRepairChecked)
-                    SIBootStapperInstallerIsSkipChecked = true;
-                //interactionService.ShowMessageBox("Please note any package that is not set to repair is forced to skip");
+                SetNotRepairToSkip();
 
+                //interactionService.ShowMessageBox("Please note any package that is not set to repair is forced to skip");
                 engine.Plan(LaunchAction.Repair);
             }
         }
@@ -421,8 +413,44 @@ namespace InstallerUI
             get { return new DelegateCommand(HandleApplyCommand); }
         }
 
+        private void SetNotRepairToSkip()
+        {
+            if (!FirstInstallerIsRepairChecked)
+                FirstInstallerIsSkipChecked = true;
+            if (!SecondInstallerIsRepairChecked)
+                SecondInstallerIsSkipChecked = true;
+            if (!ThirdInstallerIsRepairChecked)
+                ThirdInstallerIsSkipChecked = true;
+            if (!FourthInstallerIsRepairChecked)
+                FourthInstallerIsSkipChecked = true;
+            if (!FifthInstallerIsRepairChecked)
+                FifthInstallerIsSkipChecked = true;
+            if (!FIBootStapperInstallerIsRepairChecked)
+                FIBootStapperInstallerIsSkipChecked = true;
+            if (!SIBootStapperInstallerIsRepairChecked)
+                SIBootStapperInstallerIsSkipChecked = true;
+        }
+
+        private void SetRepairToSkip()
+        {
+            if (FirstInstallerIsRepairChecked)
+                FirstInstallerIsSkipChecked = true;
+            if (SecondInstallerIsRepairChecked)
+                SecondInstallerIsSkipChecked = true;
+            if (ThirdInstallerIsRepairChecked)
+                ThirdInstallerIsSkipChecked = true;
+            if (FourthInstallerIsRepairChecked)
+                FourthInstallerIsSkipChecked = true;
+            if (FifthInstallerIsRepairChecked)
+                FifthInstallerIsSkipChecked = true;
+            if (FIBootStapperInstallerIsRepairChecked)
+                FIBootStapperInstallerIsSkipChecked = true;
+            if (SIBootStapperInstallerIsRepairChecked)
+                SIBootStapperInstallerIsSkipChecked = true;
+        }
         private void HandleApplyCommand()
         {
+            SetRepairToSkip();
             //1). Check what is already installed on users computer
             //2). Check What user is Uninstalling
             //3). Check what user is Installing
@@ -436,18 +464,14 @@ namespace InstallerUI
 
             //2). Check What user is Uninstalling
             var userSelection = new Dictionary<string, string>();
-            userSelection.Add("FirstInstaller", engine.StringVariables["FirstInstaller"]);
-            userSelection.Add("SecondInstaller", engine.StringVariables["SecondInstaller"]);
-            userSelection.Add("ThirdInstaller", engine.StringVariables["ThirdInstaller"]);
-            userSelection.Add("FourthInstaller", engine.StringVariables["FourthInstaller"]);
-            userSelection.Add("FifthInstaller", engine.StringVariables["FifthInstaller"]);
-            userSelection.Add("FirstInstallerBootStrapper", engine.StringVariables["FirstInstallerBootStrapper"]);
-            userSelection.Add("SecondInstallerBootStrapper", engine.StringVariables["SecondInstallerBootStrapper"]);
-            var unInstalledSelected = userSelection.Where(x => x.Value.ToLower() == "UnInstall".ToLower()).Select(x => x.Key).ToList();
+            Packages.GetPackageIdsAsEnum().ToList().ForEach(x => {
+                userSelection.Add(x.ToString(), _userSelectionDic[x.ToString()]);
+            });
+            var unInstalledSelected = userSelection.Where(x => x.Value.ToLower() == UserSelectionEnum.Uninstall.ToString().ToLower()).Select(x => x.Key).ToList();
             engine.Log(LogLevel.Verbose, $"HandleApplyCommand::unInstalledSelected Modules = {string.Join(",",unInstalledSelected.ToArray())}");
 
             //3). Check what user is Installing
-            var InstalledSelected = userSelection.Where(x => x.Value.ToLower() == "Install".ToLower()).Select(x => x.Key).ToList();
+            var InstalledSelected = userSelection.Where(x => x.Value.ToLower() == UserSelectionEnum.Install.ToString().ToLower()).Select(x => x.Key).ToList();
             engine.Log(LogLevel.Verbose, $"HandleApplyCommand::InstalledSelected Modules = {string.Join(",", InstalledSelected.ToArray())}");
 
             //4). If nothing is left installed on Client Computer the Call Uninstall otherwise call Install
@@ -545,7 +569,8 @@ namespace InstallerUI
                 this.SetProperty(ref this._firstInstallerIsSkipChecked, value);
                 if (value)
                 {
-                    engine.StringVariables["FirstInstaller"] = "Skip";
+                    engine.StringVariables[PackageIdEnum.FirstInstaller.ToString()] = UserSelectionEnum.Skip.ToString();
+                    _userSelectionDic[PackageIdEnum.FirstInstaller.ToString()] = UserSelectionEnum.Skip.ToString();
                 }
             }
         }
@@ -559,9 +584,10 @@ namespace InstallerUI
             set
             {
                 this.SetProperty(ref this._firstInstallerIsUnInstallChecked, value);
-                if(value)
+                if (value)
                 {
-                    engine.StringVariables["FirstInstaller"] = "UnInstall";
+                    engine.StringVariables[PackageIdEnum.FirstInstaller.ToString()] = UserSelectionEnum.Uninstall.ToString();
+                    _userSelectionDic[PackageIdEnum.FirstInstaller.ToString()] = UserSelectionEnum.Uninstall.ToString();
                 }
             }
         }
@@ -580,7 +606,8 @@ namespace InstallerUI
                 this.SetProperty(ref this._firstInstallerIsRepairChecked, value);
                 if (value)
                 {
-                    engine.StringVariables["FirstInstaller"] = "Repair";
+                    engine.StringVariables[PackageIdEnum.FirstInstaller.ToString()] = UserSelectionEnum.Repair.ToString();
+                    _userSelectionDic[PackageIdEnum.FirstInstaller.ToString()] = UserSelectionEnum.Repair.ToString();
                 }
             }
         }
@@ -660,7 +687,8 @@ namespace InstallerUI
                 this.SetProperty(ref this._secondInstallerIsSkipChecked, value);
                 if (value)
                 {
-                    engine.StringVariables["SecondInstaller"] = "Skip";
+                    engine.StringVariables[PackageIdEnum.SecondInstaller.ToString()] = UserSelectionEnum.Skip.ToString();
+                    _userSelectionDic[PackageIdEnum.SecondInstaller.ToString()] = UserSelectionEnum.Skip.ToString();
                 }
             }
         }
@@ -674,7 +702,8 @@ namespace InstallerUI
                 this.SetProperty(ref this._secondInstallerIsUnInstallChecked, value);
                 if (value)
                 {
-                    engine.StringVariables["SecondInstaller"] = "UnInstall";
+                    engine.StringVariables[PackageIdEnum.SecondInstaller.ToString()] = UserSelectionEnum.Uninstall.ToString();
+                    _userSelectionDic[PackageIdEnum.SecondInstaller.ToString()] = UserSelectionEnum.Uninstall.ToString();
                 }
             }
         }
@@ -692,7 +721,8 @@ namespace InstallerUI
                 this.SetProperty(ref this._secondInstallerIsRepairChecked, value);
                 if (value)
                 {
-                    engine.StringVariables["SecondInstaller"] = "Repair";
+                    engine.StringVariables[PackageIdEnum.SecondInstaller.ToString()] = UserSelectionEnum.Repair.ToString();
+                    _userSelectionDic[PackageIdEnum.SecondInstaller.ToString()] = UserSelectionEnum.Repair.ToString();
                 }
             }
         }
@@ -770,9 +800,10 @@ namespace InstallerUI
             set
             {
                 this.SetProperty(ref this._thirdInstallerIsSkipChecked, value);
-                if (value)
+                if(value)
                 {
-                    engine.StringVariables["ThirdInstaller"] = "Skip";
+                    engine.StringVariables[PackageIdEnum.ThirdInstaller.ToString()] = UserSelectionEnum.Skip.ToString();
+                    _userSelectionDic[PackageIdEnum.ThirdInstaller.ToString()] = UserSelectionEnum.Skip.ToString();
                 }
             }
         }
@@ -786,7 +817,8 @@ namespace InstallerUI
                 this.SetProperty(ref this._thirdInstallerIsUnInstallChecked, value);
                 if (value)
                 {
-                    engine.StringVariables["ThirdInstaller"] = "UnInstall";
+                    engine.StringVariables[PackageIdEnum.ThirdInstaller.ToString()] = UserSelectionEnum.Uninstall.ToString();
+                    _userSelectionDic[PackageIdEnum.ThirdInstaller.ToString()] = UserSelectionEnum.Uninstall.ToString();
                 }
             }
         }
@@ -804,7 +836,8 @@ namespace InstallerUI
                 this.SetProperty(ref this._thirdInstallerIsRepairChecked, value);
                 if (value)
                 {
-                    engine.StringVariables["ThirdInstaller"] = "Repair";
+                    engine.StringVariables[PackageIdEnum.ThirdInstaller.ToString()] = UserSelectionEnum.Repair.ToString();
+                    _userSelectionDic[PackageIdEnum.ThirdInstaller.ToString()] = UserSelectionEnum.Repair.ToString();
                 }
             }
         }
@@ -884,7 +917,8 @@ namespace InstallerUI
                 this.SetProperty(ref this._fourthInstallerIsSkipChecked, value);
                 if (value)
                 {
-                    engine.StringVariables["FourthInstaller"] = "Skip";
+                    engine.StringVariables[PackageIdEnum.FourthInstaller.ToString()] = UserSelectionEnum.Skip.ToString();
+                    _userSelectionDic[PackageIdEnum.FourthInstaller.ToString()] = UserSelectionEnum.Skip.ToString();
                 }
             }
         }
@@ -898,7 +932,8 @@ namespace InstallerUI
                 this.SetProperty(ref this._fourthInstallerIsUnInstallChecked, value);
                 if (value)
                 {
-                    engine.StringVariables["FourthInstaller"] = "UnInstall";
+                    engine.StringVariables[PackageIdEnum.FourthInstaller.ToString()] = UserSelectionEnum.Uninstall.ToString();
+                    _userSelectionDic[PackageIdEnum.FourthInstaller.ToString()] = UserSelectionEnum.Uninstall.ToString();
                 }
             }
         }
@@ -916,7 +951,8 @@ namespace InstallerUI
                 this.SetProperty(ref this._fourthInstallerIsRepairChecked, value);
                 if (value)
                 {
-                    engine.StringVariables["FourthInstaller"] = "Repair";
+                    engine.StringVariables[PackageIdEnum.FourthInstaller.ToString()] = UserSelectionEnum.Repair.ToString();
+                    _userSelectionDic[PackageIdEnum.FourthInstaller.ToString()] = UserSelectionEnum.Repair.ToString();
                 }
             }
         }
@@ -995,7 +1031,8 @@ namespace InstallerUI
                 this.SetProperty(ref this._fifthInstallerIsSkipChecked, value);
                 if (value)
                 {
-                    engine.StringVariables["FifthInstaller"] = "Skip";
+                    engine.StringVariables[PackageIdEnum.FifthInstaller.ToString()] = UserSelectionEnum.Skip.ToString();
+                    _userSelectionDic[PackageIdEnum.FifthInstaller.ToString()] = UserSelectionEnum.Skip.ToString();
                 }
             }
         }
@@ -1009,7 +1046,8 @@ namespace InstallerUI
                 this.SetProperty(ref this._fifthInstallerIsUnInstallChecked, value);
                 if (value)
                 {
-                    engine.StringVariables["FifthInstaller"] = "UnInstall";
+                    engine.StringVariables[PackageIdEnum.FifthInstaller.ToString()] = UserSelectionEnum.Uninstall.ToString();
+                    _userSelectionDic[PackageIdEnum.FifthInstaller.ToString()] = UserSelectionEnum.Uninstall.ToString();
                 }
             }
         }
@@ -1027,7 +1065,8 @@ namespace InstallerUI
                 this.SetProperty(ref this._fifthInstallerIsRepairChecked, value);
                 if (value)
                 {
-                    engine.StringVariables["FifthInstaller"] = "Repair";
+                    engine.StringVariables[PackageIdEnum.FifthInstaller.ToString()] = UserSelectionEnum.Repair.ToString();
+                    _userSelectionDic[PackageIdEnum.FifthInstaller.ToString()] = UserSelectionEnum.Repair.ToString();
                 }
             }
         }
@@ -1106,7 +1145,8 @@ namespace InstallerUI
                 this.SetProperty(ref this._fIBootStapperInstallerIsSkipChecked, value);
                 if (value)
                 {
-                    engine.StringVariables["FirstInstallerBootStrapper"] = "Skip";
+                    engine.StringVariables[PackageIdEnum.FirstInstallerBootStrapper.ToString()] = UserSelectionEnum.Skip.ToString();
+                    _userSelectionDic[PackageIdEnum.FirstInstallerBootStrapper.ToString()] = UserSelectionEnum.Skip.ToString();
                 }
             }
         }
@@ -1120,7 +1160,8 @@ namespace InstallerUI
                 this.SetProperty(ref this._fIBootStrapperInstallerIsUnInstallChecked, value);
                 if (value)
                 {
-                    engine.StringVariables["FirstInstallerBootStrapper"] = "UnInstall";
+                    engine.StringVariables[PackageIdEnum.FirstInstallerBootStrapper.ToString()] = UserSelectionEnum.Uninstall.ToString();
+                    _userSelectionDic[PackageIdEnum.FirstInstallerBootStrapper.ToString()] = UserSelectionEnum.Uninstall.ToString();
                 }
             }
         }
@@ -1138,7 +1179,8 @@ namespace InstallerUI
                 this.SetProperty(ref this._fIBootStrapperInstallerIsRepairChecked, value);
                 if (value)
                 {
-                    engine.StringVariables["FirstInstallerBootStrapper"] = "Repair";
+                    engine.StringVariables[PackageIdEnum.FirstInstallerBootStrapper.ToString()] = UserSelectionEnum.Repair.ToString();
+                    _userSelectionDic[PackageIdEnum.FirstInstallerBootStrapper.ToString()] = UserSelectionEnum.Repair.ToString();
                 }
             }
         }
@@ -1217,7 +1259,8 @@ namespace InstallerUI
                 this.SetProperty(ref this._sIBootStapperInstallerIsSkipChecked, value);
                 if (value)
                 {
-                    engine.StringVariables["SecondInstallerBootStrapper"] = "Skip";
+                    engine.StringVariables[PackageIdEnum.SecondInstallerBootStrapper.ToString()] = UserSelectionEnum.Skip.ToString();
+                    _userSelectionDic[PackageIdEnum.SecondInstallerBootStrapper.ToString()] = UserSelectionEnum.Skip.ToString();
                 }
             }
         }
@@ -1231,7 +1274,8 @@ namespace InstallerUI
                 this.SetProperty(ref this._sIBootStrapperInstallerIsUnInstallChecked, value);
                 if (value)
                 {
-                    engine.StringVariables["SecondInstallerBootStrapper"] = "UnInstall";
+                    engine.StringVariables[PackageIdEnum.SecondInstallerBootStrapper.ToString()] = UserSelectionEnum.Uninstall.ToString();
+                    _userSelectionDic[PackageIdEnum.SecondInstallerBootStrapper.ToString()] = UserSelectionEnum.Uninstall.ToString();
                 }
             }
         }
@@ -1249,7 +1293,8 @@ namespace InstallerUI
                 this.SetProperty(ref this._sIBootStrapperInstallerIsRepairChecked, value);
                 if (value)
                 {
-                    engine.StringVariables["SecondInstallerBootStrapper"] = "Repair";
+                    engine.StringVariables[PackageIdEnum.SecondInstallerBootStrapper.ToString()] = UserSelectionEnum.Repair.ToString();
+                    _userSelectionDic[PackageIdEnum.SecondInstallerBootStrapper.ToString()] = UserSelectionEnum.Repair.ToString();
                 }
             }
         }
@@ -1324,7 +1369,7 @@ namespace InstallerUI
             //Select all packages that are installed on client's computer
             var installedPackages = GetModulesInstalledOnClientComputer();
             var installedPackagesName = installedPackages.Select(x => x.Item2).ToList();
-            var packageIds = GetPackageIds();
+            var packageIds = Packages.GetPackageIdsAsEnum().Select(x => x.ToString()).ToList(); 
 
             engine.Log(LogLevel.Verbose, $"SelectInstallIfNotInstalled::PackageIds1={string.Join(",",packageIds.ToArray())}");
 
@@ -1344,7 +1389,7 @@ namespace InstallerUI
             foreach (string x in packageIds)
             {
                 engine.Log(LogLevel.Verbose, $"SelectInstallIfNotInstalled::Not Installed Package Name = {x}");
-                if (x.ToLower().Equals("FirstInstaller".ToLower()))
+                if (x.ToLower().Equals(PackageIdEnum.FirstInstaller.ToString().ToLower()))
                 {
                     engine.Log(LogLevel.Verbose, $"SelectInstallIfNotInstalled::Disabling {x}");
                     FirstInstallerIsUnInstallEnabled = false;
@@ -1352,7 +1397,7 @@ namespace InstallerUI
                     FirstInstallerIsRepairEnabled = false;
                     FirstInstallerIsUpdateEnabled = false;
                 }
-                if (x.ToLower().Equals("SecondInstaller".ToLower()))
+                if (x.ToLower().Equals(PackageIdEnum.SecondInstaller.ToString().ToLower()))
                 {
                     engine.Log(LogLevel.Verbose, $"SelectInstallIfNotInstalled::Disabling {x}");
                     SecondInstallerIsUnInstallEnabled = false;
@@ -1360,7 +1405,7 @@ namespace InstallerUI
                     SecondInstallerIsRepairEnabled = false;
                     SecondInstallerIsUpdateEnabled = false;
                 }
-                if (x.ToLower().Equals("ThirdInstaller".ToLower()))
+                if (x.ToLower().Equals(PackageIdEnum.ThirdInstaller.ToString().ToLower()))
                 {
                     engine.Log(LogLevel.Verbose, $"SelectInstallIfNotInstalled::Disabling {x}");
                     ThirdInstallerIsUnInstallEnabled = false;
@@ -1368,7 +1413,7 @@ namespace InstallerUI
                     ThirdInstallerIsRepairEnabled = false;
                     ThirdInstallerIsUpdateEnabled = false;
                 }
-                if (x.ToLower().Equals("FourthInstaller".ToLower()))
+                if (x.ToLower().Equals(PackageIdEnum.FourthInstaller.ToString().ToLower()))
                 {
                     engine.Log(LogLevel.Verbose, $"SelectInstallIfNotInstalled::Disabling {x}");
                     FourthInstallerIsUnInstallEnabled = false;
@@ -1376,7 +1421,7 @@ namespace InstallerUI
                     FourthInstallerIsRepairEnabled = false;
                     FourthInstallerIsUpdateEnabled = false;
                 }
-                if (x.ToLower().Equals("FifthInstaller".ToLower()))
+                if (x.ToLower().Equals(PackageIdEnum.FifthInstaller.ToString().ToLower()))
                 {
                     engine.Log(LogLevel.Verbose, $"SelectInstallIfNotInstalled::Disabling {x}");
                     FifthInstallerIsUnInstallEnabled = false;
@@ -1384,7 +1429,7 @@ namespace InstallerUI
                     FifthInstallerIsRepairEnabled = false;
                     FifthInstallerIsUpdateEnabled = false;
                 }
-                if (x.ToLower().Equals("FirstInstallerBootStrapper".ToLower()))
+                if (x.ToLower().Equals(PackageIdEnum.FirstInstallerBootStrapper.ToString().ToLower()))
                 {
                     engine.Log(LogLevel.Verbose, $"SelectInstallIfNotInstalled::Disabling {x}");
                     FIBootStrapperInstallerIsUnInstallEnabled = false;
@@ -1392,7 +1437,7 @@ namespace InstallerUI
                     FIBootStrapperInstallerIsRepairEnabled = false;
                     FIBootStrapperInstallerIsUpdateEnabled = false;
                 }
-                if (x.ToLower().Equals("SecondInstallerBootStrapper".ToLower()))
+                if (x.ToLower().Equals(PackageIdEnum.SecondInstallerBootStrapper.ToString().ToLower()))
                 {
                     engine.Log(LogLevel.Verbose, $"SelectInstallIfNotInstalled::Disabling {x}");
                     SIBootStrapperInstallerIsUnInstallEnabled = false;
@@ -1403,19 +1448,6 @@ namespace InstallerUI
             }
         }
 
-        private IList<string> GetPackageIds()
-        {
-            IList<string> packageIds = new List<string>();
-            packageIds.Add("FirstInstaller");
-            packageIds.Add("SecondInstaller");
-            packageIds.Add("ThirdInstaller");
-            packageIds.Add("FourthInstaller");
-            packageIds.Add("FifthInstaller");
-            packageIds.Add("FirstInstallerBootStrapper");
-            packageIds.Add("SecondInstallerBootStrapper");
-            return packageIds;
-        }
-
         private void SelectUnInstallIfInstalled()
         {
             //Select all packages that are installed on client's computer
@@ -1424,49 +1456,49 @@ namespace InstallerUI
             installedPackagesName.ForEach(x =>
             {
                 engine.Log(LogLevel.Verbose, $"SelectUnInstallIfInstalled:Installed Package Name = {x}");
-                if (x.ToLower().Contains("FirstInstaller".ToLower()))
+                if (x.ToLower().Equals(PackageIdEnum.FirstInstaller.ToString().ToLower()))
                 {
                     engine.Log(LogLevel.Verbose, $"SelectUnInstallIfInstalled:1Installed Package Name = {x}");
                     FirstInstallerIsUnInstallChecked = true;
                     FirstInstallerIsInstallEnabled = false;
                     FirstInstallerIsSkipEnabled = false;
                 }
-                if (x.ToLower().Contains("SecondInstaller".ToLower()))
+                if (x.ToLower().Equals(PackageIdEnum.SecondInstaller.ToString().ToLower()))
                 {
                     engine.Log(LogLevel.Verbose, $"SelectUnInstallIfInstalled:2Installed Package Name = {x}");
                     SecondInstallerIsUnInstallChecked = true;
                     SecondInstallerIsInstallEnabled = false;
                     SecondInstallerIsSkipEnabled = false;
                 }
-                if (x.ToLower().Contains("ThirdInstaller".ToLower()))
+                if (x.ToLower().Equals(PackageIdEnum.ThirdInstaller.ToString().ToLower()))
                 {
                     engine.Log(LogLevel.Verbose, $"SelectUnInstallIfInstalled:3Installed Package Name = {x}");
                     ThirdInstallerIsUnInstallChecked = true;
                     ThirdInstallerIsInstallEnabled = false;
                     ThirdInstallerIsSkipEnabled = false;
                 }
-                if (x.ToLower().Contains("FourthInstaller".ToLower()))
+                if (x.ToLower().Equals(PackageIdEnum.FourthInstaller.ToString().ToLower()))
                 {
                     engine.Log(LogLevel.Verbose, $"SelectUnInstallIfInstalled:4Installed Package Name = {x}");
                     FourthInstallerIsUnInstallChecked = true;
                     FourthInstallerIsInstallEnabled = false;
                     FourthInstallerIsSkipEnabled = false;
                 }
-                if (x.ToLower().Contains("FifthInstaller".ToLower()))
+                if (x.ToLower().Equals(PackageIdEnum.FifthInstaller.ToString().ToLower()))
                 {
                     engine.Log(LogLevel.Verbose, $"SelectUnInstallIfInstalled:5Installed Package Name = {x}");
                     FifthInstallerIsUnInstallChecked = true;
                     FifthInstallerIsInstallEnabled = false;
                     FifthInstallerIsSkipEnabled = false;
                 }
-                if (x.ToLower().Contains("FirstInstallerBootStrapper".ToLower()))
+                if (x.ToLower().Equals(PackageIdEnum.FirstInstallerBootStrapper.ToString().ToLower()))
                 {
                     engine.Log(LogLevel.Verbose, $"SelectUnInstallIfInstalled:6Installed Package Name = {x}");
                     FIBootStapperInstallerIsUnInstallChecked = true;
                     FIBootStrapperInstallerIsInstallEnabled = false;
                     FIBootStrapperInstallerIsSkipEnabled = false;
                 }
-                if (x.ToLower().Contains("SecondInstallerBootStrapper".ToLower()))
+                if (x.ToLower().Equals(PackageIdEnum.SecondInstallerBootStrapper.ToString().ToLower()))
                 {
                     engine.Log(LogLevel.Verbose, $"SelectUnInstallIfInstalled:7Installed Package Name = {x}");
                     SIBootStapperInstallerIsUnInstallChecked = true;
@@ -1546,14 +1578,8 @@ namespace InstallerUI
                             string _softwareName = subkey.GetValue("DisplayName").ToString();
                             if (!string.IsNullOrWhiteSpace(_softwareName))
                             {
-                                if (_softwareName.ToLower().Contains("FirstInstaller".ToLower())
-                                    || _softwareName.ToLower().Contains("SecondInstaller".ToLower())
-                                    || _softwareName.ToLower().Contains("ThirdInstaller".ToLower())
-                                    || _softwareName.ToLower().Contains("FourthInstaller".ToLower())
-                                    || _softwareName.ToLower().Contains("FifthInstaller".ToLower())
-                                    || _softwareName.ToLower().Contains("FirstInstallerBootStrapper".ToLower())
-                                    || _softwareName.ToLower().Contains("SecondInstallerBootStrapper".ToLower())
-                                    )
+                                if (Packages.GetPackageIdsAsEnum().ToList()
+                                    .Where(x => x.ToString().Contains(_softwareName)).Any())
                                 {
                                     installedModules.Add(new Tuple<string, string, string>(a, _softwareName,
                                         subkey.GetValue("DisplayVersion").ToString()));

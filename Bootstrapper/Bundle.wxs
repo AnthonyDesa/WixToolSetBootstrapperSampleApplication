@@ -56,28 +56,28 @@
       <MsiPackage Id="SecondInstaller" 
         SourceFile="$(var.SecondInstaller.TargetPath)" 
         Visible="yes"
-        InstallCondition="SecondInstaller = &quot;Install&quot; OR SecondInstaller = &quot;Update&quot; OR FirstInstaller = &quot;Repair&quot;">
+        InstallCondition="SecondInstaller = &quot;Install&quot; OR SecondInstaller = &quot;Update&quot; OR SecondInstaller = &quot;Repair&quot;">
         <MsiProperty Name="PREREQUISITE" Value="[Prerequisite]"/>
         <MsiProperty Name="INSTALLLEVEL" Value="[InstallLevel]"/>
       </MsiPackage>
       <MsiPackage Id="ThirdInstaller"
                   SourceFile="$(var.ThirdInstaller.TargetPath)"
                   Visible="yes"
-                  InstallCondition="ThirdInstaller = &quot;Install&quot; OR ThirdInstaller = &quot;Update&quot; OR FirstInstaller = &quot;Repair&quot;">
+                  InstallCondition="ThirdInstaller = &quot;Install&quot; OR ThirdInstaller = &quot;Update&quot; OR ThirdInstaller = &quot;Repair&quot;">
         <MsiProperty Name="PREREQUISITE" Value="[Prerequisite]"/>
         <MsiProperty Name="INSTALLLEVEL" Value="[InstallLevel]"/>
       </MsiPackage>
       <MsiPackage Id="FourthInstaller"
                   SourceFile="$(var.FourthInstaller.TargetPath)"
                   Visible="yes"
-                  InstallCondition="FourthInstaller = &quot;Install&quot; OR FourthInstaller = &quot;Update&quot; OR FirstInstaller = &quot;Repair&quot;">
+                  InstallCondition="FourthInstaller = &quot;Install&quot; OR FourthInstaller = &quot;Update&quot; OR FourthInstaller = &quot;Repair&quot;">
         <MsiProperty Name="PREREQUISITE" Value="[Prerequisite]"/>
         <MsiProperty Name="INSTALLLEVEL" Value="[InstallLevel]"/>
       </MsiPackage>
       <MsiPackage Id="FifthInstaller"
                   SourceFile="$(var.FifthInstaller.TargetPath)"
                   Visible="yes"
-                  InstallCondition="FifthInstaller = &quot;Install&quot; OR FifthInstaller = &quot;Update&quot; OR FirstInstaller = &quot;Repair&quot;">
+                  InstallCondition="FifthInstaller = &quot;Install&quot; OR FifthInstaller = &quot;Update&quot; OR FifthInstaller = &quot;Repair&quot;">
         <MsiProperty Name="PREREQUISITE" Value="[Prerequisite]"/>
         <MsiProperty Name="INSTALLLEVEL" Value="[InstallLevel]"/>
       </MsiPackage>
@@ -92,7 +92,7 @@
                   Permanent="no"
                   Vital="yes"
                   SuppressSignatureVerification="no"
-                  InstallCondition="FirstInstallerBootStrapper = &quot;Install&quot; OR FirstInstallerBootStrapper = &quot;Update&quot;  OR FirstInstaller = &quot;Repair&quot;">
+                  InstallCondition="FirstInstallerBootStrapper = &quot;Install&quot; OR FirstInstallerBootStrapper = &quot;Update&quot;  OR FirstInstallerBootStrapper = &quot;Repair&quot;">
         <RemotePayload
           ProductName="FirstInstallerBootstrapper"
           Description="FirstInstallerBootstrapper"
@@ -104,7 +104,7 @@
       </ExePackage>
       <ExePackage Id="SecondInstallerBootstrapper"
                   Name="SecondInstallerBootstrapper.exe"
-                  DownloadUrl="http://localhost/MyMsi/CustomBurnUI/SecondInstallerBootstrapper.exe"
+                  DownloadUrl="http://localhost/MyMsi/CustomBurnUI/Versions/1.0.0.0/SecondInstallerBootstrapper.exe"
                   InstallCommand="/S"
                   UninstallCommand="/uninstall /quiet"
                   DetectCondition="IsSecondInstallerInstalled"
@@ -113,7 +113,7 @@
                   Permanent="no"
                   Vital="yes"
                   SuppressSignatureVerification="no"
-                  InstallCondition="SecondInstallerBootStrapper = &quot;Install&quot; OR SecondInstallerBootStrapper = &quot;Update&quot;  OR FirstInstaller = &quot;Repair&quot;">
+                  InstallCondition="SecondInstallerBootStrapper = &quot;Install&quot; OR SecondInstallerBootStrapper = &quot;Update&quot;  OR SecondInstallerBootStrapper = &quot;Repair&quot;">
         <RemotePayload
           ProductName="SecondInstallerBootstrapper"
           Description="SecondInstallerBootstrapper"
