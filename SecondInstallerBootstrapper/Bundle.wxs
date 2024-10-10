@@ -6,8 +6,8 @@
 		<Chain>
 			<!-- TODO: Define the list of chained packages. -->
 			<!-- <MsiPackage SourceFile="path\to\your.msi" /> -->
-      <MsiPackage Id="SecondInstallerMsi"
-                  SourceFile="$(var.SecondInstaller.TargetPath)"
+      <MsiPackage Id="SecondInstaller4BSMsi"
+                  SourceFile="$(var.SecondInstaller4BS.TargetPath)"
                   Compressed="yes"
                   Vital="yes"
                   Cache="yes"

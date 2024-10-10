@@ -19,17 +19,17 @@
     
     <!-- Check if FirstInstaller is installed. This is to make sure that uninstall removes the FirstInstaller when it is installed and also prevent installing if its already installed-->
     <util:FileSearch
-      Id='FileSearchCheckIfFirstInstallerInstalled'
-      Variable="IsFirstInstallerInstalled"
+      Id='FileSearchCheckIfFirstBootStrapperInstallerInstalled'
+      Variable="IsFirstBootStrapperInstallerInstalled"
       Result="exists"
-      Path="[ProgramFilesFolder]\CustomBurnUISample\First Installer\FirstInstallerReadMe.txt"/>
+      Path="[ProgramFilesFolder]\CustomBurnUISample\FirstInstaller4BS\FirstInstaller4BSReadMe.txt"/>
 
     <!-- Check if SecondInstaller is installed. This is to make sure that uninstall removes the SecondInstaller when it is installed and also prevent installing if its already installed-->
     <util:FileSearch
-      Id='FileSearchCheckIfSecondInstallerInstalled'
-      Variable="IsSecondInstallerInstalled"
+      Id='FileSearchCheckIfSecondBootStrapperInstallerInstalled'
+      Variable="IsSecondBootStrapperInstallerInstalled"
       Result="exists"
-      Path="[ProgramFilesFolder]\CustomBurnUISample\Second Installer\SecondInstallerReadMe.txt"/>
+      Path="[ProgramFilesFolder]\CustomBurnUISample\SecondInstaller4BS\SecondInstaller4BSReadMe.txt"/>
 
     <!-- Variables modified by custom WPF UI -->
     <Variable bal:Overridable="yes" Name="Prerequisite" Value=""/>
@@ -86,7 +86,7 @@
                   DownloadUrl="http://localhost/MyMsi/CustomBurnUI/Versions/1.0.0.0/FirstInstallerBootstrapper.exe"
                   InstallCommand="/S"
                   UninstallCommand="/uninstall /quiet"
-                  DetectCondition="IsFirstInstallerInstalled"
+                  DetectCondition="IsFirstBootStrapperInstallerInstalled"
                   Compressed="no"
                   Cache="no"
                   Permanent="no"
@@ -107,7 +107,7 @@
                   DownloadUrl="http://localhost/MyMsi/CustomBurnUI/Versions/1.0.0.0/SecondInstallerBootstrapper.exe"
                   InstallCommand="/S"
                   UninstallCommand="/uninstall /quiet"
-                  DetectCondition="IsSecondInstallerInstalled"
+                  DetectCondition="IsSecondBootStrapperInstallerInstalled"
                   Compressed="no"
                   Cache="no"
                   Permanent="no"

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Product Id="*" Name="SecondInstaller4BS" Language="1033" Version="1.0.0.0" Manufacturer="Sciex" UpgradeCode="58af8569-38bb-455f-b1ef-f88c15543fba">
+		<Package InstallerVersion="400" Compressed="yes" InstallScope="perMachine" />
+
+		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+		<MediaTemplate EmbedCab="yes"/>
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER" Name="CustomBurnUISample">
+          <Directory Id="SecondInstaller4BS" Name="SecondInstaller4BS" />
+        </Directory>
+      </Directory>
+    </Directory>
+
+    <DirectoryRef Id="SecondInstaller4BS">
+      <Component Guid="*" Id="CMP_SecondInstaller4BSReadMe">
+        <File Id="FILE_SecondInstaller4BSReadMe" Source="SecondInstaller4BSReadMe.txt" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+
+    <Feature Id="ProductFeature" Title="SecondInstaller4BS" Level="1">
+      <ComponentRef Id="CMP_SecondInstaller4BSReadMe"/>
+    </Feature>
+
+  </Product>
+</Wix>

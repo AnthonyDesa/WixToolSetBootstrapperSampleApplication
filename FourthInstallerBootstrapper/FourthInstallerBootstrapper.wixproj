@@ -4,9 +4,9 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>3.10</ProductVersion>
-    <ProjectGuid>717b8215-109a-4f8e-9fd0-5f974125f577</ProjectGuid>
+    <ProjectGuid>20f465a6-7009-447a-88bb-f779c2335de7</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
-    <OutputName>FirstInstallerBootstrapper</OutputName>
+    <OutputName>FourthInstallerBootstrapper</OutputName>
     <OutputType>Bundle</OutputType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
@@ -28,9 +28,9 @@
     </WixExtension>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\FirstInstaller4BS\FirstInstaller4BS.wixproj">
-      <Name>FirstInstaller4BS</Name>
-      <Project>{017a5a3c-942f-4aee-9808-efae31a1589f}</Project>
+    <ProjectReference Include="..\FourthInstaller4BS\FourthInstaller4BS.wixproj">
+      <Name>FourthInstaller4BS</Name>
+      <Project>{3a60189c-a208-4622-b9f5-4c0537fa21df}</Project>
       <Private>True</Private>
       <DoNotHarvest>True</DoNotHarvest>
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
@@ -38,7 +38,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="SignFirstInstallerBootstapper.bat" />
+    <Content Include="SignFourthInstallerBootstapper.bat" />
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" Condition=" '$(WixTargetsPath)' != '' " />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets" Condition=" '$(WixTargetsPath)' == '' AND Exists('$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets') " />
@@ -46,7 +46,7 @@
     <Error Text="The WiX Toolset v3.11 build tools must be installed to build this project. To download the WiX Toolset, see https://wixtoolset.org/releases/v3.11/stable" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>copy "$(ProjectDir)SignFirstInstallerBootstapper.bat" "$(TargetDir)SignFirstInstallerBootstapper.bat"</PostBuildEvent>
+    <PostBuildEvent>copy "$(ProjectDir)SignFourthInstallerBootstapper.bat" "$(TargetDir)SignFourthInstallerBootstapper.bat"</PostBuildEvent>
   </PropertyGroup>
   <!--
 	To modify your build process, add your task inside one of the targets below and uncomment it.

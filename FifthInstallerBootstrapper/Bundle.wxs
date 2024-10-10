@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Bundle Name="FirstInstallerBootstrapper" Version="1.0.0.0" Manufacturer="SciexOS" UpgradeCode="717b8215-109a-4f8e-9fd0-5f974125f577">
+	<Bundle Name="FifthInstallerBootstrapper" Version="1.0.0.0" Manufacturer="Sciex" UpgradeCode="e371c493-06bc-448b-beba-25ca4ddb6b2f">
 		<BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense" />
 
 		<Chain>
 			<!-- TODO: Define the list of chained packages. -->
 			<!-- <MsiPackage SourceFile="path\to\your.msi" /> -->
-      <MsiPackage Id="FirstInstallerMsi"
-                  SourceFile="$(var.FirstInstaller4BS.TargetPath)"
+      <MsiPackage Id="FifthInstaller4BMsi"
+                  SourceFile="$(var.FifthInstaller4BS.TargetPath)"
                   Compressed="yes"
                   Vital="yes"
                   Cache="yes"

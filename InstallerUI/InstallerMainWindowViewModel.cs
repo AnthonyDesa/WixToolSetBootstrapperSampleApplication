@@ -1595,6 +1595,7 @@ namespace InstallerUI
 
         private void SelectUnInstallIfInstalled()
         {
+            engine.Log(LogLevel.Verbose, $"SelectUnInstallIfInstalled::Begin Execution");
             //Select all packages that are installed on client's computer
             var installedPackages = GetModulesInstalledOnClientComputer();
             var installedPackagesName = installedPackages.Select(x => x.Item2).ToList();
