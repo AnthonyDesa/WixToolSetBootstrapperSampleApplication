@@ -19,15 +19,15 @@
     
     <!-- Check if FirstInstaller is installed. This is to make sure that uninstall removes the FirstInstaller when it is installed and also prevent installing if its already installed-->
     <util:FileSearch
-      Id='FileSearchCheckIfFirstBootStrapperInstallerInstalled'
-      Variable="IsFirstBootStrapperInstallerInstalled"
+      Id='FileSearchCheckIfFirstBootstrapperInstallerInstalled'
+      Variable="IsFirstBootstrapperInstallerInstalled"
       Result="exists"
       Path="[ProgramFilesFolder]\CustomBurnUISample\FirstInstaller4BS\FirstInstaller4BSReadMe.txt"/>
 
     <!-- Check if SecondInstaller is installed. This is to make sure that uninstall removes the SecondInstaller when it is installed and also prevent installing if its already installed-->
     <util:FileSearch
-      Id='FileSearchCheckIfSecondBootStrapperInstallerInstalled'
-      Variable="IsSecondBootStrapperInstallerInstalled"
+      Id='FileSearchCheckIfSecondBootstrapperInstallerInstalled'
+      Variable="IsSecondBootstrapperInstallerInstalled"
       Result="exists"
       Path="[ProgramFilesFolder]\CustomBurnUISample\SecondInstaller4BS\SecondInstaller4BSReadMe.txt"/>
 
@@ -39,8 +39,8 @@
     <Variable bal:Overridable="yes" Name="ThirdInstaller" Value="Skip"/>
     <Variable bal:Overridable="yes" Name="FourthInstaller" Value="Skip"/>
     <Variable bal:Overridable="yes" Name="FifthInstaller" Value="Skip"/>
-    <Variable bal:Overridable="yes" Name="FirstInstallerBootStrapper" Value="Skip"/>
-    <Variable bal:Overridable="yes" Name="SecondInstallerBootStrapper" Value="Skip"/>
+    <Variable bal:Overridable="yes" Name="FirstInstallerBootstrapper" Value="Skip"/>
+    <Variable bal:Overridable="yes" Name="SecondInstallerBootstrapper" Value="Skip"/>
 
     <!--https://teamcity.netadds.net/repository/download/SciexPdv_LayeredBuilds_ApplicationsAndProducts_BuildInstallers/59464259:id/
                       output.zip!/Setup/Install/postgresql-16.2-1-windows-x64.exe-->
@@ -86,13 +86,13 @@
                   DownloadUrl="http://localhost/MyMsi/CustomBurnUI/Versions/1.0.0.0/FirstInstallerBootstrapper.exe"
                   InstallCommand="/S"
                   UninstallCommand="/uninstall /quiet"
-                  DetectCondition="IsFirstBootStrapperInstallerInstalled"
+                  DetectCondition="IsFirstBootstrapperInstallerInstalled"
                   Compressed="no"
                   Cache="no"
                   Permanent="no"
                   Vital="yes"
                   SuppressSignatureVerification="no"
-                  InstallCondition="FirstInstallerBootStrapper = &quot;Install&quot; OR FirstInstallerBootStrapper = &quot;Update&quot;  OR FirstInstallerBootStrapper = &quot;Repair&quot;">
+                  InstallCondition="FirstInstallerBootstrapper = &quot;Install&quot; OR FirstInstallerBootstrapper = &quot;Update&quot;  OR FirstInstallerBootstrapper = &quot;Repair&quot;">
         <RemotePayload
           ProductName="FirstInstallerBootstrapper"
           Description="FirstInstallerBootstrapper"
@@ -107,13 +107,13 @@
                   DownloadUrl="http://localhost/MyMsi/CustomBurnUI/Versions/1.0.0.0/SecondInstallerBootstrapper.exe"
                   InstallCommand="/S"
                   UninstallCommand="/uninstall /quiet"
-                  DetectCondition="IsSecondBootStrapperInstallerInstalled"
+                  DetectCondition="IsSecondBootstrapperInstallerInstalled"
                   Compressed="no"
                   Cache="no"
                   Permanent="no"
                   Vital="yes"
                   SuppressSignatureVerification="no"
-                  InstallCondition="SecondInstallerBootStrapper = &quot;Install&quot; OR SecondInstallerBootStrapper = &quot;Update&quot;  OR SecondInstallerBootStrapper = &quot;Repair&quot;">
+                  InstallCondition="SecondInstallerBootstrapper = &quot;Install&quot; OR SecondInstallerBootstrapper = &quot;Update&quot;  OR SecondInstallerBootstrapper = &quot;Repair&quot;">
         <RemotePayload
           ProductName="SecondInstallerBootstrapper"
           Description="SecondInstallerBootstrapper"

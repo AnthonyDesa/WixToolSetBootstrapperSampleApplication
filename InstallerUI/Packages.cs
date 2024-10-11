@@ -21,8 +21,8 @@ namespace InstallerUI
         ThirdInstaller,
         FourthInstaller,
         FifthInstaller,
-        FirstInstallerBootStrapper,
-        SecondInstallerBootStrapper
+        FirstInstallerBootstrapper,
+        SecondInstallerBootstrapper
     }
 
     public enum UserSelectionEnum

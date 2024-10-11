@@ -6,7 +6,7 @@
     <ProductVersion>3.10</ProductVersion>
     <ProjectGuid>e371c493-06bc-448b-beba-25ca4ddb6b2f</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
-    <OutputName>FifthInstallerBootstrapper</OutputName>
+    <OutputName>FifthInstallerBootstapper</OutputName>
     <OutputType>Bundle</OutputType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">

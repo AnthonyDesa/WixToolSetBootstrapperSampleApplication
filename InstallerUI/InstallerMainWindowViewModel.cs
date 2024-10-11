@@ -32,7 +32,14 @@ namespace InstallerUI
             // For demo purposes, we set two variables here. They are passed on to the chained MSIs.
             engine.StringVariables["Prerequisite"] = "1";
             engine.StringVariables["InstallLevel"] = "100";
-            
+
+            engine.Log(LogLevel.Verbose,"Setting Default to skip for StringVariable For Action");
+            Packages.GetPackageIdsAsEnum().ToList().ForEach(x =>
+            {
+                engine.StringVariables[x.ToString()] = UserSelectionEnum.Skip.ToString();
+            });
+            engine.Log(LogLevel.Verbose, "Setting Default to skip for StringVariable For Action");
+
             // Setup commands
             this.InstallCommandValue = new DelegateCommand(
                 () =>
@@ -224,10 +231,13 @@ namespace InstallerUI
             SelectInstallIfNotInstalled();
 
             //Initialize User Selection.
-            Packages.GetPackageIdsAsEnum().ToList().ForEach(x => {
+            this.engine.Log(LogLevel.Verbose, "Setting _userSelectionDic Begins");
+            Packages.GetPackageIdsAsEnum().ToList().ForEach(x =>
+            {
                 if (!_userSelectionDic.ContainsKey(x.ToString()))
-                    _userSelectionDic.Add(x.ToString(),engine.StringVariables[x.ToString()]);
+                    _userSelectionDic.Add(x.ToString(), engine.StringVariables[x.ToString()]);
             });
+            this.engine.Log(LogLevel.Verbose, "Setting _userSelectionDic Ends");
         }
 
 
@@ -360,7 +370,7 @@ namespace InstallerUI
 
         private void HandleFIBootStapperCommand(object commandParameter)
         {
-            string key = PackageIdEnum.FirstInstallerBootStrapper.ToString();
+            string key = PackageIdEnum.FirstInstallerBootstrapper.ToString();
             engine.StringVariables[key] = commandParameter.ToString();
             _userSelectionDic[key] = commandParameter.ToString();
             engine.Log(LogLevel.Verbose, $"::{key} = {_userSelectionDic[key]} & commandParameter={commandParameter}");
@@ -373,7 +383,7 @@ namespace InstallerUI
 
         private void HandleSIBootStapperCommand(object commandParameter)
         {
-            string key = PackageIdEnum.SecondInstallerBootStrapper.ToString();
+            string key = PackageIdEnum.SecondInstallerBootstrapper.ToString();
             engine.StringVariables[key] = commandParameter.ToString();
             _userSelectionDic[key] = commandParameter.ToString();
             engine.Log(LogLevel.Verbose, $"::{key} = {_userSelectionDic[key]} & commandParameter={commandParameter}");
@@ -480,7 +490,8 @@ namespace InstallerUI
             //4). If nothing is left installed on Client Computer the Call Uninstall otherwise call Install
             engine.Log(LogLevel.Verbose,$"installedModules.Count={installedModules.Count} unInstalledSelected.Count={unInstalledSelected.Count} InstalledSelected.Count={InstalledSelected.Count}" );
             bool executeUninstall = false;
-            if (installedModules.Count == unInstalledSelected.Count)
+            //-1 is for Bootstrapper
+            if (installedModules.Count - 1 == unInstalledSelected.Count)
             {
                 //User have selected to Uninstall all installed modules
                 //Have user selected to Installed any new module
@@ -1250,8 +1261,8 @@ namespace InstallerUI
                 this.SetProperty(ref this._fIBootStapperInstallerIsSkipChecked, value);
                 if (value)
                 {
-                    engine.StringVariables[PackageIdEnum.FirstInstallerBootStrapper.ToString()] = UserSelectionEnum.Skip.ToString();
-                    _userSelectionDic[PackageIdEnum.FirstInstallerBootStrapper.ToString()] = UserSelectionEnum.Skip.ToString();
+                    engine.StringVariables[PackageIdEnum.FirstInstallerBootstrapper.ToString()] = UserSelectionEnum.Skip.ToString();
+                    _userSelectionDic[PackageIdEnum.FirstInstallerBootstrapper.ToString()] = UserSelectionEnum.Skip.ToString();
                 }
             }
         }
@@ -1265,8 +1276,8 @@ namespace InstallerUI
                 this.SetProperty(ref this._fIBootStrapperInstallerIsUnInstallChecked, value);
                 if (value)
                 {
-                    engine.StringVariables[PackageIdEnum.FirstInstallerBootStrapper.ToString()] = UserSelectionEnum.Uninstall.ToString();
-                    _userSelectionDic[PackageIdEnum.FirstInstallerBootStrapper.ToString()] = UserSelectionEnum.Uninstall.ToString();
+                    engine.StringVariables[PackageIdEnum.FirstInstallerBootstrapper.ToString()] = UserSelectionEnum.Uninstall.ToString();
+                    _userSelectionDic[PackageIdEnum.FirstInstallerBootstrapper.ToString()] = UserSelectionEnum.Uninstall.ToString();
                 }
             }
         }
@@ -1284,8 +1295,8 @@ namespace InstallerUI
                 this.SetProperty(ref this._fIBootStrapperInstallerIsRepairChecked, value);
                 if (value)
                 {
-                    engine.StringVariables[PackageIdEnum.FirstInstallerBootStrapper.ToString()] = UserSelectionEnum.Repair.ToString();
-                    _userSelectionDic[PackageIdEnum.FirstInstallerBootStrapper.ToString()] = UserSelectionEnum.Repair.ToString();
+                    engine.StringVariables[PackageIdEnum.FirstInstallerBootstrapper.ToString()] = UserSelectionEnum.Repair.ToString();
+                    _userSelectionDic[PackageIdEnum.FirstInstallerBootstrapper.ToString()] = UserSelectionEnum.Repair.ToString();
                 }
             }
         }
@@ -1304,8 +1315,8 @@ namespace InstallerUI
                 this.SetProperty(ref this._fIBootStrapperInstallerIsKeepChecked, value);
                 if (value)
                 {
-                    engine.StringVariables[PackageIdEnum.FirstInstallerBootStrapper.ToString()] = UserSelectionEnum.Keep.ToString();
-                    _userSelectionDic[PackageIdEnum.FirstInstallerBootStrapper.ToString()] = UserSelectionEnum.Keep.ToString();
+                    engine.StringVariables[PackageIdEnum.FirstInstallerBootstrapper.ToString()] = UserSelectionEnum.Keep.ToString();
+                    _userSelectionDic[PackageIdEnum.FirstInstallerBootstrapper.ToString()] = UserSelectionEnum.Keep.ToString();
                 }
             }
         }
@@ -1384,8 +1395,8 @@ namespace InstallerUI
                 this.SetProperty(ref this._sIBootStapperInstallerIsSkipChecked, value);
                 if (value)
                 {
-                    engine.StringVariables[PackageIdEnum.SecondInstallerBootStrapper.ToString()] = UserSelectionEnum.Skip.ToString();
-                    _userSelectionDic[PackageIdEnum.SecondInstallerBootStrapper.ToString()] = UserSelectionEnum.Skip.ToString();
+                    engine.StringVariables[PackageIdEnum.SecondInstallerBootstrapper.ToString()] = UserSelectionEnum.Skip.ToString();
+                    _userSelectionDic[PackageIdEnum.SecondInstallerBootstrapper.ToString()] = UserSelectionEnum.Skip.ToString();
                 }
             }
         }
@@ -1399,8 +1410,8 @@ namespace InstallerUI
                 this.SetProperty(ref this._sIBootStrapperInstallerIsUnInstallChecked, value);
                 if (value)
                 {
-                    engine.StringVariables[PackageIdEnum.SecondInstallerBootStrapper.ToString()] = UserSelectionEnum.Uninstall.ToString();
-                    _userSelectionDic[PackageIdEnum.SecondInstallerBootStrapper.ToString()] = UserSelectionEnum.Uninstall.ToString();
+                    engine.StringVariables[PackageIdEnum.SecondInstallerBootstrapper.ToString()] = UserSelectionEnum.Uninstall.ToString();
+                    _userSelectionDic[PackageIdEnum.SecondInstallerBootstrapper.ToString()] = UserSelectionEnum.Uninstall.ToString();
                 }
             }
         }
@@ -1418,8 +1429,8 @@ namespace InstallerUI
                 this.SetProperty(ref this._sIBootStrapperInstallerIsRepairChecked, value);
                 if (value)
                 {
-                    engine.StringVariables[PackageIdEnum.SecondInstallerBootStrapper.ToString()] = UserSelectionEnum.Repair.ToString();
-                    _userSelectionDic[PackageIdEnum.SecondInstallerBootStrapper.ToString()] = UserSelectionEnum.Repair.ToString();
+                    engine.StringVariables[PackageIdEnum.SecondInstallerBootstrapper.ToString()] = UserSelectionEnum.Repair.ToString();
+                    _userSelectionDic[PackageIdEnum.SecondInstallerBootstrapper.ToString()] = UserSelectionEnum.Repair.ToString();
                 }
             }
         }
@@ -1438,8 +1449,8 @@ namespace InstallerUI
                 this.SetProperty(ref this._sIBootStrapperInstallerIsKeepChecked, value);
                 if (value)
                 {
-                    engine.StringVariables[PackageIdEnum.SecondInstallerBootStrapper.ToString()] = UserSelectionEnum.Keep.ToString();
-                    _userSelectionDic[PackageIdEnum.SecondInstallerBootStrapper.ToString()] = UserSelectionEnum.Keep.ToString();
+                    engine.StringVariables[PackageIdEnum.SecondInstallerBootstrapper.ToString()] = UserSelectionEnum.Keep.ToString();
+                    _userSelectionDic[PackageIdEnum.SecondInstallerBootstrapper.ToString()] = UserSelectionEnum.Keep.ToString();
                 }
             }
         }
@@ -1574,7 +1585,7 @@ namespace InstallerUI
                     FifthInstallerIsRepairEnabled = false;
                     FifthInstallerIsUpdateEnabled = false;
                 }
-                if (x.ToLower().Equals(PackageIdEnum.FirstInstallerBootStrapper.ToString().ToLower()))
+                if (x.ToLower().Equals(PackageIdEnum.FirstInstallerBootstrapper.ToString().ToLower()))
                 {
                     engine.Log(LogLevel.Verbose, $"SelectInstallIfNotInstalled::Disabling {x}");
                     FIBootStrapperInstallerIsUnInstallEnabled = false;
@@ -1582,7 +1593,7 @@ namespace InstallerUI
                     FIBootStrapperInstallerIsRepairEnabled = false;
                     FIBootStrapperInstallerIsUpdateEnabled = false;
                 }
-                if (x.ToLower().Equals(PackageIdEnum.SecondInstallerBootStrapper.ToString().ToLower()))
+                if (x.ToLower().Equals(PackageIdEnum.SecondInstallerBootstrapper.ToString().ToLower()))
                 {
                     engine.Log(LogLevel.Verbose, $"SelectInstallIfNotInstalled::Disabling {x}");
                     SIBootStrapperInstallerIsUnInstallEnabled = false;
@@ -1637,14 +1648,14 @@ namespace InstallerUI
                     FifthInstallerIsInstallEnabled = false;
                     FifthInstallerIsSkipEnabled = false;
                 }
-                if (x.ToLower().Equals(PackageIdEnum.FirstInstallerBootStrapper.ToString().ToLower()))
+                if (x.ToLower().Equals(PackageIdEnum.FirstInstallerBootstrapper.ToString().ToLower()))
                 {
                     engine.Log(LogLevel.Verbose, $"SelectUnInstallIfInstalled:6Installed Package Name = {x}");
                     FIBootStapperInstallerIsUnInstallChecked = true;
                     FIBootStrapperInstallerIsInstallEnabled = false;
                     FIBootStrapperInstallerIsSkipEnabled = false;
                 }
-                if (x.ToLower().Equals(PackageIdEnum.SecondInstallerBootStrapper.ToString().ToLower()))
+                if (x.ToLower().Equals(PackageIdEnum.SecondInstallerBootstrapper.ToString().ToLower()))
                 {
                     engine.Log(LogLevel.Verbose, $"SelectUnInstallIfInstalled:7Installed Package Name = {x}");
                     SIBootStapperInstallerIsUnInstallChecked = true;
@@ -1725,7 +1736,7 @@ namespace InstallerUI
                             if (!string.IsNullOrWhiteSpace(_softwareName))
                             {
                                 if (Packages.GetPackageIdsAsEnum().ToList()
-                                    .Where(x => x.ToString().Contains(_softwareName)).Any())
+                                    .Where(x => x.ToString().ToLower().Contains(_softwareName.ToLower())).Any())
                                 {
                                     installedModules.Add(new Tuple<string, string, string>(a, _softwareName,
                                         subkey.GetValue("DisplayVersion").ToString()));
