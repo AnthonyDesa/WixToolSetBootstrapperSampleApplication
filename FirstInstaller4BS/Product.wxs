@@ -18,10 +18,17 @@
       <Component Guid="*" Id="CMP_FirstInstaller4BSReadMe">
         <File Id="FILE_FirstInstaller4BSReadMe" Source="FirstInstaller4BSReadMe.txt" KeyPath="yes" />
       </Component>
+      <Component Id="FirstInstaller4BS" Guid="3373888a-e718-4a37-9f07-baf474342b2a">
+        <RegistryKey Root="HKCU"
+                     Key="Software\MySciex\FirstInstallerBootstrapper">
+          <RegistryValue Type="string" Name="Installed" Value="true" KeyPath="yes" />
+        </RegistryKey>
+      </Component>
     </DirectoryRef>
 
     <Feature Id="ProductFeature" Title="FirstInstaller4BS" Level="1">
       <ComponentRef Id="CMP_FirstInstaller4BSReadMe"/>
+      <ComponentRef Id="FirstInstaller4BS" />
     </Feature>
    
   </Product>

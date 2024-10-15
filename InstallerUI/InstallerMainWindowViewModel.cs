@@ -20,6 +20,7 @@ namespace InstallerUI
         private BootstrapperApplication bootstrapper;
         private Engine engine;
         private Dictionary<string,string> _userSelectionDic = new Dictionary<string,string>();
+        private Dictionary<string, string> _newVersions = new Dictionary<string, string>();
 
         [Import] private IUIInteractionService interactionService = null;
 
@@ -28,6 +29,14 @@ namespace InstallerUI
         {
             this.bootstrapper = bootstrapper;
             this.engine = engine;
+
+            //Following information will be retrieved from Api when UI is launched
+            //For now simulate that new version(s) is\are available for Following modules
+            _newVersions.Add(PackageIdEnum.FirstInstallerBootstrapper.ToString(), "1.1.0.0");
+            _newVersions.Add(PackageIdEnum.SecondInstallerBootstrapper.ToString(), "1.2.0.0");
+            _newVersions.Add(PackageIdEnum.ThirdInstallerBootstrapper.ToString(), "1.3.0.0");
+            _newVersions.Add(PackageIdEnum.FourthInstallerBootstrapper.ToString(), "1.4.0.0");
+            _newVersions.Add(PackageIdEnum.FifthInstallerBootstrapper.ToString(), "1.5.0.0");
 
             // For demo purposes, we set two variables here. They are passed on to the chained MSIs.
             engine.StringVariables["Prerequisite"] = "1";
@@ -131,10 +140,28 @@ namespace InstallerUI
             bootstrapper.ResolveSource += (_, ea) =>
             {
                 this.LogEvent("ResolveSource", ea);
+                string version = string.Empty;
+                
+
+                if (_newVersions.ContainsKey(ea.PayloadId) && _userSelectionDic.Where(x => x.Key.ToLower() == ea.PayloadId.ToLower() 
+                        && x.Value.ToLower() == UserSelectionEnum.Update.ToString().ToLower()).Any())
+                {
+                    //New version of package being processed is available
+                    //and user have selected the package to get the new version.
+                    version = _newVersions[ea.PayloadId];
+                }
+                else
+                {
+                    //Get the default version from Setup Settings (Setup settings will contain the version for each module it was shipped with)
+                    //Only get the version from setup if repair Or install is selected
+                    //Lets hardcode it for now.....
+                    version = "1.0.0.0";
+                }
+                
                 if (!File.Exists(ea.LocalSource) && !string.IsNullOrEmpty(ea.DownloadSource))
                 {
                     this.LogEvent($"ResolveSource::ExistingDownloadSource={ea.DownloadSource}");
-                    string newUrl = string.Format(ea.DownloadSource, "localhost");
+                    string newUrl = string.Format(ea.DownloadSource, version);
                     this.LogEvent($"ResolveSource::NewURL={newUrl}");
                     engine.SetDownloadSource(ea.PackageOrContainerId, ea.PayloadId, newUrl, null, null);
                 }
@@ -441,7 +468,7 @@ namespace InstallerUI
         {
             //check if any package have repair selected
             IList<string> repairSelected = new List<string>();
-            if(!FirstInstallerIsRepairChecked 
+            if (!FirstInstallerIsRepairChecked
                && !SecondInstallerIsRepairChecked
                && !ThirdInstallerIsRepairChecked
                && !FourthInstallerIsRepairChecked
@@ -548,6 +575,13 @@ namespace InstallerUI
             //3). Check what user is Installing
             var InstalledSelected = userSelection.Where(x => x.Value.ToLower() == UserSelectionEnum.Install.ToString().ToLower()).Select(x => x.Key).ToList();
             engine.Log(LogLevel.Verbose, $"HandleApplyCommand::InstalledSelected Modules = {string.Join(",", InstalledSelected.ToArray())}");
+
+            var updateSelected = userSelection.Where(x => x.Value.ToLower() == UserSelectionEnum.Update.ToString().ToLower()).Select(x => x.Key).ToList();
+            if(updateSelected.Count > 0)
+            {
+                engine.Log(LogLevel.Verbose, $"HandleApplyCommand::UpdateSelected Modules = {string.Join(",", updateSelected.ToArray())}");
+                DeleteInstalledRegistryKey(updateSelected);
+            }
 
             //4). If nothing is left installed on Client Computer the Call Uninstall otherwise call Install
             engine.Log(LogLevel.Verbose,$"installedModules.Count={installedModules.Count} unInstalledSelected.Count={unInstalledSelected.Count} InstalledSelected.Count={InstalledSelected.Count}" );
@@ -2259,6 +2293,25 @@ namespace InstallerUI
                 }
             }
             return installedModules;
+        }
+
+
+        private void DeleteInstalledRegistryKey(IList<string> registryKeyToDeleteList)
+        {
+            var registryView = Environment.Is64BitOperatingSystem ? RegistryView.Registry64 : RegistryView.Registry32;
+            RegistryKey key = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, registryView);
+            //Get SciexOS Module Installed Version
+            foreach (string keyToDelete in registryKeyToDeleteList)
+            {
+                var root = $@"Software\MySciex\{keyToDelete}";
+                RegistryKey regKey = key.OpenSubKey(root, true);
+                if (regKey != null)
+                {
+                    //If found then delete 
+                    //Only ExePackage will have these keys. Msi package will not have these keys
+                    regKey.DeleteValue("Installed");
+                }
+            }
         }
     }
 }

@@ -18,12 +18,18 @@
     <!--<RelatedBundle Id="{06A19F6F-688C-44A6-B3D3-26F72DE50689}" Action="Upgrade"/>-->
     
     <!-- Check if FirstInstallerBootstrapper is installed. This is to make sure that uninstall removes the FirstInstallerBootstrapper when it is installed and also prevent installing if its already installed-->
-    <util:FileSearch
+    <!--<util:FileSearch
       Id='FileSearchCheckIfFirstBootstrapperInstallerInstalled'
       Variable="IsFirstBootstrapperInstallerInstalled"
       Result="exists"
-      Path="[ProgramFilesFolder]\CustomBurnUISample\FirstInstaller4BS\FirstInstaller4BSReadMe.txt"/>
+      Path="[ProgramFilesFolder]\CustomBurnUISample\FirstInstaller4BS\FirstInstaller4BSReadMe.txt"/>-->
 
+    <util:RegistrySearch Root="HKCU"
+                         Key="Software\MySciex\FirstInstallerBootstrapper\"
+                         Value="Installed"
+                         Result="exists"
+                         Variable="IsFirstBootstrapperInstallerInstalled" />
+    
     <!-- Check if SecondInstallerBootstrapper is installed. This is to make sure that uninstall removes the SecondInstallerBootstrapper when it is installed and also prevent installing if its already installed-->
     <util:FileSearch
       Id='FileSearchCheckIfSecondBootstrapperInstallerInstalled'
@@ -107,7 +113,7 @@
       </MsiPackage>
       <ExePackage Id="FirstInstallerBootstrapper"
                   Name="FirstInstallerBootstrapper.exe"
-                  DownloadUrl="http://localhost/MyMsi/CustomBurnUI/Versions/1.0.0.0/FirstInstallerBootstrapper.exe"
+                  DownloadUrl="http://localhost/MyMsi/CustomBurnUI/Versions/{0}/FirstInstallerBootstrapper.exe"
                   InstallCommand="/S"
                   UninstallCommand="/uninstall /quiet"
                   DetectCondition="IsFirstBootstrapperInstallerInstalled"
@@ -128,7 +134,7 @@
       </ExePackage>
       <ExePackage Id="SecondInstallerBootstrapper"
                   Name="SecondInstallerBootstrapper.exe"
-                  DownloadUrl="http://localhost/MyMsi/CustomBurnUI/Versions/1.0.0.0/SecondInstallerBootstrapper.exe"
+                  DownloadUrl="http://localhost/MyMsi/CustomBurnUI/Versions/{0}/SecondInstallerBootstrapper.exe"
                   InstallCommand="/S"
                   UninstallCommand="/uninstall /quiet"
                   DetectCondition="IsSecondBootstrapperInstallerInstalled"
@@ -149,7 +155,7 @@
       </ExePackage>
       <ExePackage Id="ThirdInstallerBootstrapper"
                   Name="ThirdInstallerBootstrapper.exe"
-                  DownloadUrl="http://localhost/MyMsi/CustomBurnUI/Versions/1.0.0.0/ThirdInstallerBootstrapper.exe"
+                  DownloadUrl="http://localhost/MyMsi/CustomBurnUI/Versions/{0}/ThirdInstallerBootstrapper.exe"
                   InstallCommand="/S"
                   UninstallCommand="/uninstall /quiet"
                   DetectCondition="IsThirdBootstrapperInstallerInstalled"
@@ -170,7 +176,7 @@
       </ExePackage>
       <ExePackage Id="FourthInstallerBootstrapper"
                   Name="FourthInstallerBootstrapper.exe"
-                  DownloadUrl="http://localhost/MyMsi/CustomBurnUI/Versions/1.0.0.0/FourthInstallerBootstrapper.exe"
+                  DownloadUrl="http://localhost/MyMsi/CustomBurnUI/Versions/{0}/FourthInstallerBootstrapper.exe"
                   InstallCommand="/S"
                   UninstallCommand="/uninstall /quiet"
                   DetectCondition="IsFourthBootstrapperInstallerInstalled"
@@ -191,7 +197,7 @@
       </ExePackage>
       <ExePackage Id="FifthInstallerBootstrapper"
                   Name="FifthInstallerBootstrapper.exe"
-                  DownloadUrl="http://localhost/MyMsi/CustomBurnUI/Versions/1.0.0.0/FifthInstallerBootstrapper.exe"
+                  DownloadUrl="http://localhost/MyMsi/CustomBurnUI/Versions/{0}/FifthInstallerBootstrapper.exe"
                   InstallCommand="/S"
                   UninstallCommand="/uninstall /quiet"
                   DetectCondition="IsFifthBootstrapperInstallerInstalled"
