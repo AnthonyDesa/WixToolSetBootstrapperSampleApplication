@@ -12,13 +12,13 @@ echo "Extract Engine from Executable"
 insignia.exe -ib FirstInstallerBootstrapper.exe -o FirstInstallerBootstrapperEngine.exe
 
 echo "Sign Extracted Engine"
-signtool.exe sign /f "C:\Program Files (x86)\WiX Toolset v3.11\bin\Server.pfx" /fd sha256 /t http://timestamp.digicert.com /debug FirstInstallerBootstrapperEngine.exe
+signtool.exe sign /f Server.pfx /fd sha256 /t http://timestamp.digicert.com /debug FirstInstallerBootstrapperEngine.exe
 
 echo "Merge Engine back to Executable (Overwrite)"
 insignia.exe -ab FirstInstallerBootstrapperEngine.exe FirstInstallerBootstrapper.exe -o FirstInstallerBootstrapper.exe
 
 echo "Sign Executable (Which now have Engine which is signed)"
-signtool sign /f "C:\Program Files (x86)\WiX Toolset v3.11\bin\Server.pfx" /fd sha256 /t http://timestamp.digicert.com /debug FirstInstallerBootstrapper.exe
+signtool sign /f Server.pfx /fd sha256 /t http://timestamp.digicert.com /debug FirstInstallerBootstrapper.exe
 
 echo "Validate Executable"
 signtool.exe verify /v /pa FirstInstallerBootstrapper.exe

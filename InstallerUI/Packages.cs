@@ -22,7 +22,11 @@ namespace InstallerUI
         FourthInstaller,
         FifthInstaller,
         FirstInstallerBootstrapper,
-        SecondInstallerBootstrapper
+        SecondInstallerBootstrapper,
+        ThirdInstallerBootstrapper,
+        FourthInstallerBootstrapper,
+        FifthInstallerBootstrapper
+
     }
 
     public enum UserSelectionEnum

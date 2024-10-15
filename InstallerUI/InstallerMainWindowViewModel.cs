@@ -298,6 +298,7 @@ namespace InstallerUI
             get { return this.UninstallCommandValue; }
         }
 
+        #region Installer Commands
         public ICommand FirstInstallerCommand
         {
             get { return new DelegateCommand<string>(HandleFirstIntallCommand); }
@@ -389,6 +390,48 @@ namespace InstallerUI
             engine.Log(LogLevel.Verbose, $"::{key} = {_userSelectionDic[key]} & commandParameter={commandParameter}");
         }
 
+        public ICommand ThirdIBootStapperCommand
+        {
+            get { return new DelegateCommand<string>(HandleThirdIBootStapperCommand); }
+        }
+
+        private void HandleThirdIBootStapperCommand(object commandParameter)
+        {
+            string key = PackageIdEnum.ThirdInstallerBootstrapper.ToString();
+            engine.StringVariables[key] = commandParameter.ToString();
+            _userSelectionDic[key] = commandParameter.ToString();
+            engine.Log(LogLevel.Verbose, $"::{key} = {_userSelectionDic[key]} & commandParameter={commandParameter}");
+        }
+
+        public ICommand FourthIBootStapperCommand
+        {
+            get { return new DelegateCommand<string>(HandleFourthIBootStapperCommand); }
+        }
+
+        private void HandleFourthIBootStapperCommand(object commandParameter)
+        {
+            string key = PackageIdEnum.FourthInstallerBootstrapper.ToString();
+            engine.StringVariables[key] = commandParameter.ToString();
+            _userSelectionDic[key] = commandParameter.ToString();
+            engine.Log(LogLevel.Verbose, $"::{key} = {_userSelectionDic[key]} & commandParameter={commandParameter}");
+        }
+
+        public ICommand FifthIBootStapperCommand
+        {
+            get { return new DelegateCommand<string>(HandleFifthIBootStapperCommand); }
+        }
+
+        private void HandleFifthIBootStapperCommand(object commandParameter)
+        {
+            string key = PackageIdEnum.FifthInstallerBootstrapper.ToString();
+            engine.StringVariables[key] = commandParameter.ToString();
+            _userSelectionDic[key] = commandParameter.ToString();
+            engine.Log(LogLevel.Verbose, $"::{key} = {_userSelectionDic[key]} & commandParameter={commandParameter}");
+        }
+
+
+        #endregion Installer Commands
+
         public ICommand RepairCommand
         {
             get { return new DelegateCommand(HandleRepairCommand); }
@@ -404,7 +447,11 @@ namespace InstallerUI
                && !FourthInstallerIsRepairChecked
                && !FifthInstallerIsRepairChecked
                && !FIBootStapperInstallerIsRepairChecked
-               && !SIBootStapperInstallerIsRepairChecked)
+               && !SIBootStapperInstallerIsRepairChecked
+               && !ThirdIBootStapperInstallerIsRepairChecked
+               && !FourthIBootStapperInstallerIsRepairChecked
+               && !FifthIBootStapperInstallerIsRepairChecked
+               )
             {
                 interactionService.ShowMessageBox("No package selected for Repair");
             }
@@ -416,11 +463,6 @@ namespace InstallerUI
                 //interactionService.ShowMessageBox("Please note any package that is not set to repair is forced to skip");
                 engine.Plan(LaunchAction.Repair);
             }
-        }
-
-        public ICommand ApplyCommand
-        {
-            get { return new DelegateCommand(HandleApplyCommand); }
         }
 
         //Called from Repair Command
@@ -440,6 +482,12 @@ namespace InstallerUI
                 FIBootStapperInstallerIsKeepChecked = true;
             if (!SIBootStapperInstallerIsRepairChecked)
                 SIBootStapperInstallerIsKeepChecked = true;
+            if (!ThirdIBootStapperInstallerIsRepairChecked)
+                ThirdIBootStapperInstallerIsKeepChecked = true;
+            if (!FourthIBootStapperInstallerIsRepairChecked)
+                FourthIBootStapperInstallerIsKeepChecked = true;
+            if (!FifthIBootStapperInstallerIsRepairChecked)
+                FifthIBootStapperInstallerIsKeepChecked = true;
         }
 
 
@@ -460,7 +508,21 @@ namespace InstallerUI
                 FIBootStapperInstallerIsSkipChecked = true;
             if (SIBootStapperInstallerIsRepairChecked)
                 SIBootStapperInstallerIsSkipChecked = true;
+            if (ThirdIBootStapperInstallerIsRepairChecked)
+                ThirdIBootStapperInstallerIsSkipChecked = true;
+            if (FourthIBootStapperInstallerIsRepairChecked)
+                FourthIBootStapperInstallerIsSkipChecked = true;
+            if (FifthIBootStapperInstallerIsRepairChecked)
+                FifthIBootStapperInstallerIsSkipChecked = true;
+
         }
+
+        #region Apply Command
+        public ICommand ApplyCommand
+        {
+            get { return new DelegateCommand(HandleApplyCommand); }
+        }
+
         private void HandleApplyCommand()
         {
             SetRepairToSkip();
@@ -491,7 +553,7 @@ namespace InstallerUI
             engine.Log(LogLevel.Verbose,$"installedModules.Count={installedModules.Count} unInstalledSelected.Count={unInstalledSelected.Count} InstalledSelected.Count={InstalledSelected.Count}" );
             bool executeUninstall = false;
             //-1 is for Bootstrapper
-            if (installedModules.Count - 1 == unInstalledSelected.Count)
+            if (installedModules.Count == unInstalledSelected.Count)
             {
                 //User have selected to Uninstall all installed modules
                 //Have user selected to Installed any new module
@@ -512,6 +574,7 @@ namespace InstallerUI
                 engine.Plan(LaunchAction.Install);
             }
         }
+        #endregion
 
         private InstallationState StateValue;
 
@@ -1455,8 +1518,6 @@ namespace InstallerUI
             }
         }
         #endregion
-        #endregion
-
         #region  IsEnabled
         private bool _sIBootStrapperInstallerIsInstallEnabled = true;
         public bool SIBootStrapperInstallerIsInstallEnabled
@@ -1518,8 +1579,410 @@ namespace InstallerUI
             }
         }
         #endregion
+        #endregion
+
+        #region ThirdIBootStapper
+        private bool _thirdIBootStapperInstallerIsSkipChecked = true;
+        public bool ThirdIBootStapperInstallerIsSkipChecked
+        {
+            get { return this._thirdIBootStapperInstallerIsSkipChecked; }
+            set
+            {
+                this.SetProperty(ref this._thirdIBootStapperInstallerIsSkipChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.ThirdInstallerBootstrapper.ToString()] = UserSelectionEnum.Skip.ToString();
+                    _userSelectionDic[PackageIdEnum.ThirdInstallerBootstrapper.ToString()] = UserSelectionEnum.Skip.ToString();
+                }
+            }
+        }
+
+        private bool _thirdIBootStrapperInstallerIsUnInstallChecked = false;
+        public bool ThirdIBootStapperInstallerIsUnInstallChecked
+        {
+            get { return this._thirdIBootStrapperInstallerIsUnInstallChecked; }
+            set
+            {
+                this.SetProperty(ref this._thirdIBootStrapperInstallerIsUnInstallChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.ThirdInstallerBootstrapper.ToString()] = UserSelectionEnum.Uninstall.ToString();
+                    _userSelectionDic[PackageIdEnum.ThirdInstallerBootstrapper.ToString()] = UserSelectionEnum.Uninstall.ToString();
+                }
+            }
+        }
+
+        #region Repair
+        private bool _thirdIBootStrapperInstallerIsRepairChecked = false;
+        public bool ThirdIBootStapperInstallerIsRepairChecked
+        {
+            get
+            {
+                return this._thirdIBootStrapperInstallerIsRepairChecked;
+            }
+            set
+            {
+                this.SetProperty(ref this._thirdIBootStrapperInstallerIsRepairChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.ThirdInstallerBootstrapper.ToString()] = UserSelectionEnum.Repair.ToString();
+                    _userSelectionDic[PackageIdEnum.ThirdInstallerBootstrapper.ToString()] = UserSelectionEnum.Repair.ToString();
+                }
+            }
+        }
+        #endregion
+
+        #region Keep
+        private bool _thirdIBootStrapperInstallerIsKeepChecked = false;
+        public bool ThirdIBootStapperInstallerIsKeepChecked
+        {
+            get
+            {
+                return this._thirdIBootStrapperInstallerIsKeepChecked;
+            }
+            set
+            {
+                this.SetProperty(ref this._thirdIBootStrapperInstallerIsKeepChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.ThirdInstallerBootstrapper.ToString()] = UserSelectionEnum.Keep.ToString();
+                    _userSelectionDic[PackageIdEnum.ThirdInstallerBootstrapper.ToString()] = UserSelectionEnum.Keep.ToString();
+                }
+            }
+        }
+        #endregion
+        #region  IsEnabled
+        private bool _thirdIBootStrapperInstallerIsInstallEnabled = true;
+        public bool ThirdIBootStrapperInstallerIsInstallEnabled
+        {
+            get { return this._thirdIBootStrapperInstallerIsInstallEnabled; }
+            set
+            {
+                this.SetProperty(ref this._thirdIBootStrapperInstallerIsInstallEnabled, value);
+            }
+        }
+
+        private bool _thirdIBootStrapperInstallerIsUnInstallEnabled = true;
+        public bool ThirdIBootStrapperInstallerIsUnInstallEnabled
+        {
+            get { return this._thirdIBootStrapperInstallerIsUnInstallEnabled; }
+            set
+            {
+                this.SetProperty(ref this._thirdIBootStrapperInstallerIsUnInstallEnabled, value);
+            }
+        }
+
+        private bool _thirdIBootStrapperInstallerIsSkipEnabled = true;
+        public bool ThirdIBootStrapperInstallerIsSkipEnabled
+        {
+            get { return this._thirdIBootStrapperInstallerIsSkipEnabled; }
+            set
+            {
+                this.SetProperty(ref this._thirdIBootStrapperInstallerIsSkipEnabled, value);
+            }
+        }
+
+        private bool _thirdIBootStrapperInstallerIsKeepEnabled = true;
+        public bool ThirdIBootStrapperInstallerIsKeepEnabled
+        {
+            get { return this._thirdIBootStrapperInstallerIsKeepEnabled; }
+            set
+            {
+                this.SetProperty(ref this._thirdIBootStrapperInstallerIsKeepEnabled, value);
+            }
+        }
+
+        private bool _thirdIBootStrapperInstallerIsRepairEnabled = true;
+        public bool ThirdIBootStrapperInstallerIsRepairEnabled
+        {
+            get { return this._thirdIBootStrapperInstallerIsRepairEnabled; }
+            set
+            {
+                this.SetProperty(ref this._thirdIBootStrapperInstallerIsRepairEnabled, value);
+            }
+        }
+
+        private bool _thirdIBootStrapperInstallerIsUpdateEnabled = true;
+        public bool ThirdIBootStrapperInstallerIsUpdateEnabled
+        {
+            get { return this._thirdIBootStrapperInstallerIsUpdateEnabled; }
+            set
+            {
+                this.SetProperty(ref this._thirdIBootStrapperInstallerIsUpdateEnabled, value);
+            }
+        }
+        #endregion
 
         #endregion
+
+        #region FourthIBootStapper
+        private bool _fourthIBootStapperInstallerIsSkipChecked = true;
+        public bool FourthIBootStapperInstallerIsSkipChecked
+        {
+            get { return this._fourthIBootStapperInstallerIsSkipChecked; }
+            set
+            {
+                this.SetProperty(ref this._fourthIBootStapperInstallerIsSkipChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.FourthInstallerBootstrapper.ToString()] = UserSelectionEnum.Skip.ToString();
+                    _userSelectionDic[PackageIdEnum.FourthInstallerBootstrapper.ToString()] = UserSelectionEnum.Skip.ToString();
+                }
+            }
+        }
+
+        private bool _fourthIBootStrapperInstallerIsUnInstallChecked = false;
+        public bool FourthIBootStapperInstallerIsUnInstallChecked
+        {
+            get { return this._fourthIBootStrapperInstallerIsUnInstallChecked; }
+            set
+            {
+                this.SetProperty(ref this._fourthIBootStrapperInstallerIsUnInstallChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.FourthInstallerBootstrapper.ToString()] = UserSelectionEnum.Uninstall.ToString();
+                    _userSelectionDic[PackageIdEnum.FourthInstallerBootstrapper.ToString()] = UserSelectionEnum.Uninstall.ToString();
+                }
+            }
+        }
+
+        #region Repair
+        private bool _fourthIBootStrapperInstallerIsRepairChecked = false;
+        public bool FourthIBootStapperInstallerIsRepairChecked
+        {
+            get
+            {
+                return this._fourthIBootStrapperInstallerIsRepairChecked;
+            }
+            set
+            {
+                this.SetProperty(ref this._fourthIBootStrapperInstallerIsRepairChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.FourthInstallerBootstrapper.ToString()] = UserSelectionEnum.Repair.ToString();
+                    _userSelectionDic[PackageIdEnum.FourthInstallerBootstrapper.ToString()] = UserSelectionEnum.Repair.ToString();
+                }
+            }
+        }
+        #endregion
+
+        #region Keep
+        private bool _fourthIBootStrapperInstallerIsKeepChecked = false;
+        public bool FourthIBootStapperInstallerIsKeepChecked
+        {
+            get
+            {
+                return this._fourthIBootStrapperInstallerIsKeepChecked;
+            }
+            set
+            {
+                this.SetProperty(ref this._fourthIBootStrapperInstallerIsKeepChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.FourthInstallerBootstrapper.ToString()] = UserSelectionEnum.Keep.ToString();
+                    _userSelectionDic[PackageIdEnum.FourthInstallerBootstrapper.ToString()] = UserSelectionEnum.Keep.ToString();
+                }
+            }
+        }
+        #endregion
+        #region  IsEnabled
+        private bool _fourthIBootStrapperInstallerIsInstallEnabled = true;
+        public bool FourthIBootStrapperInstallerIsInstallEnabled
+        {
+            get { return this._fourthIBootStrapperInstallerIsInstallEnabled; }
+            set
+            {
+                this.SetProperty(ref this._fourthIBootStrapperInstallerIsInstallEnabled, value);
+            }
+        }
+
+        private bool _fourthIBootStrapperInstallerIsUnInstallEnabled = true;
+        public bool FourthIBootStrapperInstallerIsUnInstallEnabled
+        {
+            get { return this._fourthIBootStrapperInstallerIsUnInstallEnabled; }
+            set
+            {
+                this.SetProperty(ref this._fourthIBootStrapperInstallerIsUnInstallEnabled, value);
+            }
+        }
+
+        private bool _fourthIBootStrapperInstallerIsSkipEnabled = true;
+        public bool FourthIBootStrapperInstallerIsSkipEnabled
+        {
+            get { return this._fourthIBootStrapperInstallerIsSkipEnabled; }
+            set
+            {
+                this.SetProperty(ref this._fourthIBootStrapperInstallerIsSkipEnabled, value);
+            }
+        }
+
+        private bool _fourthIBootStrapperInstallerIsKeepEnabled = true;
+        public bool FourthIBootStrapperInstallerIsKeepEnabled
+        {
+            get { return this._fourthIBootStrapperInstallerIsKeepEnabled; }
+            set
+            {
+                this.SetProperty(ref this._fourthIBootStrapperInstallerIsKeepEnabled, value);
+            }
+        }
+
+        private bool _fourthIBootStrapperInstallerIsRepairEnabled = true;
+        public bool FourthIBootStrapperInstallerIsRepairEnabled
+        {
+            get { return this._fourthIBootStrapperInstallerIsRepairEnabled; }
+            set
+            {
+                this.SetProperty(ref this._fourthIBootStrapperInstallerIsRepairEnabled, value);
+            }
+        }
+
+        private bool _fourthIBootStrapperInstallerIsUpdateEnabled = true;
+        public bool FourthIBootStrapperInstallerIsUpdateEnabled
+        {
+            get { return this._fourthIBootStrapperInstallerIsUpdateEnabled; }
+            set
+            {
+                this.SetProperty(ref this._fourthIBootStrapperInstallerIsUpdateEnabled, value);
+            }
+        }
+        #endregion
+        #endregion
+        
+        #region FifthIBootStapper
+        private bool _fifthIBootStapperInstallerIsSkipChecked = true;
+        public bool FifthIBootStapperInstallerIsSkipChecked
+        {
+            get { return this._fifthIBootStapperInstallerIsSkipChecked; }
+            set
+            {
+                this.SetProperty(ref this._fifthIBootStapperInstallerIsSkipChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.FifthInstallerBootstrapper.ToString()] = UserSelectionEnum.Skip.ToString();
+                    _userSelectionDic[PackageIdEnum.FifthInstallerBootstrapper.ToString()] = UserSelectionEnum.Skip.ToString();
+                }
+            }
+        }
+
+        private bool _fifthIBootStrapperInstallerIsUnInstallChecked = false;
+        public bool FifthIBootStapperInstallerIsUnInstallChecked
+        {
+            get { return this._fifthIBootStrapperInstallerIsUnInstallChecked; }
+            set
+            {
+                this.SetProperty(ref this._fifthIBootStrapperInstallerIsUnInstallChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.FifthInstallerBootstrapper.ToString()] = UserSelectionEnum.Uninstall.ToString();
+                    _userSelectionDic[PackageIdEnum.FifthInstallerBootstrapper.ToString()] = UserSelectionEnum.Uninstall.ToString();
+                }
+            }
+        }
+
+        #region Repair
+        private bool _fifthIBootStrapperInstallerIsRepairChecked = false;
+        public bool FifthIBootStapperInstallerIsRepairChecked
+        {
+            get
+            {
+                return this._fifthIBootStrapperInstallerIsRepairChecked;
+            }
+            set
+            {
+                this.SetProperty(ref this._fifthIBootStrapperInstallerIsRepairChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.FifthInstallerBootstrapper.ToString()] = UserSelectionEnum.Repair.ToString();
+                    _userSelectionDic[PackageIdEnum.FifthInstallerBootstrapper.ToString()] = UserSelectionEnum.Repair.ToString();
+                }
+            }
+        }
+        #endregion
+
+        #region Keep
+        private bool _fifthIBootStrapperInstallerIsKeepChecked = false;
+        public bool FifthIBootStapperInstallerIsKeepChecked
+        {
+            get
+            {
+                return this._fifthIBootStrapperInstallerIsKeepChecked;
+            }
+            set
+            {
+                this.SetProperty(ref this._fifthIBootStrapperInstallerIsKeepChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.FifthInstallerBootstrapper.ToString()] = UserSelectionEnum.Keep.ToString();
+                    _userSelectionDic[PackageIdEnum.FifthInstallerBootstrapper.ToString()] = UserSelectionEnum.Keep.ToString();
+                }
+            }
+        }
+        #endregion
+        #region  IsEnabled
+        private bool _fifthIBootStrapperInstallerIsInstallEnabled = true;
+        public bool FifthIBootStrapperInstallerIsInstallEnabled
+        {
+            get { return this._fifthIBootStrapperInstallerIsInstallEnabled; }
+            set
+            {
+                this.SetProperty(ref this._fifthIBootStrapperInstallerIsInstallEnabled, value);
+            }
+        }
+
+        private bool _fifthIBootStrapperInstallerIsUnInstallEnabled = true;
+        public bool FifthIBootStrapperInstallerIsUnInstallEnabled
+        {
+            get { return this._fifthIBootStrapperInstallerIsUnInstallEnabled; }
+            set
+            {
+                this.SetProperty(ref this._fifthIBootStrapperInstallerIsUnInstallEnabled, value);
+            }
+        }
+
+        private bool _fifthIBootStrapperInstallerIsSkipEnabled = true;
+        public bool FifthIBootStrapperInstallerIsSkipEnabled
+        {
+            get { return this._fifthIBootStrapperInstallerIsSkipEnabled; }
+            set
+            {
+                this.SetProperty(ref this._sIBootStrapperInstallerIsSkipEnabled, value);
+            }
+        }
+
+        private bool _fifthIBootStrapperInstallerIsKeepEnabled = true;
+        public bool FifthIBootStrapperInstallerIsKeepEnabled
+        {
+            get { return this._fifthIBootStrapperInstallerIsKeepEnabled; }
+            set
+            {
+                this.SetProperty(ref this._fifthIBootStrapperInstallerIsKeepEnabled, value);
+            }
+        }
+
+        private bool _fifthIBootStrapperInstallerIsRepairEnabled = true;
+        public bool FifthIBootStrapperInstallerIsRepairEnabled
+        {
+            get { return this._fifthIBootStrapperInstallerIsRepairEnabled; }
+            set
+            {
+                this.SetProperty(ref this._fifthIBootStrapperInstallerIsRepairEnabled, value);
+            }
+        }
+
+        private bool _fifthIBootStrapperInstallerIsUpdateEnabled = true;
+        public bool FifthIBootStrapperInstallerIsUpdateEnabled
+        {
+            get { return this._fifthIBootStrapperInstallerIsUpdateEnabled; }
+            set
+            {
+                this.SetProperty(ref this._fifthIBootStrapperInstallerIsUpdateEnabled, value);
+            }
+        }
+        #endregion
+        #endregion
+
+        #endregion Properties for data binding
+
         private void SelectInstallIfNotInstalled()
         {
             //Select all packages that are installed on client's computer
@@ -1601,6 +2064,32 @@ namespace InstallerUI
                     SIBootStrapperInstallerIsRepairEnabled = false;
                     SIBootStrapperInstallerIsUpdateEnabled = false;
                 }
+
+                if (x.ToLower().Equals(PackageIdEnum.ThirdInstallerBootstrapper.ToString().ToLower()))
+                {
+                    engine.Log(LogLevel.Verbose, $"SelectInstallIfNotInstalled::Disabling {x}");
+                    ThirdIBootStrapperInstallerIsUnInstallEnabled = false;
+                    ThirdIBootStrapperInstallerIsKeepEnabled = false;
+                    ThirdIBootStrapperInstallerIsRepairEnabled = false;
+                    ThirdIBootStrapperInstallerIsUpdateEnabled = false;
+                }
+                if (x.ToLower().Equals(PackageIdEnum.FourthInstallerBootstrapper.ToString().ToLower()))
+                {
+                    engine.Log(LogLevel.Verbose, $"SelectInstallIfNotInstalled::Disabling {x}");
+                    FourthIBootStrapperInstallerIsUnInstallEnabled = false;
+                    FourthIBootStrapperInstallerIsKeepEnabled = false;
+                    FourthIBootStrapperInstallerIsRepairEnabled = false;
+                    FourthIBootStrapperInstallerIsUpdateEnabled = false;
+                }
+                if (x.ToLower().Equals(PackageIdEnum.FifthInstallerBootstrapper.ToString().ToLower()))
+                {
+                    engine.Log(LogLevel.Verbose, $"SelectInstallIfNotInstalled::Disabling {x}");
+                    FifthIBootStrapperInstallerIsUnInstallEnabled = false;
+                    FifthIBootStrapperInstallerIsKeepEnabled = false;
+                    FifthIBootStrapperInstallerIsRepairEnabled = false;
+                    FifthIBootStrapperInstallerIsUpdateEnabled = false;
+                }
+
             }
         }
 
@@ -1662,6 +2151,29 @@ namespace InstallerUI
                     SIBootStrapperInstallerIsInstallEnabled = false;
                     SIBootStrapperInstallerIsSkipEnabled = false;
                 }
+
+                if (x.ToLower().Equals(PackageIdEnum.ThirdInstallerBootstrapper.ToString().ToLower()))
+                {
+                    engine.Log(LogLevel.Verbose, $"SelectUnInstallIfInstalled:8Installed Package Name = {x}");
+                    ThirdIBootStapperInstallerIsUnInstallChecked = true;
+                    ThirdIBootStrapperInstallerIsInstallEnabled = false;
+                    ThirdIBootStrapperInstallerIsSkipEnabled = false;
+                }
+                if (x.ToLower().Equals(PackageIdEnum.FourthInstallerBootstrapper.ToString().ToLower()))
+                {
+                    engine.Log(LogLevel.Verbose, $"SelectUnInstallIfInstalled:9Installed Package Name = {x}");
+                    FourthIBootStapperInstallerIsUnInstallChecked = true;
+                    FourthIBootStrapperInstallerIsInstallEnabled = false;
+                    FourthIBootStrapperInstallerIsSkipEnabled = false;
+                }
+                if (x.ToLower().Equals(PackageIdEnum.FifthInstallerBootstrapper.ToString().ToLower()))
+                {
+                    engine.Log(LogLevel.Verbose, $"SelectUnInstallIfInstalled:10Installed Package Name = {x}");
+                    FifthIBootStapperInstallerIsUnInstallChecked = true;
+                    FifthIBootStrapperInstallerIsInstallEnabled = false;
+                    FifthIBootStrapperInstallerIsSkipEnabled = false;
+                }
+
             });
         }
         private void DetectComplete(object sender, DetectCompleteEventArgs e)
@@ -1736,7 +2248,7 @@ namespace InstallerUI
                             if (!string.IsNullOrWhiteSpace(_softwareName))
                             {
                                 if (Packages.GetPackageIdsAsEnum().ToList()
-                                    .Where(x => x.ToString().ToLower().Contains(_softwareName.ToLower())).Any())
+                                    .Where(x => x.ToString().ToLower().Equals((_softwareName.ToLower()))).Any())
                                 {
                                     installedModules.Add(new Tuple<string, string, string>(a, _softwareName,
                                         subkey.GetValue("DisplayVersion").ToString()));

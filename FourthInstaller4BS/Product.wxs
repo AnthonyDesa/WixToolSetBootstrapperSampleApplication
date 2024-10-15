@@ -16,7 +16,7 @@
 
     <DirectoryRef Id="FourthInstaller4BS">
       <Component Guid="*" Id="CMP_FourthInstaller4BSReadMe">
-        <File Id="FILE_FifthInstaller4BSReadMe" Source="FifthInstaller4BSReadMe.txt" KeyPath="yes" />
+        <File Id="FILE_FourthInstaller4BSReadMe" Source="FourthInstaller4BSReadMe.txt" KeyPath="yes" />
       </Component>
     </DirectoryRef>
 

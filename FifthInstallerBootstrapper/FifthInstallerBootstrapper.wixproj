@@ -6,7 +6,7 @@
     <ProductVersion>3.10</ProductVersion>
     <ProjectGuid>e371c493-06bc-448b-beba-25ca4ddb6b2f</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
-    <OutputName>FifthInstallerBootstapper</OutputName>
+    <OutputName>FifthInstallerBootstrapper</OutputName>
     <OutputType>Bundle</OutputType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
@@ -38,6 +38,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Server.pfx" />
     <Content Include="SignFifthInstallerBootstapper.bat" />
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" Condition=" '$(WixTargetsPath)' != '' " />
@@ -46,7 +47,8 @@
     <Error Text="The WiX Toolset v3.11 build tools must be installed to build this project. To download the WiX Toolset, see https://wixtoolset.org/releases/v3.11/stable" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>copy "$(ProjectDir)SignFifthInstallerBootstapper.bat" "$(TargetDir)SignFifthInstallerBootstapper.bat"</PostBuildEvent>
+    <PostBuildEvent>copy "$(ProjectDir)SignFifthInstallerBootstapper.bat" "$(TargetDir)SignFifthInstallerBootstapper.bat"
+copy "$(ProjectDir)Server.pfx" "$(TargetDir)Server.pfx"</PostBuildEvent>
   </PropertyGroup>
   <!--
 	To modify your build process, add your task inside one of the targets below and uncomment it.

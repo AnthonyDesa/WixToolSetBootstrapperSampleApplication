@@ -17,19 +17,40 @@
 
     <!--<RelatedBundle Id="{06A19F6F-688C-44A6-B3D3-26F72DE50689}" Action="Upgrade"/>-->
     
-    <!-- Check if FirstInstaller is installed. This is to make sure that uninstall removes the FirstInstaller when it is installed and also prevent installing if its already installed-->
+    <!-- Check if FirstInstallerBootstrapper is installed. This is to make sure that uninstall removes the FirstInstallerBootstrapper when it is installed and also prevent installing if its already installed-->
     <util:FileSearch
       Id='FileSearchCheckIfFirstBootstrapperInstallerInstalled'
       Variable="IsFirstBootstrapperInstallerInstalled"
       Result="exists"
       Path="[ProgramFilesFolder]\CustomBurnUISample\FirstInstaller4BS\FirstInstaller4BSReadMe.txt"/>
 
-    <!-- Check if SecondInstaller is installed. This is to make sure that uninstall removes the SecondInstaller when it is installed and also prevent installing if its already installed-->
+    <!-- Check if SecondInstallerBootstrapper is installed. This is to make sure that uninstall removes the SecondInstallerBootstrapper when it is installed and also prevent installing if its already installed-->
     <util:FileSearch
       Id='FileSearchCheckIfSecondBootstrapperInstallerInstalled'
       Variable="IsSecondBootstrapperInstallerInstalled"
       Result="exists"
       Path="[ProgramFilesFolder]\CustomBurnUISample\SecondInstaller4BS\SecondInstaller4BSReadMe.txt"/>
+
+    <!-- Check if ThirdInstallerBootstrapper is installed. This is to make sure that uninstall removes the ThirdInstallerBootstrapper when it is installed and also prevent installing if its already installed-->
+    <util:FileSearch
+      Id='FileSearchCheckIfThirdBootstrapperInstallerInstalled'
+      Variable="IsThirdBootstrapperInstallerInstalled"
+      Result="exists"
+      Path="[ProgramFilesFolder]\CustomBurnUISample\ThirdInstaller4BS\ThirdInstaller4BSReadMe.txt"/>
+
+    <!-- Check if FourthInstallerBootstrapper is installed. This is to make sure that uninstall removes the FourthInstallerBootstrapper when it is installed and also prevent installing if its already installed-->
+    <util:FileSearch
+      Id='FileSearchCheckIfFourthBootstrapperInstallerInstalled'
+      Variable="IsFourthBootstrapperInstallerInstalled"
+      Result="exists"
+      Path="[ProgramFilesFolder]\CustomBurnUISample\FourthInstaller4BS\FourthInstaller4BSReadMe.txt"/>
+
+    <!-- Check if FifthInstallerBootstrapper is installed. This is to make sure that uninstall removes the FifthInstallerBootstrapper when it is installed and also prevent installing if its already installed-->
+    <util:FileSearch
+      Id='FileSearchCheckIfFifthBootstrapperInstallerInstalled'
+      Variable="IsFifthBootstrapperInstallerInstalled"
+      Result="exists"
+      Path="[ProgramFilesFolder]\CustomBurnUISample\FifthInstaller4BS\FifthInstaller4BSReadMe.txt"/>
 
     <!-- Variables modified by custom WPF UI -->
     <Variable bal:Overridable="yes" Name="Prerequisite" Value=""/>
@@ -41,7 +62,10 @@
     <Variable bal:Overridable="yes" Name="FifthInstaller" Value="Skip"/>
     <Variable bal:Overridable="yes" Name="FirstInstallerBootstrapper" Value="Skip"/>
     <Variable bal:Overridable="yes" Name="SecondInstallerBootstrapper" Value="Skip"/>
-
+    <Variable bal:Overridable="yes" Name="ThirdInstallerBootstrapper" Value="Skip"/>
+    <Variable bal:Overridable="yes" Name="FourthInstallerBootstrapper" Value="Skip"/>
+    <Variable bal:Overridable="yes" Name="FifthInstallerBootstrapper" Value="Skip"/>
+                                          
     <!--https://teamcity.netadds.net/repository/download/SciexPdv_LayeredBuilds_ApplicationsAndProducts_BuildInstallers/59464259:id/
                       output.zip!/Setup/Install/postgresql-16.2-1-windows-x64.exe-->
     <Chain>
@@ -117,6 +141,69 @@
         <RemotePayload
           ProductName="SecondInstallerBootstrapper"
           Description="SecondInstallerBootstrapper"
+          Hash="EA923B18F48C44637FD3295BC03EB4028ED88C07"
+          CertificatePublicKey="126C892FD591AD2CE058EC194DB5CE85E528A9BB"
+          CertificateThumbprint="AA9325AB2EDFF4A5D745205CBD25B440CB89FDEB"
+          Size="586192"
+          Version="1.0.0.0"/>
+      </ExePackage>
+      <ExePackage Id="ThirdInstallerBootstrapper"
+                  Name="ThirdInstallerBootstrapper.exe"
+                  DownloadUrl="http://localhost/MyMsi/CustomBurnUI/Versions/1.0.0.0/ThirdInstallerBootstrapper.exe"
+                  InstallCommand="/S"
+                  UninstallCommand="/uninstall /quiet"
+                  DetectCondition="IsThirdBootstrapperInstallerInstalled"
+                  Compressed="no"
+                  Cache="no"
+                  Permanent="no"
+                  Vital="yes"
+                  SuppressSignatureVerification="no"
+                  InstallCondition="ThirdInstallerBootstrapper = &quot;Install&quot; OR ThirdInstallerBootstrapper = &quot;Update&quot;  OR ThirdInstallerBootstrapper = &quot;Repair&quot;">
+        <RemotePayload
+          ProductName="ThirdInstallerBootstrapper"
+          Description="ThirdInstallerBootstrapper"
+          Hash="EA923B18F48C44637FD3295BC03EB4028ED88C07"
+          CertificatePublicKey="126C892FD591AD2CE058EC194DB5CE85E528A9BB"
+          CertificateThumbprint="AA9325AB2EDFF4A5D745205CBD25B440CB89FDEB"
+          Size="586192"
+          Version="1.0.0.0"/>
+      </ExePackage>
+      <ExePackage Id="FourthInstallerBootstrapper"
+                  Name="FourthInstallerBootstrapper.exe"
+                  DownloadUrl="http://localhost/MyMsi/CustomBurnUI/Versions/1.0.0.0/FourthInstallerBootstrapper.exe"
+                  InstallCommand="/S"
+                  UninstallCommand="/uninstall /quiet"
+                  DetectCondition="IsFourthBootstrapperInstallerInstalled"
+                  Compressed="no"
+                  Cache="no"
+                  Permanent="no"
+                  Vital="yes"
+                  SuppressSignatureVerification="no"
+                  InstallCondition="FourthInstallerBootstrapper = &quot;Install&quot; OR FourthInstallerBootstrapper = &quot;Update&quot;  OR FourthInstallerBootstrapper = &quot;Repair&quot;">
+        <RemotePayload
+          ProductName="FourthInstallerBootstrapper"
+          Description="FourthInstallerBootstrapper"
+          Hash="EA923B18F48C44637FD3295BC03EB4028ED88C07"
+          CertificatePublicKey="126C892FD591AD2CE058EC194DB5CE85E528A9BB"
+          CertificateThumbprint="AA9325AB2EDFF4A5D745205CBD25B440CB89FDEB"
+          Size="586192"
+          Version="1.0.0.0"/>
+      </ExePackage>
+      <ExePackage Id="FifthInstallerBootstrapper"
+                  Name="FifthInstallerBootstrapper.exe"
+                  DownloadUrl="http://localhost/MyMsi/CustomBurnUI/Versions/1.0.0.0/FifthInstallerBootstrapper.exe"
+                  InstallCommand="/S"
+                  UninstallCommand="/uninstall /quiet"
+                  DetectCondition="IsFifthBootstrapperInstallerInstalled"
+                  Compressed="no"
+                  Cache="no"
+                  Permanent="no"
+                  Vital="yes"
+                  SuppressSignatureVerification="no"
+                  InstallCondition="FifthInstallerBootstrapper = &quot;Install&quot; OR FifthInstallerBootstrapper = &quot;Update&quot;  OR FifthInstallerBootstrapper = &quot;Repair&quot;">
+        <RemotePayload
+          ProductName="FifthInstallerBootstrapper"
+          Description="FifthInstallerBootstrapper"
           Hash="EA923B18F48C44637FD3295BC03EB4028ED88C07"
           CertificatePublicKey="126C892FD591AD2CE058EC194DB5CE85E528A9BB"
           CertificateThumbprint="AA9325AB2EDFF4A5D745205CBD25B440CB89FDEB"
