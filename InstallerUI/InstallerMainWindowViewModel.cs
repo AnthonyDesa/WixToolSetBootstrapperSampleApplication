@@ -614,6 +614,14 @@ namespace InstallerUI
                 }
             }
 
+            //DetectCondition is executed before the UI is displayed to the user
+            //If user selects Update for OnlineSetup then the detect condition will not fire again 
+            //We change the detect condition based on user selection.
+            //We force the detect condition to be executed again for the package selected for update
+            //This way we get both i.e. When the main bundle is uninstalled then exepackage (child) will also be uninstalled 
+            //and when the exepackage is updated then update will also happens (both condition depends upon DetectCondition.)
+            bootstrapper.Engine.Detect();
+
             if (executeUninstall)
             {
                 engine.Log(LogLevel.Verbose, "HandleApplyCommand::UnInstall called");
