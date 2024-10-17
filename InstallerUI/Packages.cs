@@ -12,6 +12,11 @@ namespace InstallerUI
         {
             return Enum.GetValues(typeof(PackageIdEnum)).Cast<PackageIdEnum>().ToList();
         }
+
+        public static string GetInstalledPackageName(PackageIdEnum packageId)
+        {
+           return $"Is{packageId.ToString()}Installed";
+        }
     }
 
     public enum PackageIdEnum

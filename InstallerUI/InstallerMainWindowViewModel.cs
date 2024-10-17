@@ -30,13 +30,20 @@ namespace InstallerUI
             this.bootstrapper = bootstrapper;
             this.engine = engine;
 
-            //Following information will be retrieved from Api when UI is launched
+            //For Online Setup new version information will be retrieved from Api when UI is launched
             //For now simulate that new version(s) is\are available for Following modules
             _newVersions.Add(PackageIdEnum.FirstInstallerBootstrapper.ToString(), "1.1.0.0");
             _newVersions.Add(PackageIdEnum.SecondInstallerBootstrapper.ToString(), "1.2.0.0");
             _newVersions.Add(PackageIdEnum.ThirdInstallerBootstrapper.ToString(), "1.3.0.0");
             _newVersions.Add(PackageIdEnum.FourthInstallerBootstrapper.ToString(), "1.4.0.0");
             _newVersions.Add(PackageIdEnum.FifthInstallerBootstrapper.ToString(), "1.5.0.0");
+
+            //For OnlineSetup the version information will come from Setting json file
+            _newVersions.Add(PackageIdEnum.FirstInstaller.ToString(), "1.0.0.0");
+            _newVersions.Add(PackageIdEnum.SecondInstaller.ToString(), "1.0.0.0");
+            _newVersions.Add(PackageIdEnum.ThirdInstaller.ToString(), "1.0.0.0");
+            _newVersions.Add(PackageIdEnum.FourthInstaller.ToString(), "1.0.0.0");
+            _newVersions.Add(PackageIdEnum.FifthInstaller.ToString(), "1.0.0.0");
 
             // For demo purposes, we set two variables here. They are passed on to the chained MSIs.
             engine.StringVariables["Prerequisite"] = "1";
@@ -139,8 +146,8 @@ namespace InstallerUI
             };
             bootstrapper.ResolveSource += (_, ea) =>
             {
-                this.LogEvent("ResolveSource", ea);
-                string version = string.Empty;
+                this.LogEvent("ResolveSource::", ea);
+                string version = "1.0.0.0";
                 
 
                 if (_newVersions.ContainsKey(ea.PayloadId) && _userSelectionDic.Where(x => x.Key.ToLower() == ea.PayloadId.ToLower() 
@@ -148,6 +155,7 @@ namespace InstallerUI
                 {
                     //New version of package being processed is available
                     //and user have selected the package to get the new version.
+                    this.LogEvent($"ResolveSource::_newVersions[ea.PayloadId]={_newVersions[ea.PayloadId]}");
                     version = _newVersions[ea.PayloadId];
                 }
                 else
@@ -156,12 +164,13 @@ namespace InstallerUI
                     //Only get the version from setup if repair Or install is selected
                     //Lets hardcode it for now.....
                     version = "1.0.0.0";
+                    this.LogEvent($"ResolveSource::Version retrieved from Setup = {version}");
                 }
-                
+
                 if (!File.Exists(ea.LocalSource) && !string.IsNullOrEmpty(ea.DownloadSource))
                 {
                     this.LogEvent($"ResolveSource::ExistingDownloadSource={ea.DownloadSource}");
-                    string newUrl = string.Format(ea.DownloadSource, version);
+                    string newUrl = string.Format(ea.DownloadSource, "pc-swd-1455.absciexdev.local", version); //ea.DownloadSource.Replace("VersionNumber", version); //string.Format(ea.DownloadSource, version);
                     this.LogEvent($"ResolveSource::NewURL={newUrl}");
                     engine.SetDownloadSource(ea.PackageOrContainerId, ea.PayloadId, newUrl, null, null);
                 }
@@ -199,6 +208,13 @@ namespace InstallerUI
                         //Repair means package is already installed but is broken. Fix the broken package
                         ea.State = RequestState.Repair;
                     }
+
+                    //if (_userSelectionDic[ea.PackageId] == UserSelectionEnum.Uninstall.ToString())
+                    //{
+                    //    this.LogEvent($"PlanPackageBegin::{ea.PackageId} ea.State is set to Repair...");
+                    //    //Repair means package is already installed but is broken. Fix the broken package
+                    //    ea.State = RequestState.ForceAbsent;
+                    //}
                 }
             };
 
@@ -580,7 +596,8 @@ namespace InstallerUI
             if(updateSelected.Count > 0)
             {
                 engine.Log(LogLevel.Verbose, $"HandleApplyCommand::UpdateSelected Modules = {string.Join(",", updateSelected.ToArray())}");
-                DeleteInstalledRegistryKey(updateSelected);
+                UpdateDetectConditionForPackageSelectedForUpdate(updateSelected);
+                //DeleteInstalledRegistryKey(updateSelected);
             }
 
             //4). If nothing is left installed on Client Computer the Call Uninstall otherwise call Install
@@ -2142,6 +2159,12 @@ namespace InstallerUI
                     FirstInstallerIsUnInstallChecked = true;
                     FirstInstallerIsInstallEnabled = false;
                     FirstInstallerIsSkipEnabled = false;
+
+                    //If the installed version and available version is same then disable the update button
+                    var versionInstalled = installedPackages.Where(y => y.Item2 == x).Select(z => z.Item3).FirstOrDefault();
+                    if(_newVersions[x] == versionInstalled) 
+                        FirstInstallerIsUpdateEnabled = false;
+
                 }
                 if (x.ToLower().Equals(PackageIdEnum.SecondInstaller.ToString().ToLower()))
                 {
@@ -2149,6 +2172,10 @@ namespace InstallerUI
                     SecondInstallerIsUnInstallChecked = true;
                     SecondInstallerIsInstallEnabled = false;
                     SecondInstallerIsSkipEnabled = false;
+                    //If the installed version and available version is same then disable the update button
+                    var versionInstalled = installedPackages.Where(y => y.Item2 == x).Select(z => z.Item3).FirstOrDefault();
+                    if (_newVersions[x] == versionInstalled)
+                        SecondInstallerIsUpdateEnabled = false;
                 }
                 if (x.ToLower().Equals(PackageIdEnum.ThirdInstaller.ToString().ToLower()))
                 {
@@ -2156,6 +2183,10 @@ namespace InstallerUI
                     ThirdInstallerIsUnInstallChecked = true;
                     ThirdInstallerIsInstallEnabled = false;
                     ThirdInstallerIsSkipEnabled = false;
+                    //If the installed version and available version is same then disable the update button
+                    var versionInstalled = installedPackages.Where(y => y.Item2 == x).Select(z => z.Item3).FirstOrDefault();
+                    if (_newVersions[x] == versionInstalled)
+                        ThirdInstallerIsUpdateEnabled = false;
                 }
                 if (x.ToLower().Equals(PackageIdEnum.FourthInstaller.ToString().ToLower()))
                 {
@@ -2163,6 +2194,10 @@ namespace InstallerUI
                     FourthInstallerIsUnInstallChecked = true;
                     FourthInstallerIsInstallEnabled = false;
                     FourthInstallerIsSkipEnabled = false;
+                    //If the installed version and available version is same then disable the update button
+                    var versionInstalled = installedPackages.Where(y => y.Item2 == x).Select(z => z.Item3).FirstOrDefault();
+                    if (_newVersions[x] == versionInstalled)
+                        FourthInstallerIsUpdateEnabled = false;
                 }
                 if (x.ToLower().Equals(PackageIdEnum.FifthInstaller.ToString().ToLower()))
                 {
@@ -2170,6 +2205,10 @@ namespace InstallerUI
                     FifthInstallerIsUnInstallChecked = true;
                     FifthInstallerIsInstallEnabled = false;
                     FifthInstallerIsSkipEnabled = false;
+                    //If the installed version and available version is same then disable the update button
+                    var versionInstalled = installedPackages.Where(y => y.Item2 == x).Select(z => z.Item3).FirstOrDefault();
+                    if (_newVersions[x] == versionInstalled)
+                        FifthInstallerIsUpdateEnabled = false;
                 }
                 if (x.ToLower().Equals(PackageIdEnum.FirstInstallerBootstrapper.ToString().ToLower()))
                 {
@@ -2177,6 +2216,11 @@ namespace InstallerUI
                     FIBootStapperInstallerIsUnInstallChecked = true;
                     FIBootStrapperInstallerIsInstallEnabled = false;
                     FIBootStrapperInstallerIsSkipEnabled = false;
+                    engine.StringVariables[$"{Packages.GetInstalledPackageName(PackageIdEnum.FirstInstallerBootstrapper)}"] = "yes";
+                    //If the installed version and available version is same then disable the update button
+                    var versionInstalled = installedPackages.Where(y => y.Item2 == x).Select(z => z.Item3).FirstOrDefault();
+                    if (_newVersions[x] == versionInstalled)
+                        FIBootStrapperInstallerIsUpdateEnabled = false;
                 }
                 if (x.ToLower().Equals(PackageIdEnum.SecondInstallerBootstrapper.ToString().ToLower()))
                 {
@@ -2184,6 +2228,11 @@ namespace InstallerUI
                     SIBootStapperInstallerIsUnInstallChecked = true;
                     SIBootStrapperInstallerIsInstallEnabled = false;
                     SIBootStrapperInstallerIsSkipEnabled = false;
+                    engine.StringVariables[$"{Packages.GetInstalledPackageName(PackageIdEnum.SecondInstallerBootstrapper)}"] = "yes";
+                    //If the installed version and available version is same then disable the update button
+                    var versionInstalled = installedPackages.Where(y => y.Item2 == x).Select(z => z.Item3).FirstOrDefault();
+                    if (_newVersions[x] == versionInstalled)
+                        SIBootStrapperInstallerIsUpdateEnabled = false;
                 }
 
                 if (x.ToLower().Equals(PackageIdEnum.ThirdInstallerBootstrapper.ToString().ToLower()))
@@ -2192,6 +2241,11 @@ namespace InstallerUI
                     ThirdIBootStapperInstallerIsUnInstallChecked = true;
                     ThirdIBootStrapperInstallerIsInstallEnabled = false;
                     ThirdIBootStrapperInstallerIsSkipEnabled = false;
+                    engine.StringVariables[$"{Packages.GetInstalledPackageName(PackageIdEnum.ThirdInstallerBootstrapper)}"] = "yes";
+                    //If the installed version and available version is same then disable the update button
+                    var versionInstalled = installedPackages.Where(y => y.Item2 == x).Select(z => z.Item3).FirstOrDefault();
+                    if (_newVersions[x] == versionInstalled)
+                        ThirdIBootStrapperInstallerIsInstallEnabled = false;
                 }
                 if (x.ToLower().Equals(PackageIdEnum.FourthInstallerBootstrapper.ToString().ToLower()))
                 {
@@ -2199,6 +2253,11 @@ namespace InstallerUI
                     FourthIBootStapperInstallerIsUnInstallChecked = true;
                     FourthIBootStrapperInstallerIsInstallEnabled = false;
                     FourthIBootStrapperInstallerIsSkipEnabled = false;
+                    engine.StringVariables[$"{Packages.GetInstalledPackageName(PackageIdEnum.FourthInstallerBootstrapper)}"] = "yes";
+                    //If the installed version and available version is same then disable the update button
+                    var versionInstalled = installedPackages.Where(y => y.Item2 == x).Select(z => z.Item3).FirstOrDefault();
+                    if (_newVersions[x] == versionInstalled)
+                        FourthIBootStrapperInstallerIsUpdateEnabled = false;
                 }
                 if (x.ToLower().Equals(PackageIdEnum.FifthInstallerBootstrapper.ToString().ToLower()))
                 {
@@ -2206,6 +2265,11 @@ namespace InstallerUI
                     FifthIBootStapperInstallerIsUnInstallChecked = true;
                     FifthIBootStrapperInstallerIsInstallEnabled = false;
                     FifthIBootStrapperInstallerIsSkipEnabled = false;
+                    engine.StringVariables[$"{Packages.GetInstalledPackageName(PackageIdEnum.FifthInstallerBootstrapper)}"] = "yes";
+                    //If the installed version and available version is same then disable the update button
+                    var versionInstalled = installedPackages.Where(y => y.Item2 == x).Select(z => z.Item3).FirstOrDefault();
+                    if (_newVersions[x] == versionInstalled)
+                        FifthIBootStrapperInstallerIsUpdateEnabled = false;
                 }
 
             });
@@ -2307,9 +2371,44 @@ namespace InstallerUI
                 RegistryKey regKey = key.OpenSubKey(root, true);
                 if (regKey != null)
                 {
-                    //If found then delete 
-                    //Only ExePackage will have these keys. Msi package will not have these keys
-                    regKey.DeleteValue("Installed");
+                    //If keyName found then delete 
+                    //Only ExePackage will have these keys.
+                    //Msi package will not have these keys
+                    string keyName = "installed";
+                    if (regKey.GetValue(keyName) != null)
+                    {
+                        regKey.DeleteValue(keyName);
+                    }
+                }
+            }
+        }
+
+        private void UpdateDetectConditionForPackageSelectedForUpdate(IList<string> packageIds)
+        {
+            //If package is selected for update then set isdetected to no
+            //This will force the package download even if the package is installed on client's computer
+            const string isdetected = "no";
+            foreach (string packageId in packageIds)
+            {
+                if (packageId.ToLower().Equals(PackageIdEnum.FirstInstallerBootstrapper.ToString().ToLower()))
+                {
+                    engine.StringVariables[$"{Packages.GetInstalledPackageName(PackageIdEnum.FirstInstallerBootstrapper)}"] = isdetected;
+                }
+                if (packageId.ToLower().Equals(PackageIdEnum.SecondInstallerBootstrapper.ToString().ToLower()))
+                {
+                    engine.StringVariables[$"{Packages.GetInstalledPackageName(PackageIdEnum.SecondInstallerBootstrapper)}"] = isdetected;
+                }
+                if (packageId.ToLower().Equals(PackageIdEnum.ThirdInstallerBootstrapper.ToString().ToLower()))
+                {
+                    engine.StringVariables[$"{Packages.GetInstalledPackageName(PackageIdEnum.ThirdInstallerBootstrapper)}"] = isdetected;
+                }
+                if (packageId.ToLower().Equals(PackageIdEnum.FourthInstallerBootstrapper.ToString().ToLower()))
+                {
+                    engine.StringVariables[$"{Packages.GetInstalledPackageName(PackageIdEnum.FourthInstallerBootstrapper)}"] = isdetected;
+                }
+                if (packageId.ToLower().Equals(PackageIdEnum.FifthInstallerBootstrapper.ToString().ToLower()))
+                {
+                    engine.StringVariables[$"{Packages.GetInstalledPackageName(PackageIdEnum.FifthInstallerBootstrapper)}"] = isdetected;
                 }
             }
         }
