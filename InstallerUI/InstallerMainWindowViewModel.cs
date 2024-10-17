@@ -211,9 +211,14 @@ namespace InstallerUI
 
                     //if (_userSelectionDic[ea.PackageId] == UserSelectionEnum.Uninstall.ToString())
                     //{
-                    //    this.LogEvent($"PlanPackageBegin::{ea.PackageId} ea.State is set to Repair...");
+                    //    this.LogEvent($"PlanPackageBegin::{ea.PackageId} ea.State is set to Present...");
                     //    //Repair means package is already installed but is broken. Fix the broken package
-                    //    ea.State = RequestState.ForceAbsent;
+                    //    //Tried and did not worked ea.State
+                    //    //RequestState.Present;
+                    //    //RequestState.ForceAbsent;
+                    //    //RequestState.Absent was default
+                    //    //Request.None is default for skip so its not going to work
+                    //    ea.State = RequestState.Present;
                     //}
                 }
             };
