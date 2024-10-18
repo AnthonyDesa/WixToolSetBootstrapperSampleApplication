@@ -30,35 +30,7 @@
                          Value="Installed"
                          Result="exists"
                          Variable="IsFirstBootstrapperInstallerInstalled" />
-    
-    --><!-- Check if SecondInstallerBootstrapper is installed. This is to make sure that uninstall removes the SecondInstallerBootstrapper when it is installed and also prevent installing if its already installed--><!--
-    <util:FileSearch
-      Id='FileSearchCheckIfSecondBootstrapperInstallerInstalled'
-      Variable="IsSecondBootstrapperInstallerInstalled"
-      Result="exists"
-      Path="[ProgramFilesFolder]\CustomBurnUISample\SecondInstaller4BS\SecondInstaller4BSReadMe.txt"/>
-
-    --><!-- Check if ThirdInstallerBootstrapper is installed. This is to make sure that uninstall removes the ThirdInstallerBootstrapper when it is installed and also prevent installing if its already installed--><!--
-    <util:FileSearch
-      Id='FileSearchCheckIfThirdBootstrapperInstallerInstalled'
-      Variable="IsThirdBootstrapperInstallerInstalled"
-      Result="exists"
-      Path="[ProgramFilesFolder]\CustomBurnUISample\ThirdInstaller4BS\ThirdInstaller4BSReadMe.txt"/>
-
-    --><!-- Check if FourthInstallerBootstrapper is installed. This is to make sure that uninstall removes the FourthInstallerBootstrapper when it is installed and also prevent installing if its already installed--><!--
-    <util:FileSearch
-      Id='FileSearchCheckIfFourthBootstrapperInstallerInstalled'
-      Variable="IsFourthBootstrapperInstallerInstalled"
-      Result="exists"
-      Path="[ProgramFilesFolder]\CustomBurnUISample\FourthInstaller4BS\FourthInstaller4BSReadMe.txt"/>
-
-    --><!-- Check if FifthInstallerBootstrapper is installed. This is to make sure that uninstall removes the FifthInstallerBootstrapper when it is installed and also prevent installing if its already installed--><!--
-    <util:FileSearch
-      Id='FileSearchCheckIfFifthBootstrapperInstallerInstalled'
-      Variable="IsFifthBootstrapperInstallerInstalled"
-      Result="exists"
-      Path="[ProgramFilesFolder]\CustomBurnUISample\FifthInstaller4BS\FifthInstaller4BSReadMe.txt"/>-->
-
+    -->
     <!-- Variables modified by custom WPF UI -->
     <Variable bal:Overridable="yes" Name="Prerequisite" Value=""/>
     <Variable bal:Overridable="yes" Name="InstallLevel" Value="1"/>
@@ -120,8 +92,9 @@
       <ExePackage Id="FirstInstallerBootstrapper"
                   Name="FirstInstallerBootstrapper.exe"
                   DownloadUrl="http://{0}/MyMsi/CustomBurnUI/Versions/{1}/FirstInstallerBootstrapper.exe"
-                  InstallCommand="/S"
+                  InstallCommand="/install /norestart /quiet"
                   UninstallCommand="/uninstall /quiet"
+                  RepairCommand="/repair /quiet"
                   DetectCondition="IsFirstInstallerBootstrapperInstalled=&quot;yes&quot;"
                   Compressed="no"
                   Cache="no"
@@ -141,8 +114,9 @@
       <ExePackage Id="SecondInstallerBootstrapper"
                   Name="SecondInstallerBootstrapper.exe"
                   DownloadUrl="http://{0}/MyMsi/CustomBurnUI/Versions/{1}/SecondInstallerBootstrapper.exe"
-                  InstallCommand="/S"
+                  InstallCommand="/install /norestart /quiet"
                   UninstallCommand="/uninstall /quiet"
+                  RepairCommand="/repair /quiet"
                   DetectCondition="IsSecondInstallerBootstrapperInstalled=&quot;yes&quot;"
                   Compressed="no"
                   Cache="no"
@@ -162,8 +136,9 @@
       <ExePackage Id="ThirdInstallerBootstrapper"
                   Name="ThirdInstallerBootstrapper.exe"
                   DownloadUrl="http://{0}/MyMsi/CustomBurnUI/Versions/{1}/ThirdInstallerBootstrapper.exe"
-                  InstallCommand="/S"
+                  InstallCommand="/install /norestart /quiet"
                   UninstallCommand="/uninstall /quiet"
+                  RepairCommand="/repair /quiet"
                   DetectCondition="IsThirdInstallerBootstrapperInstalled=&quot;yes&quot;"
                   Compressed="no"
                   Cache="no"
@@ -183,8 +158,9 @@
       <ExePackage Id="FourthInstallerBootstrapper"
                   Name="FourthInstallerBootstrapper.exe"
                   DownloadUrl="http://{0}/MyMsi/CustomBurnUI/Versions/{1}/FourthInstallerBootstrapper.exe"
-                  InstallCommand="/S"
+                  InstallCommand="/install /norestart /quiet"
                   UninstallCommand="/uninstall /quiet"
+                  RepairCommand="/repair /quiet"
                   DetectCondition="IsFourthInstallerBootstrapperInstalled=&quot;yes&quot;"
                   Compressed="no"
                   Cache="no"
@@ -204,8 +180,9 @@
       <ExePackage Id="FifthInstallerBootstrapper"
                   Name="FifthInstallerBootstrapper.exe"
                   DownloadUrl="http://{0}/MyMsi/CustomBurnUI/Versions/{1}/FifthInstallerBootstrapper.exe"
-                  InstallCommand="/S"
+                  InstallCommand="/install /norestart /quiet"
                   UninstallCommand="/uninstall /quiet"
+                  RepairCommand="/repair /quiet"
                   DetectCondition="IsFifthInstallerBootstrapperInstalled=&quot;yes&quot;"
                   Compressed="no"
                   Cache="no"

@@ -528,20 +528,9 @@ namespace InstallerUI
 
         private void HandleRepairCommand()
         {
-            //check if any package have repair selected
-            IList<string> repairSelected = new List<string>();
-            if (IsNoRepairOptionSelected())
-            {
-                interactionService.ShowMessageBox("No package selected for Repair");
-            }
-            else
-            {
-                //If not repair then set to skip
-                //SetNotRepairToKeep();
-
-                //interactionService.ShowMessageBox("Please note any package that is not set to repair is forced to skip");
-                engine.Plan(LaunchAction.Repair);
-            }
+            engine.Log(LogLevel.Verbose, "HandleRepairCommand::Begin");
+            //interactionService.ShowMessageBox("Please note any package that is not set to repair is forced to skip");
+            engine.Plan(LaunchAction.Repair);
         }
 
         //Called from Repair Command
