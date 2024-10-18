@@ -38,7 +38,7 @@ namespace InstallerUI
             _newVersions.Add(PackageIdEnum.FourthInstallerBootstrapper.ToString(), "1.4.0.0");
             _newVersions.Add(PackageIdEnum.FifthInstallerBootstrapper.ToString(), "1.5.0.0");
 
-            //For OnlineSetup the version information will come from Setting json file
+            //For OfflineSetup the version information will come from Setup itself.
             _newVersions.Add(PackageIdEnum.FirstInstaller.ToString(), "1.0.0.0");
             _newVersions.Add(PackageIdEnum.SecondInstaller.ToString(), "1.0.0.0");
             _newVersions.Add(PackageIdEnum.ThirdInstaller.ToString(), "1.0.0.0");
@@ -60,10 +60,6 @@ namespace InstallerUI
             this.InstallCommandValue = new DelegateCommand(
                 () =>
                 {
-                    //if (engine.StringVariables["FirstInstallerBootStrapper"] == "Update")
-                    //{
-                    //    File.Delete(@"C:\\Program Files (x86)\\CustomBurnUISample\\First Installer\\FirstInstallerReadMe.txt");
-                    //}
                     engine.Plan(LaunchAction.Install);
                 },
                 () => !this.Installing); // && this.State == InstallationState.DetectedAbsent);
@@ -73,6 +69,9 @@ namespace InstallerUI
                 () => !this.Installing); // && this.State == InstallationState.DetectedPresent);
 
             //this.FirstInstallerCommandValue = new DelegateCommand<string>(HandleFirstIntallCommand);
+
+            RepairCommandValue = new DelegateCommand(HandleRepairCommand,CanRepairCommandExecute);
+            ApplyCommandValue = new DelegateCommand(HandleApplyCommand, CanApplyCommandExecute);
 
             // Setup event handlers
             bootstrapper.DetectBegin += (_, ea) =>
@@ -148,8 +147,6 @@ namespace InstallerUI
             {
                 this.LogEvent("ResolveSource::", ea);
                 string version = "1.0.0.0";
-                
-
                 if (_newVersions.ContainsKey(ea.PayloadId) && _userSelectionDic.Where(x => x.Key.ToLower() == ea.PayloadId.ToLower() 
                         && x.Value.ToLower() == UserSelectionEnum.Update.ToString().ToLower()).Any())
                 {
@@ -158,19 +155,19 @@ namespace InstallerUI
                     this.LogEvent($"ResolveSource::_newVersions[ea.PayloadId]={_newVersions[ea.PayloadId]}");
                     version = _newVersions[ea.PayloadId];
                 }
-                else
-                {
-                    //Get the default version from Setup Settings (Setup settings will contain the version for each module it was shipped with)
-                    //Only get the version from setup if repair Or install is selected
-                    //Lets hardcode it for now.....
-                    version = "1.0.0.0";
-                    this.LogEvent($"ResolveSource::Version retrieved from Setup = {version}");
-                }
+                //else
+                //{
+                //    //Get the default version from Setup Settings (Setup settings will contain the version for each module it was shipped with)
+                //    //Only get the version from setup if repair Or install is selected
+                //    //Lets hardcode it for now.....
+                //    version = "1.0.0.0";
+                //    this.LogEvent($"ResolveSource::Version retrieved from Setup = {version}");
+                //}
 
                 if (!File.Exists(ea.LocalSource) && !string.IsNullOrEmpty(ea.DownloadSource))
                 {
                     this.LogEvent($"ResolveSource::ExistingDownloadSource={ea.DownloadSource}");
-                    string newUrl = string.Format(ea.DownloadSource, "pc-swd-1455.absciexdev.local", version); //ea.DownloadSource.Replace("VersionNumber", version); //string.Format(ea.DownloadSource, version);
+                    string newUrl = string.Format(ea.DownloadSource, "pc-swd-1455.absciexdev.local", version); 
                     this.LogEvent($"ResolveSource::NewURL={newUrl}");
                     engine.SetDownloadSource(ea.PackageOrContainerId, ea.PayloadId, newUrl, null, null);
                 }
@@ -223,7 +220,12 @@ namespace InstallerUI
                 }
             };
 
-#region sample code
+            this.bootstrapper.PlanRelatedBundle += (_, ea) =>
+            {
+                this.LogEvent("PlanRelatedBundle", ea);
+            };
+
+            #region sample code
             //bootstrapper.DetectRelatedMsiPackage += (_, ea) =>
             //{
             //    this.LogEvent($"DetectRelatedMsiPackage", ea);
@@ -272,7 +274,7 @@ namespace InstallerUI
             //    }
             //    //}
             //};
-#endregion
+            #endregion
 
             SetupEventHandlersForLogging();
             SelectUnInstallIfInstalled();
@@ -320,7 +322,7 @@ namespace InstallerUI
             this.bootstrapper.PlanMsiFeature += (_, ea) => this.LogEvent("PlanMsiFeature", ea);
             //this.bootstrapper.PlanPackageBegin += (_, ea) => this.LogEvent("PlanPackageBegin", ea);
             this.bootstrapper.PlanPackageComplete += (_, ea) => this.LogEvent("PlanPackageComplete", ea);
-            this.bootstrapper.PlanRelatedBundle += (_, ea) => this.LogEvent("PlanRelatedBundle", ea);
+            //this.bootstrapper.PlanRelatedBundle += (_, ea) => this.LogEvent("PlanRelatedBundle", ea);
             this.bootstrapper.PlanTargetMsiPackage += (_, ea) => this.LogEvent("PlanTargetMsiPackage", ea);
             this.bootstrapper.Progress += (_, ea) => this.LogEvent("Progress", ea);
             this.bootstrapper.RegisterBegin += (_, ea) => this.LogEvent("RegisterBegin");
@@ -480,33 +482,62 @@ namespace InstallerUI
 
         #endregion Installer Commands
 
+        private DelegateCommand RepairCommandValue;
         public ICommand RepairCommand
         {
-            get { return new DelegateCommand(HandleRepairCommand); }
+            get { return RepairCommandValue; }
+        }
+
+        private bool CanRepairCommandExecute()
+        {
+            return IsAtleastOneRepairOptionSelected();
+        }
+
+        private bool IsAtleastOneRepairOptionSelected()
+        {
+            if (FirstInstallerIsRepairChecked
+                || SecondInstallerIsRepairChecked
+                || ThirdInstallerIsRepairChecked
+                || FourthInstallerIsRepairChecked
+                || FifthInstallerIsRepairChecked
+                || FIBootStapperInstallerIsRepairChecked
+                || SIBootStapperInstallerIsRepairChecked
+                || ThirdIBootStapperInstallerIsRepairChecked
+                || FourthIBootStapperInstallerIsRepairChecked
+                || FifthIBootStapperInstallerIsRepairChecked)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private bool IsNoRepairOptionSelected()
+        {
+            if(!FirstInstallerIsRepairChecked
+                && !SecondInstallerIsRepairChecked
+                && !ThirdInstallerIsRepairChecked
+                && !FourthInstallerIsRepairChecked
+                && !FifthInstallerIsRepairChecked
+                && !FIBootStapperInstallerIsRepairChecked
+                && !SIBootStapperInstallerIsRepairChecked
+                && !ThirdIBootStapperInstallerIsRepairChecked
+                && !FourthIBootStapperInstallerIsRepairChecked
+                && !FifthIBootStapperInstallerIsRepairChecked) { return true; }
+            return false;
         }
 
         private void HandleRepairCommand()
         {
             //check if any package have repair selected
             IList<string> repairSelected = new List<string>();
-            if (!FirstInstallerIsRepairChecked
-               && !SecondInstallerIsRepairChecked
-               && !ThirdInstallerIsRepairChecked
-               && !FourthInstallerIsRepairChecked
-               && !FifthInstallerIsRepairChecked
-               && !FIBootStapperInstallerIsRepairChecked
-               && !SIBootStapperInstallerIsRepairChecked
-               && !ThirdIBootStapperInstallerIsRepairChecked
-               && !FourthIBootStapperInstallerIsRepairChecked
-               && !FifthIBootStapperInstallerIsRepairChecked
-               )
+            if (IsNoRepairOptionSelected())
             {
                 interactionService.ShowMessageBox("No package selected for Repair");
             }
             else
             {
                 //If not repair then set to skip
-                SetNotRepairToKeep();
+                //SetNotRepairToKeep();
 
                 //interactionService.ShowMessageBox("Please note any package that is not set to repair is forced to skip");
                 engine.Plan(LaunchAction.Repair);
@@ -566,9 +597,22 @@ namespace InstallerUI
         }
 
         #region Apply Command
+
+        private DelegateCommand ApplyCommandValue;
         public ICommand ApplyCommand
         {
-            get { return new DelegateCommand(HandleApplyCommand); }
+            get { return ApplyCommandValue; }
+        }
+
+        private bool CanApplyCommandExecute()
+        {
+            return !IsAtleastOneRepairOptionSelected();
+        }
+
+        private void RaiseCanExecuteCommandForRepairAndApply()
+        {
+            RepairCommandValue.RaiseCanExecuteChanged();
+            ApplyCommandValue.RaiseCanExecuteChanged();
         }
 
         private void HandleApplyCommand()
@@ -712,43 +756,7 @@ namespace InstallerUI
                 {
                     engine.StringVariables[PackageIdEnum.FirstInstaller.ToString()] = UserSelectionEnum.Skip.ToString();
                     _userSelectionDic[PackageIdEnum.FirstInstaller.ToString()] = UserSelectionEnum.Skip.ToString();
-                }
-            }
-        }
-        #endregion
-        
-        #region Unistall
-        private bool _firstInstallerIsUnInstallChecked = false;
-        public bool FirstInstallerIsUnInstallChecked
-        {
-            get { return this._firstInstallerIsUnInstallChecked; }
-            set
-            {
-                this.SetProperty(ref this._firstInstallerIsUnInstallChecked, value);
-                if (value)
-                {
-                    engine.StringVariables[PackageIdEnum.FirstInstaller.ToString()] = UserSelectionEnum.Uninstall.ToString();
-                    _userSelectionDic[PackageIdEnum.FirstInstaller.ToString()] = UserSelectionEnum.Uninstall.ToString();
-                }
-            }
-        }
-        #endregion
-
-        #region Repair
-        private bool _firstInstallerIsRepairChecked = false;
-        public bool FirstInstallerIsRepairChecked
-        {
-            get
-            {
-                return this._firstInstallerIsRepairChecked;
-            }
-            set
-            {
-                this.SetProperty(ref this._firstInstallerIsRepairChecked, value);
-                if (value)
-                {
-                    engine.StringVariables[PackageIdEnum.FirstInstaller.ToString()] = UserSelectionEnum.Repair.ToString();
-                    _userSelectionDic[PackageIdEnum.FirstInstaller.ToString()] = UserSelectionEnum.Repair.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
                 }
             }
         }
@@ -769,11 +777,89 @@ namespace InstallerUI
                 {
                     engine.StringVariables[PackageIdEnum.FirstInstaller.ToString()] = UserSelectionEnum.Keep.ToString();
                     _userSelectionDic[PackageIdEnum.FirstInstaller.ToString()] = UserSelectionEnum.Keep.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
                 }
             }
         }
         #endregion
 
+        #region Install
+        private bool _firstInstallerIsInstallChecked = false;
+        public bool FirstInstallerIsInstallChecked
+        {
+            get { return this._firstInstallerIsInstallChecked; }
+            set
+            {
+                this.SetProperty(ref this._firstInstallerIsInstallChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.FirstInstaller.ToString()] = UserSelectionEnum.Install.ToString();
+                    _userSelectionDic[PackageIdEnum.FirstInstaller.ToString()] = UserSelectionEnum.Install.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
+                }
+            }
+        }
+        #endregion
+
+        #region Unistall
+        private bool _firstInstallerIsUnInstallChecked = false;
+        public bool FirstInstallerIsUnInstallChecked
+        {
+            get { return this._firstInstallerIsUnInstallChecked; }
+            set
+            {
+                this.SetProperty(ref this._firstInstallerIsUnInstallChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.FirstInstaller.ToString()] = UserSelectionEnum.Uninstall.ToString();
+                    _userSelectionDic[PackageIdEnum.FirstInstaller.ToString()] = UserSelectionEnum.Uninstall.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
+                }
+            }
+        }
+        #endregion
+
+        #region Update
+        private bool _firstInstallerIsUpdateChecked = false;
+        public bool FirstInstallerIsUpdateChecked
+        {
+            get
+            {
+                return this._firstInstallerIsUpdateChecked;
+            }
+            set
+            {
+                this.SetProperty(ref this._firstInstallerIsUpdateChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.FirstInstaller.ToString()] = UserSelectionEnum.Update.ToString();
+                    _userSelectionDic[PackageIdEnum.FirstInstaller.ToString()] = UserSelectionEnum.Update.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
+                }
+            }
+        }
+        #endregion
+
+        #region Repair
+        private bool _firstInstallerIsRepairChecked = false;
+        public bool FirstInstallerIsRepairChecked
+        {
+            get
+            {
+                return this._firstInstallerIsRepairChecked;
+            }
+            set
+            {
+                this.SetProperty(ref this._firstInstallerIsRepairChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.FirstInstaller.ToString()] = UserSelectionEnum.Repair.ToString();
+                    _userSelectionDic[PackageIdEnum.FirstInstaller.ToString()] = UserSelectionEnum.Repair.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
+                }
+            }
+        }
+        #endregion
 
         #region  IsEnabled
         private bool _firstInstallerIsInstallEnabled = true;
@@ -836,10 +922,11 @@ namespace InstallerUI
             }
         }
         #endregion
-
         #endregion
 
         #region SecondInstaller
+        #region Checked
+        #region Skip
         private bool _secondInstallerIsSkipChecked = true;
         public bool SecondInstallerIsSkipChecked
         {
@@ -851,44 +938,11 @@ namespace InstallerUI
                 {
                     engine.StringVariables[PackageIdEnum.SecondInstaller.ToString()] = UserSelectionEnum.Skip.ToString();
                     _userSelectionDic[PackageIdEnum.SecondInstaller.ToString()] = UserSelectionEnum.Skip.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
                 }
             }
         }
-
-        private bool _secondInstallerIsUnInstallChecked = false;
-        public bool SecondInstallerIsUnInstallChecked
-        {
-            get { return this._secondInstallerIsUnInstallChecked; }
-            set
-            {
-                this.SetProperty(ref this._secondInstallerIsUnInstallChecked, value);
-                if (value)
-                {
-                    engine.StringVariables[PackageIdEnum.SecondInstaller.ToString()] = UserSelectionEnum.Uninstall.ToString();
-                    _userSelectionDic[PackageIdEnum.SecondInstaller.ToString()] = UserSelectionEnum.Uninstall.ToString();
-                }
-            }
-        }
-
-        #region Repair
-        private bool _secondInstallerIsRepairChecked = false;
-        public bool SecondInstallerIsRepairChecked
-        {
-            get
-            {
-                return this._secondInstallerIsRepairChecked;
-            }
-            set
-            {
-                this.SetProperty(ref this._secondInstallerIsRepairChecked, value);
-                if (value)
-                {
-                    engine.StringVariables[PackageIdEnum.SecondInstaller.ToString()] = UserSelectionEnum.Repair.ToString();
-                    _userSelectionDic[PackageIdEnum.SecondInstaller.ToString()] = UserSelectionEnum.Repair.ToString();
-                }
-            }
-        }
-        #endregion
+        #endregion 
 
         #region Keep
         private bool _secondInstallerIsKeepChecked = false;
@@ -905,10 +959,91 @@ namespace InstallerUI
                 {
                     engine.StringVariables[PackageIdEnum.SecondInstaller.ToString()] = UserSelectionEnum.Keep.ToString();
                     _userSelectionDic[PackageIdEnum.SecondInstaller.ToString()] = UserSelectionEnum.Keep.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
                 }
             }
         }
         #endregion
+
+        #region install
+        private bool _secondInstallerIsInstallChecked = false;
+        public bool SecondInstallerIsInstallChecked
+        {
+            get { return this._secondInstallerIsInstallChecked; }
+            set
+            {
+                this.SetProperty(ref this._secondInstallerIsInstallChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.SecondInstaller.ToString()] = UserSelectionEnum.Install.ToString();
+                    _userSelectionDic[PackageIdEnum.SecondInstaller.ToString()] = UserSelectionEnum.Install.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
+                }
+            }
+        }
+        #endregion
+
+        #region Uninstall
+        private bool _secondInstallerIsUnInstallChecked = false;
+        public bool SecondInstallerIsUnInstallChecked
+        {
+            get { return this._secondInstallerIsUnInstallChecked; }
+            set
+            {
+                this.SetProperty(ref this._secondInstallerIsUnInstallChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.SecondInstaller.ToString()] = UserSelectionEnum.Uninstall.ToString();
+                    _userSelectionDic[PackageIdEnum.SecondInstaller.ToString()] = UserSelectionEnum.Uninstall.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
+                }
+            }
+        }
+        #endregion
+
+        #region Update
+        private bool _secondInstallerIsUpdateChecked = false;
+        public bool SecondInstallerIsUpdateChecked
+        {
+            get
+            {
+                return this._secondInstallerIsUpdateChecked;
+            }
+            set
+            {
+                this.SetProperty(ref this._secondInstallerIsUpdateChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.SecondInstaller.ToString()] = UserSelectionEnum.Update.ToString();
+                    _userSelectionDic[PackageIdEnum.SecondInstaller.ToString()] = UserSelectionEnum.Update.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
+                }
+            }
+        }
+        #endregion
+
+        #region Repair
+        private bool _secondInstallerIsRepairChecked = false;
+        public bool SecondInstallerIsRepairChecked
+        {
+            get
+            {
+                return this._secondInstallerIsRepairChecked;
+            }
+            set
+            {
+                this.SetProperty(ref this._secondInstallerIsRepairChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.SecondInstaller.ToString()] = UserSelectionEnum.Repair.ToString();
+                    _userSelectionDic[PackageIdEnum.SecondInstaller.ToString()] = UserSelectionEnum.Repair.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
+                }
+            }
+        }
+        #endregion
+        #endregion Checked
+
 
         #region  IsEnabled
         private bool _secondInstallerIsInstallEnabled = true;
@@ -975,6 +1110,7 @@ namespace InstallerUI
         #endregion
 
         #region  ThirdInstaller
+        #region Skip
         private bool _thirdInstallerIsSkipChecked = true;
         public bool ThirdInstallerIsSkipChecked
         {
@@ -986,45 +1122,11 @@ namespace InstallerUI
                 {
                     engine.StringVariables[PackageIdEnum.ThirdInstaller.ToString()] = UserSelectionEnum.Skip.ToString();
                     _userSelectionDic[PackageIdEnum.ThirdInstaller.ToString()] = UserSelectionEnum.Skip.ToString();
-                }
-            }
-        }
-
-        private bool _thirdInstallerIsUnInstallChecked = false;
-        public bool ThirdInstallerIsUnInstallChecked
-        {
-            get { return this._thirdInstallerIsUnInstallChecked; }
-            set
-            {
-                this.SetProperty(ref this._thirdInstallerIsUnInstallChecked, value);
-                if (value)
-                {
-                    engine.StringVariables[PackageIdEnum.ThirdInstaller.ToString()] = UserSelectionEnum.Uninstall.ToString();
-                    _userSelectionDic[PackageIdEnum.ThirdInstaller.ToString()] = UserSelectionEnum.Uninstall.ToString();
-                }
-            }
-        }
-
-        #region Repair
-        private bool _thirdInstallerIsRepairChecked = false;
-        public bool ThirdInstallerIsRepairChecked
-        {
-            get
-            {
-                return this._thirdInstallerIsRepairChecked;
-            }
-            set
-            {
-                this.SetProperty(ref this._thirdInstallerIsRepairChecked, value);
-                if (value)
-                {
-                    engine.StringVariables[PackageIdEnum.ThirdInstaller.ToString()] = UserSelectionEnum.Repair.ToString();
-                    _userSelectionDic[PackageIdEnum.ThirdInstaller.ToString()] = UserSelectionEnum.Repair.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
                 }
             }
         }
         #endregion
-
 
         #region Keep
         private bool _thirdInstallerIsKeepChecked = false;
@@ -1041,10 +1143,90 @@ namespace InstallerUI
                 {
                     engine.StringVariables[PackageIdEnum.ThirdInstaller.ToString()] = UserSelectionEnum.Keep.ToString();
                     _userSelectionDic[PackageIdEnum.ThirdInstaller.ToString()] = UserSelectionEnum.Keep.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
                 }
             }
         }
         #endregion
+
+        #region Install
+        private bool _thirdInstallerIsInstallChecked = false;
+        public bool ThirdInstallerIsInstallChecked
+        {
+            get { return this._thirdInstallerIsInstallChecked; }
+            set
+            {
+                this.SetProperty(ref this._thirdInstallerIsInstallChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.ThirdInstaller.ToString()] = UserSelectionEnum.Install.ToString();
+                    _userSelectionDic[PackageIdEnum.ThirdInstaller.ToString()] = UserSelectionEnum.Install.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
+                }
+            }
+        }
+        #endregion
+
+        #region UnInstall
+        private bool _thirdInstallerIsUnInstallChecked = false;
+        public bool ThirdInstallerIsUnInstallChecked
+        {
+            get { return this._thirdInstallerIsUnInstallChecked; }
+            set
+            {
+                this.SetProperty(ref this._thirdInstallerIsUnInstallChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.ThirdInstaller.ToString()] = UserSelectionEnum.Uninstall.ToString();
+                    _userSelectionDic[PackageIdEnum.ThirdInstaller.ToString()] = UserSelectionEnum.Uninstall.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
+                }
+            }
+        }
+        #endregion
+
+        #region Update
+        private bool _thirdInstallerIsUpdateChecked = false;
+        public bool ThirdInstallerIsUpdateChecked
+        {
+            get
+            {
+                return this._thirdInstallerIsUpdateChecked;
+            }
+            set
+            {
+                this.SetProperty(ref this._thirdInstallerIsUpdateChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.ThirdInstaller.ToString()] = UserSelectionEnum.Update.ToString();
+                    _userSelectionDic[PackageIdEnum.ThirdInstaller.ToString()] = UserSelectionEnum.Update.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
+                }
+            }
+        }
+        #endregion
+
+        #region Repair
+        private bool _thirdInstallerIsRepairChecked = false;
+        public bool ThirdInstallerIsRepairChecked
+        {
+            get
+            {
+                return this._thirdInstallerIsRepairChecked;
+            }
+            set
+            {
+                this.SetProperty(ref this._thirdInstallerIsRepairChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.ThirdInstaller.ToString()] = UserSelectionEnum.Repair.ToString();
+                    _userSelectionDic[PackageIdEnum.ThirdInstaller.ToString()] = UserSelectionEnum.Repair.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
+                }
+            }
+        }
+        #endregion
+
 
         #region  IsEnabled
         private bool _thirdInstallerIsInstallEnabled = true;
@@ -1111,6 +1293,7 @@ namespace InstallerUI
         #endregion
 
         #region FourthInstaller
+        #region Checked
         private bool _fourthInstallerIsSkipChecked = true;
         public bool FourthInstallerIsSkipChecked
         {
@@ -1122,40 +1305,7 @@ namespace InstallerUI
                 {
                     engine.StringVariables[PackageIdEnum.FourthInstaller.ToString()] = UserSelectionEnum.Skip.ToString();
                     _userSelectionDic[PackageIdEnum.FourthInstaller.ToString()] = UserSelectionEnum.Skip.ToString();
-                }
-            }
-        }
-
-        private bool _fourthInstallerIsUnInstallChecked = false;
-        public bool FourthInstallerIsUnInstallChecked
-        {
-            get { return this._fourthInstallerIsUnInstallChecked; }
-            set
-            {
-                this.SetProperty(ref this._fourthInstallerIsUnInstallChecked, value);
-                if (value)
-                {
-                    engine.StringVariables[PackageIdEnum.FourthInstaller.ToString()] = UserSelectionEnum.Uninstall.ToString();
-                    _userSelectionDic[PackageIdEnum.FourthInstaller.ToString()] = UserSelectionEnum.Uninstall.ToString();
-                }
-            }
-        }
-
-        #region Repair
-        private bool _fourthInstallerIsRepairChecked = false;
-        public bool FourthInstallerIsRepairChecked
-        {
-            get
-            {
-                return this._fourthInstallerIsRepairChecked;
-            }
-            set
-            {
-                this.SetProperty(ref this._fourthInstallerIsRepairChecked, value);
-                if (value)
-                {
-                    engine.StringVariables[PackageIdEnum.FourthInstaller.ToString()] = UserSelectionEnum.Repair.ToString();
-                    _userSelectionDic[PackageIdEnum.FourthInstaller.ToString()] = UserSelectionEnum.Repair.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
                 }
             }
         }
@@ -1176,6 +1326,86 @@ namespace InstallerUI
                 {
                     engine.StringVariables[PackageIdEnum.FourthInstaller.ToString()] = UserSelectionEnum.Keep.ToString();
                     _userSelectionDic[PackageIdEnum.FourthInstaller.ToString()] = UserSelectionEnum.Keep.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
+                }
+            }
+        }
+        #endregion
+
+        #region Install
+        private bool _fourthInstallerIsInstallChecked = false;
+        public bool FourthInstallerIsInstallChecked
+        {
+            get { return this._fourthInstallerIsInstallChecked; }
+            set
+            {
+                this.SetProperty(ref this._fourthInstallerIsInstallChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.FourthInstaller.ToString()] = UserSelectionEnum.Install.ToString();
+                    _userSelectionDic[PackageIdEnum.FourthInstaller.ToString()] = UserSelectionEnum.Install.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
+                }
+            }
+        }
+        #endregion
+
+
+        #region Uninstall
+        private bool _fourthInstallerIsUnInstallChecked = false;
+        public bool FourthInstallerIsUnInstallChecked
+        {
+            get { return this._fourthInstallerIsUnInstallChecked; }
+            set
+            {
+                this.SetProperty(ref this._fourthInstallerIsUnInstallChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.FourthInstaller.ToString()] = UserSelectionEnum.Uninstall.ToString();
+                    _userSelectionDic[PackageIdEnum.FourthInstaller.ToString()] = UserSelectionEnum.Uninstall.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
+                }
+            }
+        }
+        #endregion
+
+        #region Update
+        private bool _fourthInstallerUpdateChecked = false;
+        public bool FourthInstallerIsUpdateChecked
+        {
+            get
+            {
+                return this._fourthInstallerUpdateChecked;
+            }
+            set
+            {
+                this.SetProperty(ref this._fourthInstallerUpdateChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.FourthInstaller.ToString()] = UserSelectionEnum.Update.ToString();
+                    _userSelectionDic[PackageIdEnum.FourthInstaller.ToString()] = UserSelectionEnum.Update.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
+                }
+            }
+        }
+        #endregion
+
+        #region Repair
+        private bool _fourthInstallerIsRepairChecked = false;
+        public bool FourthInstallerIsRepairChecked
+        {
+            get
+            {
+                return this._fourthInstallerIsRepairChecked;
+            }
+            set
+            {
+                this.SetProperty(ref this._fourthInstallerIsRepairChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.FourthInstaller.ToString()] = UserSelectionEnum.Repair.ToString();
+                    _userSelectionDic[PackageIdEnum.FourthInstaller.ToString()] = UserSelectionEnum.Repair.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
                 }
             }
         }
@@ -1245,6 +1475,7 @@ namespace InstallerUI
         #endregion
 
         #region  FifthInstaller
+        #region Skip
         private bool _fifthInstallerIsSkipChecked = true;
         public bool FifthInstallerIsSkipChecked
         {
@@ -1256,44 +1487,12 @@ namespace InstallerUI
                 {
                     engine.StringVariables[PackageIdEnum.FifthInstaller.ToString()] = UserSelectionEnum.Skip.ToString();
                     _userSelectionDic[PackageIdEnum.FifthInstaller.ToString()] = UserSelectionEnum.Skip.ToString();
-                }
-            }
-        }
-
-        private bool _fifthInstallerIsUnInstallChecked = false;
-        public bool FifthInstallerIsUnInstallChecked
-        {
-            get { return this._fifthInstallerIsUnInstallChecked; }
-            set
-            {
-                this.SetProperty(ref this._fifthInstallerIsUnInstallChecked, value);
-                if (value)
-                {
-                    engine.StringVariables[PackageIdEnum.FifthInstaller.ToString()] = UserSelectionEnum.Uninstall.ToString();
-                    _userSelectionDic[PackageIdEnum.FifthInstaller.ToString()] = UserSelectionEnum.Uninstall.ToString();
-                }
-            }
-        }
-
-        #region Repair
-        private bool _fifthInstallerIsRepairChecked = false;
-        public bool FifthInstallerIsRepairChecked
-        {
-            get
-            {
-                return this._fifthInstallerIsRepairChecked;
-            }
-            set
-            {
-                this.SetProperty(ref this._fifthInstallerIsRepairChecked, value);
-                if (value)
-                {
-                    engine.StringVariables[PackageIdEnum.FifthInstaller.ToString()] = UserSelectionEnum.Repair.ToString();
-                    _userSelectionDic[PackageIdEnum.FifthInstaller.ToString()] = UserSelectionEnum.Repair.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
                 }
             }
         }
         #endregion
+
 
         #region Keep
         private bool _fifthInstallerIsKeepChecked = false;
@@ -1310,6 +1509,88 @@ namespace InstallerUI
                 {
                     engine.StringVariables[PackageIdEnum.FifthInstaller.ToString()] = UserSelectionEnum.Keep.ToString();
                     _userSelectionDic[PackageIdEnum.FifthInstaller.ToString()] = UserSelectionEnum.Keep.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
+                }
+            }
+        }
+        #endregion
+
+        #region Install
+        private bool _fifthInstallerIsInstallChecked = false;
+        public bool FifthInstallerIsInstallChecked
+        {
+            get { return this._fifthInstallerIsInstallChecked; }
+            set
+            {
+                this.SetProperty(ref this._fifthInstallerIsInstallChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.FifthInstaller.ToString()] = UserSelectionEnum.Install.ToString();
+                    _userSelectionDic[PackageIdEnum.FifthInstaller.ToString()] = UserSelectionEnum.Install.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
+                }
+            }
+        }
+        #endregion
+
+
+
+        #region Uninstall
+        private bool _fifthInstallerIsUnInstallChecked = false;
+        public bool FifthInstallerIsUnInstallChecked
+        {
+            get { return this._fifthInstallerIsUnInstallChecked; }
+            set
+            {
+                this.SetProperty(ref this._fifthInstallerIsUnInstallChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.FifthInstaller.ToString()] = UserSelectionEnum.Uninstall.ToString();
+                    _userSelectionDic[PackageIdEnum.FifthInstaller.ToString()] = UserSelectionEnum.Uninstall.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
+                }
+            }
+        }
+        #endregion
+
+        #region Update
+        private bool _fifthInstallerIsUpdateChecked = false;
+        public bool FifthInstallerIsUpdateChecked
+        {
+            get
+            {
+                return this._fifthInstallerIsUpdateChecked;
+            }
+            set
+            {
+                this.SetProperty(ref this._fifthInstallerIsUpdateChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.FifthInstaller.ToString()] = UserSelectionEnum.Update.ToString();
+                    _userSelectionDic[PackageIdEnum.FifthInstaller.ToString()] = UserSelectionEnum.Update.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
+                }
+            }
+        }
+        #endregion
+
+
+        #region Repair
+        private bool _fifthInstallerIsRepairChecked = false;
+        public bool FifthInstallerIsRepairChecked
+        {
+            get
+            {
+                return this._fifthInstallerIsRepairChecked;
+            }
+            set
+            {
+                this.SetProperty(ref this._fifthInstallerIsRepairChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.FifthInstaller.ToString()] = UserSelectionEnum.Repair.ToString();
+                    _userSelectionDic[PackageIdEnum.FifthInstaller.ToString()] = UserSelectionEnum.Repair.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
                 }
             }
         }
@@ -1379,6 +1660,7 @@ namespace InstallerUI
         #endregion
 
         #region FIBootStapper
+        #region Skip
         private bool _fIBootStapperInstallerIsSkipChecked = true;
         public bool FIBootStapperInstallerIsSkipChecked
         {
@@ -1390,44 +1672,11 @@ namespace InstallerUI
                 {
                     engine.StringVariables[PackageIdEnum.FirstInstallerBootstrapper.ToString()] = UserSelectionEnum.Skip.ToString();
                     _userSelectionDic[PackageIdEnum.FirstInstallerBootstrapper.ToString()] = UserSelectionEnum.Skip.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
                 }
             }
         }
-
-        private bool _fIBootStrapperInstallerIsUnInstallChecked = false;
-        public bool FIBootStapperInstallerIsUnInstallChecked
-        {
-            get { return this._fIBootStrapperInstallerIsUnInstallChecked; }
-            set
-            {
-                this.SetProperty(ref this._fIBootStrapperInstallerIsUnInstallChecked, value);
-                if (value)
-                {
-                    engine.StringVariables[PackageIdEnum.FirstInstallerBootstrapper.ToString()] = UserSelectionEnum.Uninstall.ToString();
-                    _userSelectionDic[PackageIdEnum.FirstInstallerBootstrapper.ToString()] = UserSelectionEnum.Uninstall.ToString();
-                }
-            }
-        }
-
-        #region Repair
-        private bool _fIBootStrapperInstallerIsRepairChecked = false;
-        public bool FIBootStapperInstallerIsRepairChecked
-        {
-            get
-            {
-                return this._fIBootStrapperInstallerIsRepairChecked;
-            }
-            set
-            {
-                this.SetProperty(ref this._fIBootStrapperInstallerIsRepairChecked, value);
-                if (value)
-                {
-                    engine.StringVariables[PackageIdEnum.FirstInstallerBootstrapper.ToString()] = UserSelectionEnum.Repair.ToString();
-                    _userSelectionDic[PackageIdEnum.FirstInstallerBootstrapper.ToString()] = UserSelectionEnum.Repair.ToString();
-                }
-            }
-        }
-        #endregion
+        #endregion Skip
 
         #region Keep
         private bool _fIBootStrapperInstallerIsKeepChecked = false;
@@ -1444,10 +1693,93 @@ namespace InstallerUI
                 {
                     engine.StringVariables[PackageIdEnum.FirstInstallerBootstrapper.ToString()] = UserSelectionEnum.Keep.ToString();
                     _userSelectionDic[PackageIdEnum.FirstInstallerBootstrapper.ToString()] = UserSelectionEnum.Keep.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
                 }
             }
         }
         #endregion
+
+        #region Install
+        private bool _fIBootStrapperInstallerIsInstallChecked = false;
+        public bool FIBootStapperInstallerIsInstallChecked
+        {
+            get { return this._fIBootStrapperInstallerIsInstallChecked; }
+            set
+            {
+                this.SetProperty(ref this._fIBootStrapperInstallerIsInstallChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.FirstInstallerBootstrapper.ToString()] = UserSelectionEnum.Install.ToString();
+                    _userSelectionDic[PackageIdEnum.FirstInstallerBootstrapper.ToString()] = UserSelectionEnum.Install.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
+                }
+            }
+        }
+        #endregion 
+
+
+        #region Uninstall
+        private bool _fIBootStrapperInstallerIsUnInstallChecked = false;
+        public bool FIBootStapperInstallerIsUnInstallChecked
+        {
+            get { return this._fIBootStrapperInstallerIsUnInstallChecked; }
+            set
+            {
+                this.SetProperty(ref this._fIBootStrapperInstallerIsUnInstallChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.FirstInstallerBootstrapper.ToString()] = UserSelectionEnum.Uninstall.ToString();
+                    _userSelectionDic[PackageIdEnum.FirstInstallerBootstrapper.ToString()] = UserSelectionEnum.Uninstall.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
+                }
+            }
+        }
+        #endregion
+
+        #region Update
+        private bool _fIBootStrapperInstallerIsUpdateChecked = false;
+        public bool FIBootStapperInstallerIsUpdateChecked
+        {
+            get
+            {
+                return this._fIBootStrapperInstallerIsUpdateChecked;
+            }
+            set
+            {
+                this.SetProperty(ref this._fIBootStrapperInstallerIsUpdateChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.FirstInstallerBootstrapper.ToString()] = UserSelectionEnum.Update.ToString();
+                    _userSelectionDic[PackageIdEnum.FirstInstallerBootstrapper.ToString()] = UserSelectionEnum.Update.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
+                }
+            }
+        }
+        #endregion
+
+
+        #region Repair
+        private bool _fIBootStrapperInstallerIsRepairChecked = false;
+        public bool FIBootStapperInstallerIsRepairChecked
+        {
+            get
+            {
+                return this._fIBootStrapperInstallerIsRepairChecked;
+            }
+            set
+            {
+                this.SetProperty(ref this._fIBootStrapperInstallerIsRepairChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.FirstInstallerBootstrapper.ToString()] = UserSelectionEnum.Repair.ToString();
+                    _userSelectionDic[PackageIdEnum.FirstInstallerBootstrapper.ToString()] = UserSelectionEnum.Repair.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
+                }
+            }
+        }
+        #endregion
+
+       
 
         #region  IsEnabled
         private bool _fIBootStrapperInstallerIsInstallEnabled = true;
@@ -1512,7 +1844,8 @@ namespace InstallerUI
         #endregion
         #endregion
 
-        #region SIBootStapper
+        #region SIBootStapper 
+        #region Skip
         private bool _sIBootStapperInstallerIsSkipChecked = true;
         public bool SIBootStapperInstallerIsSkipChecked
         {
@@ -1524,44 +1857,11 @@ namespace InstallerUI
                 {
                     engine.StringVariables[PackageIdEnum.SecondInstallerBootstrapper.ToString()] = UserSelectionEnum.Skip.ToString();
                     _userSelectionDic[PackageIdEnum.SecondInstallerBootstrapper.ToString()] = UserSelectionEnum.Skip.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
                 }
             }
         }
-
-        private bool _sIBootStrapperInstallerIsUnInstallChecked = false;
-        public bool SIBootStapperInstallerIsUnInstallChecked
-        {
-            get { return this._sIBootStrapperInstallerIsUnInstallChecked; }
-            set
-            {
-                this.SetProperty(ref this._sIBootStrapperInstallerIsUnInstallChecked, value);
-                if (value)
-                {
-                    engine.StringVariables[PackageIdEnum.SecondInstallerBootstrapper.ToString()] = UserSelectionEnum.Uninstall.ToString();
-                    _userSelectionDic[PackageIdEnum.SecondInstallerBootstrapper.ToString()] = UserSelectionEnum.Uninstall.ToString();
-                }
-            }
-        }
-
-        #region Repair
-        private bool _sIBootStrapperInstallerIsRepairChecked = false;
-        public bool SIBootStapperInstallerIsRepairChecked
-        {
-            get
-            {
-                return this._sIBootStrapperInstallerIsRepairChecked;
-            }
-            set
-            {
-                this.SetProperty(ref this._sIBootStrapperInstallerIsRepairChecked, value);
-                if (value)
-                {
-                    engine.StringVariables[PackageIdEnum.SecondInstallerBootstrapper.ToString()] = UserSelectionEnum.Repair.ToString();
-                    _userSelectionDic[PackageIdEnum.SecondInstallerBootstrapper.ToString()] = UserSelectionEnum.Repair.ToString();
-                }
-            }
-        }
-        #endregion
+        #endregion skip
 
         #region Keep
         private bool _sIBootStrapperInstallerIsKeepChecked = false;
@@ -1578,10 +1878,90 @@ namespace InstallerUI
                 {
                     engine.StringVariables[PackageIdEnum.SecondInstallerBootstrapper.ToString()] = UserSelectionEnum.Keep.ToString();
                     _userSelectionDic[PackageIdEnum.SecondInstallerBootstrapper.ToString()] = UserSelectionEnum.Keep.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
                 }
             }
         }
         #endregion
+
+        #region Install
+        private bool _sIBootStrapperInstallerIsInstallChecked = false;
+        public bool SIBootStapperInstallerIsInstallChecked
+        {
+            get { return this._sIBootStrapperInstallerIsInstallChecked; }
+            set
+            {
+                this.SetProperty(ref this._sIBootStrapperInstallerIsInstallChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.SecondInstallerBootstrapper.ToString()] = UserSelectionEnum.Install.ToString();
+                    _userSelectionDic[PackageIdEnum.SecondInstallerBootstrapper.ToString()] = UserSelectionEnum.Install.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
+                }
+            }
+        }
+        #endregion
+
+        #region Uninstall
+        private bool _sIBootStrapperInstallerIsUnInstallChecked = false;
+        public bool SIBootStapperInstallerIsUnInstallChecked
+        {
+            get { return this._sIBootStrapperInstallerIsUnInstallChecked; }
+            set
+            {
+                this.SetProperty(ref this._sIBootStrapperInstallerIsUnInstallChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.SecondInstallerBootstrapper.ToString()] = UserSelectionEnum.Uninstall.ToString();
+                    _userSelectionDic[PackageIdEnum.SecondInstallerBootstrapper.ToString()] = UserSelectionEnum.Uninstall.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
+                }
+            }
+        }
+        #endregion
+
+        #region Update
+        private bool _sIBootStrapperInstallerIsUpdateChecked = false;
+        public bool SIBootStapperInstallerIsUpdateChecked
+        {
+            get
+            {
+                return this._sIBootStrapperInstallerIsUpdateChecked;
+            }
+            set
+            {
+                this.SetProperty(ref this._sIBootStrapperInstallerIsUpdateChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.SecondInstallerBootstrapper.ToString()] = UserSelectionEnum.Update.ToString();
+                    _userSelectionDic[PackageIdEnum.SecondInstallerBootstrapper.ToString()] = UserSelectionEnum.Update.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
+                }
+            }
+        }
+        #endregion
+
+        #region Repair
+        private bool _sIBootStrapperInstallerIsRepairChecked = false;
+        public bool SIBootStapperInstallerIsRepairChecked
+        {
+            get
+            {
+                return this._sIBootStrapperInstallerIsRepairChecked;
+            }
+            set
+            {
+                this.SetProperty(ref this._sIBootStrapperInstallerIsRepairChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.SecondInstallerBootstrapper.ToString()] = UserSelectionEnum.Repair.ToString();
+                    _userSelectionDic[PackageIdEnum.SecondInstallerBootstrapper.ToString()] = UserSelectionEnum.Repair.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
+                }
+            }
+        }
+        #endregion
+
         #region  IsEnabled
         private bool _sIBootStrapperInstallerIsInstallEnabled = true;
         public bool SIBootStrapperInstallerIsInstallEnabled
@@ -1646,6 +2026,7 @@ namespace InstallerUI
         #endregion
 
         #region ThirdIBootStapper
+        #region Skip
         private bool _thirdIBootStapperInstallerIsSkipChecked = true;
         public bool ThirdIBootStapperInstallerIsSkipChecked
         {
@@ -1657,40 +2038,7 @@ namespace InstallerUI
                 {
                     engine.StringVariables[PackageIdEnum.ThirdInstallerBootstrapper.ToString()] = UserSelectionEnum.Skip.ToString();
                     _userSelectionDic[PackageIdEnum.ThirdInstallerBootstrapper.ToString()] = UserSelectionEnum.Skip.ToString();
-                }
-            }
-        }
-
-        private bool _thirdIBootStrapperInstallerIsUnInstallChecked = false;
-        public bool ThirdIBootStapperInstallerIsUnInstallChecked
-        {
-            get { return this._thirdIBootStrapperInstallerIsUnInstallChecked; }
-            set
-            {
-                this.SetProperty(ref this._thirdIBootStrapperInstallerIsUnInstallChecked, value);
-                if (value)
-                {
-                    engine.StringVariables[PackageIdEnum.ThirdInstallerBootstrapper.ToString()] = UserSelectionEnum.Uninstall.ToString();
-                    _userSelectionDic[PackageIdEnum.ThirdInstallerBootstrapper.ToString()] = UserSelectionEnum.Uninstall.ToString();
-                }
-            }
-        }
-
-        #region Repair
-        private bool _thirdIBootStrapperInstallerIsRepairChecked = false;
-        public bool ThirdIBootStapperInstallerIsRepairChecked
-        {
-            get
-            {
-                return this._thirdIBootStrapperInstallerIsRepairChecked;
-            }
-            set
-            {
-                this.SetProperty(ref this._thirdIBootStrapperInstallerIsRepairChecked, value);
-                if (value)
-                {
-                    engine.StringVariables[PackageIdEnum.ThirdInstallerBootstrapper.ToString()] = UserSelectionEnum.Repair.ToString();
-                    _userSelectionDic[PackageIdEnum.ThirdInstallerBootstrapper.ToString()] = UserSelectionEnum.Repair.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
                 }
             }
         }
@@ -1711,10 +2059,90 @@ namespace InstallerUI
                 {
                     engine.StringVariables[PackageIdEnum.ThirdInstallerBootstrapper.ToString()] = UserSelectionEnum.Keep.ToString();
                     _userSelectionDic[PackageIdEnum.ThirdInstallerBootstrapper.ToString()] = UserSelectionEnum.Keep.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
                 }
             }
         }
         #endregion
+
+        #region Install
+        private bool _thirdIBootStrapperInstallerIsInstallChecked = false;
+        public bool ThirdIBootStapperInstallerIsInstallChecked
+        {
+            get { return this._thirdIBootStrapperInstallerIsInstallChecked; }
+            set
+            {
+                this.SetProperty(ref this._thirdIBootStrapperInstallerIsInstallChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.ThirdInstallerBootstrapper.ToString()] = UserSelectionEnum.Install.ToString();
+                    _userSelectionDic[PackageIdEnum.ThirdInstallerBootstrapper.ToString()] = UserSelectionEnum.Install.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
+                }
+            }
+        }
+        #endregion
+
+        #region Uninstall
+        private bool _thirdIBootStrapperInstallerIsUnInstallChecked = false;
+        public bool ThirdIBootStapperInstallerIsUnInstallChecked
+        {
+            get { return this._thirdIBootStrapperInstallerIsUnInstallChecked; }
+            set
+            {
+                this.SetProperty(ref this._thirdIBootStrapperInstallerIsUnInstallChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.ThirdInstallerBootstrapper.ToString()] = UserSelectionEnum.Uninstall.ToString();
+                    _userSelectionDic[PackageIdEnum.ThirdInstallerBootstrapper.ToString()] = UserSelectionEnum.Uninstall.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
+                }
+            }
+        }
+        #endregion
+
+        #region Update
+        private bool _thirdIBootStrapperInstallerIsUpdateChecked = false;
+        public bool ThirdIBootStapperInstallerIsUpdateChecked
+        {
+            get
+            {
+                return this._thirdIBootStrapperInstallerIsUpdateChecked;
+            }
+            set
+            {
+                this.SetProperty(ref this._thirdIBootStrapperInstallerIsUpdateChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.ThirdInstallerBootstrapper.ToString()] = UserSelectionEnum.Update.ToString();
+                    _userSelectionDic[PackageIdEnum.ThirdInstallerBootstrapper.ToString()] = UserSelectionEnum.Update.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
+                }
+            }
+        }
+        #endregion
+
+        #region Repair
+        private bool _thirdIBootStrapperInstallerIsRepairChecked = false;
+        public bool ThirdIBootStapperInstallerIsRepairChecked
+        {
+            get
+            {
+                return this._thirdIBootStrapperInstallerIsRepairChecked;
+            }
+            set
+            {
+                this.SetProperty(ref this._thirdIBootStrapperInstallerIsRepairChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.ThirdInstallerBootstrapper.ToString()] = UserSelectionEnum.Repair.ToString();
+                    _userSelectionDic[PackageIdEnum.ThirdInstallerBootstrapper.ToString()] = UserSelectionEnum.Repair.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
+                }
+            }
+        }
+        #endregion
+
         #region  IsEnabled
         private bool _thirdIBootStrapperInstallerIsInstallEnabled = true;
         public bool ThirdIBootStrapperInstallerIsInstallEnabled
@@ -1780,6 +2208,7 @@ namespace InstallerUI
         #endregion
 
         #region FourthIBootStapper
+        #region Skip
         private bool _fourthIBootStapperInstallerIsSkipChecked = true;
         public bool FourthIBootStapperInstallerIsSkipChecked
         {
@@ -1791,40 +2220,7 @@ namespace InstallerUI
                 {
                     engine.StringVariables[PackageIdEnum.FourthInstallerBootstrapper.ToString()] = UserSelectionEnum.Skip.ToString();
                     _userSelectionDic[PackageIdEnum.FourthInstallerBootstrapper.ToString()] = UserSelectionEnum.Skip.ToString();
-                }
-            }
-        }
-
-        private bool _fourthIBootStrapperInstallerIsUnInstallChecked = false;
-        public bool FourthIBootStapperInstallerIsUnInstallChecked
-        {
-            get { return this._fourthIBootStrapperInstallerIsUnInstallChecked; }
-            set
-            {
-                this.SetProperty(ref this._fourthIBootStrapperInstallerIsUnInstallChecked, value);
-                if (value)
-                {
-                    engine.StringVariables[PackageIdEnum.FourthInstallerBootstrapper.ToString()] = UserSelectionEnum.Uninstall.ToString();
-                    _userSelectionDic[PackageIdEnum.FourthInstallerBootstrapper.ToString()] = UserSelectionEnum.Uninstall.ToString();
-                }
-            }
-        }
-
-        #region Repair
-        private bool _fourthIBootStrapperInstallerIsRepairChecked = false;
-        public bool FourthIBootStapperInstallerIsRepairChecked
-        {
-            get
-            {
-                return this._fourthIBootStrapperInstallerIsRepairChecked;
-            }
-            set
-            {
-                this.SetProperty(ref this._fourthIBootStrapperInstallerIsRepairChecked, value);
-                if (value)
-                {
-                    engine.StringVariables[PackageIdEnum.FourthInstallerBootstrapper.ToString()] = UserSelectionEnum.Repair.ToString();
-                    _userSelectionDic[PackageIdEnum.FourthInstallerBootstrapper.ToString()] = UserSelectionEnum.Repair.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
                 }
             }
         }
@@ -1845,10 +2241,91 @@ namespace InstallerUI
                 {
                     engine.StringVariables[PackageIdEnum.FourthInstallerBootstrapper.ToString()] = UserSelectionEnum.Keep.ToString();
                     _userSelectionDic[PackageIdEnum.FourthInstallerBootstrapper.ToString()] = UserSelectionEnum.Keep.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
                 }
             }
         }
         #endregion
+
+        #region Install
+        private bool _fourthIBootStrapperInstallerIsInstallChecked = false;
+        public bool FourthIBootStapperInstallerIsInstallChecked
+        {
+            get { return this._fourthIBootStrapperInstallerIsInstallChecked; }
+            set
+            {
+                this.SetProperty(ref this._fourthIBootStrapperInstallerIsInstallChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.FourthInstallerBootstrapper.ToString()] = UserSelectionEnum.Install.ToString();
+                    _userSelectionDic[PackageIdEnum.FourthInstallerBootstrapper.ToString()] = UserSelectionEnum.Install.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
+                }
+            }
+        }
+        #endregion
+
+
+        #region Uninstall
+        private bool _fourthIBootStrapperInstallerIsUnInstallChecked = false;
+        public bool FourthIBootStapperInstallerIsUnInstallChecked
+        {
+            get { return this._fourthIBootStrapperInstallerIsUnInstallChecked; }
+            set
+            {
+                this.SetProperty(ref this._fourthIBootStrapperInstallerIsUnInstallChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.FourthInstallerBootstrapper.ToString()] = UserSelectionEnum.Uninstall.ToString();
+                    _userSelectionDic[PackageIdEnum.FourthInstallerBootstrapper.ToString()] = UserSelectionEnum.Uninstall.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
+                }
+            }
+        }
+        #endregion
+
+        #region Update
+        private bool _fourthIBootStrapperInstallerIsUpdateChecked = false;
+        public bool FourthIBootStapperInstallerIsUpdateChecked
+        {
+            get
+            {
+                return this._fourthIBootStrapperInstallerIsUpdateChecked;
+            }
+            set
+            {
+                this.SetProperty(ref this._fourthIBootStrapperInstallerIsUpdateChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.FourthInstallerBootstrapper.ToString()] = UserSelectionEnum.Update.ToString();
+                    _userSelectionDic[PackageIdEnum.FourthInstallerBootstrapper.ToString()] = UserSelectionEnum.Update.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
+                }
+            }
+        }
+        #endregion
+
+        #region Repair
+        private bool _fourthIBootStrapperInstallerIsRepairChecked = false;
+        public bool FourthIBootStapperInstallerIsRepairChecked
+        {
+            get
+            {
+                return this._fourthIBootStrapperInstallerIsRepairChecked;
+            }
+            set
+            {
+                this.SetProperty(ref this._fourthIBootStrapperInstallerIsRepairChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.FourthInstallerBootstrapper.ToString()] = UserSelectionEnum.Repair.ToString();
+                    _userSelectionDic[PackageIdEnum.FourthInstallerBootstrapper.ToString()] = UserSelectionEnum.Repair.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
+                }
+            }
+        }
+        #endregion
+
         #region  IsEnabled
         private bool _fourthIBootStrapperInstallerIsInstallEnabled = true;
         public bool FourthIBootStrapperInstallerIsInstallEnabled
@@ -1911,8 +2388,9 @@ namespace InstallerUI
         }
         #endregion
         #endregion
-        
+
         #region FifthIBootStapper
+        #region Skip
         private bool _fifthIBootStapperInstallerIsSkipChecked = true;
         public bool FifthIBootStapperInstallerIsSkipChecked
         {
@@ -1924,44 +2402,11 @@ namespace InstallerUI
                 {
                     engine.StringVariables[PackageIdEnum.FifthInstallerBootstrapper.ToString()] = UserSelectionEnum.Skip.ToString();
                     _userSelectionDic[PackageIdEnum.FifthInstallerBootstrapper.ToString()] = UserSelectionEnum.Skip.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
                 }
             }
         }
-
-        private bool _fifthIBootStrapperInstallerIsUnInstallChecked = false;
-        public bool FifthIBootStapperInstallerIsUnInstallChecked
-        {
-            get { return this._fifthIBootStrapperInstallerIsUnInstallChecked; }
-            set
-            {
-                this.SetProperty(ref this._fifthIBootStrapperInstallerIsUnInstallChecked, value);
-                if (value)
-                {
-                    engine.StringVariables[PackageIdEnum.FifthInstallerBootstrapper.ToString()] = UserSelectionEnum.Uninstall.ToString();
-                    _userSelectionDic[PackageIdEnum.FifthInstallerBootstrapper.ToString()] = UserSelectionEnum.Uninstall.ToString();
-                }
-            }
-        }
-
-        #region Repair
-        private bool _fifthIBootStrapperInstallerIsRepairChecked = false;
-        public bool FifthIBootStapperInstallerIsRepairChecked
-        {
-            get
-            {
-                return this._fifthIBootStrapperInstallerIsRepairChecked;
-            }
-            set
-            {
-                this.SetProperty(ref this._fifthIBootStrapperInstallerIsRepairChecked, value);
-                if (value)
-                {
-                    engine.StringVariables[PackageIdEnum.FifthInstallerBootstrapper.ToString()] = UserSelectionEnum.Repair.ToString();
-                    _userSelectionDic[PackageIdEnum.FifthInstallerBootstrapper.ToString()] = UserSelectionEnum.Repair.ToString();
-                }
-            }
-        }
-        #endregion
+        #endregion 
 
         #region Keep
         private bool _fifthIBootStrapperInstallerIsKeepChecked = false;
@@ -1978,10 +2423,90 @@ namespace InstallerUI
                 {
                     engine.StringVariables[PackageIdEnum.FifthInstallerBootstrapper.ToString()] = UserSelectionEnum.Keep.ToString();
                     _userSelectionDic[PackageIdEnum.FifthInstallerBootstrapper.ToString()] = UserSelectionEnum.Keep.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
                 }
             }
         }
         #endregion
+
+        #region Install
+        private bool _fifthIBootStrapperInstallerIsInstallChecked = false;
+        public bool FifthIBootStapperInstallerIsInstallChecked
+        {
+            get { return this._fifthIBootStrapperInstallerIsInstallChecked; }
+            set
+            {
+                this.SetProperty(ref this._fifthIBootStrapperInstallerIsInstallChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.FifthInstallerBootstrapper.ToString()] = UserSelectionEnum.Install.ToString();
+                    _userSelectionDic[PackageIdEnum.FifthInstallerBootstrapper.ToString()] = UserSelectionEnum.Install.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
+                }
+            }
+        }
+        #endregion
+
+        #region Uninstall
+        private bool _fifthIBootStrapperInstallerIsUnInstallChecked = false;
+        public bool FifthIBootStapperInstallerIsUnInstallChecked
+        {
+            get { return this._fifthIBootStrapperInstallerIsUnInstallChecked; }
+            set
+            {
+                this.SetProperty(ref this._fifthIBootStrapperInstallerIsUnInstallChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.FifthInstallerBootstrapper.ToString()] = UserSelectionEnum.Uninstall.ToString();
+                    _userSelectionDic[PackageIdEnum.FifthInstallerBootstrapper.ToString()] = UserSelectionEnum.Uninstall.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
+                }
+            }
+        }
+        #endregion
+
+        #region Update
+        private bool _fifthIBootStrapperInstallerIsUpdateChecked = false;
+        public bool FifthIBootStapperInstallerIsUpdateChecked
+        {
+            get
+            {
+                return this._fifthIBootStrapperInstallerIsUpdateChecked;
+            }
+            set
+            {
+                this.SetProperty(ref this._fifthIBootStrapperInstallerIsUpdateChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.FifthInstallerBootstrapper.ToString()] = UserSelectionEnum.Update.ToString();
+                    _userSelectionDic[PackageIdEnum.FifthInstallerBootstrapper.ToString()] = UserSelectionEnum.Update.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
+                }
+            }
+        }
+        #endregion
+
+        #region Repair
+        private bool _fifthIBootStrapperInstallerIsRepairChecked = false;
+        public bool FifthIBootStapperInstallerIsRepairChecked
+        {
+            get
+            {
+                return this._fifthIBootStrapperInstallerIsRepairChecked;
+            }
+            set
+            {
+                this.SetProperty(ref this._fifthIBootStrapperInstallerIsRepairChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.FifthInstallerBootstrapper.ToString()] = UserSelectionEnum.Repair.ToString();
+                    _userSelectionDic[PackageIdEnum.FifthInstallerBootstrapper.ToString()] = UserSelectionEnum.Repair.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
+                }
+            }
+        }
+        #endregion
+
         #region  IsEnabled
         private bool _fifthIBootStrapperInstallerIsInstallEnabled = true;
         public bool FifthIBootStrapperInstallerIsInstallEnabled
