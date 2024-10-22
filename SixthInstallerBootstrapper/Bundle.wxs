@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Bundle Name="6thBootstrapper" Version="1.0.0.0" Manufacturer="SciexOS" UpgradeCode="3bc9cd39-3770-40e3-a692-759afed8af4b">
+		<BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense" />
+
+    <Chain>
+      <!-- TODO: Define the list of chained packages. -->
+      <!-- <MsiPackage SourceFile="path\to\your.msi" /> -->
+      <MsiPackage Id="SixthInstaller4BSMsi"
+                  SourceFile="$(var.SixthInstaller4BS.TargetPath)"
+                  Compressed="yes"
+                  Vital="yes"
+                  Cache="yes"
+                  Visible ="yes">
+      </MsiPackage>
+    </Chain>
+  </Bundle>
+</Wix>

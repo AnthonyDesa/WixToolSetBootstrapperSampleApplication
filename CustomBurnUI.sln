@@ -40,6 +40,10 @@ Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "FourthInstallerBootstrapper
 EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "FifthInstallerBootstrapper", "FifthInstallerBootstrapper\FifthInstallerBootstrapper.wixproj", "{E371C493-06BC-448B-BEBA-25CA4DDB6B2F}"
 EndProject
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "SixthInstaller4BS", "SixthInstaller4BS\SixthInstaller4BS.wixproj", "{907246CA-296A-4A5C-BE75-5EE73E823681}"
+EndProject
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "SixthInstallerBootstrapper", "SixthInstallerBootstrapper\SixthInstallerBootstrapper.wixproj", "{3BC9CD39-3770-40E3-A692-759AFED8AF4B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -246,12 +250,36 @@ Global
 		{E371C493-06BC-448B-BEBA-25CA4DDB6B2F}.Release|Mixed Platforms.Build.0 = Release|x86
 		{E371C493-06BC-448B-BEBA-25CA4DDB6B2F}.Release|x86.ActiveCfg = Release|x86
 		{E371C493-06BC-448B-BEBA-25CA4DDB6B2F}.Release|x86.Build.0 = Release|x86
+		{907246CA-296A-4A5C-BE75-5EE73E823681}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{907246CA-296A-4A5C-BE75-5EE73E823681}.Debug|Any CPU.Build.0 = Debug|x86
+		{907246CA-296A-4A5C-BE75-5EE73E823681}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{907246CA-296A-4A5C-BE75-5EE73E823681}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{907246CA-296A-4A5C-BE75-5EE73E823681}.Debug|x86.ActiveCfg = Debug|x86
+		{907246CA-296A-4A5C-BE75-5EE73E823681}.Debug|x86.Build.0 = Debug|x86
+		{907246CA-296A-4A5C-BE75-5EE73E823681}.Release|Any CPU.ActiveCfg = Release|x86
+		{907246CA-296A-4A5C-BE75-5EE73E823681}.Release|Any CPU.Build.0 = Release|x86
+		{907246CA-296A-4A5C-BE75-5EE73E823681}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{907246CA-296A-4A5C-BE75-5EE73E823681}.Release|Mixed Platforms.Build.0 = Release|x86
+		{907246CA-296A-4A5C-BE75-5EE73E823681}.Release|x86.ActiveCfg = Release|x86
+		{907246CA-296A-4A5C-BE75-5EE73E823681}.Release|x86.Build.0 = Release|x86
+		{3BC9CD39-3770-40E3-A692-759AFED8AF4B}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{3BC9CD39-3770-40E3-A692-759AFED8AF4B}.Debug|Any CPU.Build.0 = Debug|x86
+		{3BC9CD39-3770-40E3-A692-759AFED8AF4B}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{3BC9CD39-3770-40E3-A692-759AFED8AF4B}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{3BC9CD39-3770-40E3-A692-759AFED8AF4B}.Debug|x86.ActiveCfg = Debug|x86
+		{3BC9CD39-3770-40E3-A692-759AFED8AF4B}.Debug|x86.Build.0 = Debug|x86
+		{3BC9CD39-3770-40E3-A692-759AFED8AF4B}.Release|Any CPU.ActiveCfg = Release|x86
+		{3BC9CD39-3770-40E3-A692-759AFED8AF4B}.Release|Any CPU.Build.0 = Release|x86
+		{3BC9CD39-3770-40E3-A692-759AFED8AF4B}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{3BC9CD39-3770-40E3-A692-759AFED8AF4B}.Release|Mixed Platforms.Build.0 = Release|x86
+		{3BC9CD39-3770-40E3-A692-759AFED8AF4B}.Release|x86.ActiveCfg = Release|x86
+		{3BC9CD39-3770-40E3-A692-759AFED8AF4B}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.0\lib\NET35
 		SolutionGuid = {403B527A-DE99-4B18-968B-B84BD887A6F9}
+		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.0\lib\NET35
 	EndGlobalSection
 EndGlobal
