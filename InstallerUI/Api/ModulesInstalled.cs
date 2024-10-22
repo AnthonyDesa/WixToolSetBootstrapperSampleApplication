@@ -9,7 +9,7 @@ namespace InstallerUI.Api
     public class ModulesInstalled
     {
         public string ModuleName { get; set; }
-        public string Version { get; set; }
+        public string ModuleVersion { get; set; }
         public string RegistryKey { get; set; }
     }
 }

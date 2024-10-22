@@ -31,7 +31,7 @@ namespace InstallerUI
         {
             this.bootstrapper = bootstrapper;
             this.engine = engine;
-            CheckForUpdatesRequest request = new CheckForUpdatesRequest();
+            var request = GetApiRequest();
             _apiResponse = CheckForUpdates.CheckForUpdateInformation(request);
 
             //Original Version shipped with Setup
@@ -3338,5 +3338,23 @@ namespace InstallerUI
             }
             return string.Empty;
         }
+        private CheckForUpdatesRequest GetApiRequest()
+        {
+            CheckForUpdatesRequest request = new CheckForUpdatesRequest();
+            var installedModules = GetModulesInstalledOnClientComputer();
+            IList<ModulesInstalled> modulesInstalledList = new List<ModulesInstalled>();
+            ModulesInstalled modulesInstalled;
+            foreach (var module in installedModules)
+            {
+                modulesInstalled = new ModulesInstalled();
+                modulesInstalled.RegistryKey = module.Item1;
+                modulesInstalled.ModuleName = module.Item2;
+                modulesInstalled.ModuleVersion = module.Item3;
+                modulesInstalledList.Add(modulesInstalled);
+            }
+            request.ModulesInstalled = modulesInstalledList;
+            return request;
+        }
+
     }
 }
