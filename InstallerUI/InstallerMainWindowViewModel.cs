@@ -10,6 +10,8 @@ using System.IO;
 using System.Linq;
 using System.Windows.Input;
 using Microsoft.Win32;
+using System.Diagnostics;
+using System.Windows;
 
 namespace InstallerUI
 {
@@ -154,6 +156,16 @@ namespace InstallerUI
                     //and user have selected the package to get the new version.
                     this.LogEvent($"ResolveSource::_newVersions[ea.PayloadId]={_newVersions[ea.PayloadId]}");
                     version = _newVersions[ea.PayloadId];
+                }
+                else if(_userSelectionDic.Where(x => x.Key.ToLower() == ea.PayloadId.ToLower()
+                        && x.Value.ToLower() != UserSelectionEnum.Install.ToString().ToLower()).Any())
+                {
+                    this.LogEvent($"ResolveSource::_newVersions[ea.PayloadId]={_newVersions[ea.PayloadId]}");
+                    version = GetInstalledVersion(ea.PayloadId);
+                }
+                else
+                {
+                    version = "1.0.0.0";
                 }
                 //else
                 //{
@@ -2938,6 +2950,40 @@ namespace InstallerUI
                     engine.StringVariables[$"{Packages.GetInstalledPackageName(PackageIdEnum.FifthInstallerBootstrapper)}"] = isdetected;
                 }
             }
+        }
+
+        private string GetInstalledVersion(string PackageID)
+        {
+            var registryView = Environment.Is64BitOperatingSystem ? RegistryView.Registry64 : RegistryView.Registry32;
+            var roots = new string[] { @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\", @"SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\" };
+            foreach (var root in roots)
+            {
+                using (var localMachine = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, registryView))
+                {
+                    var rootKeyLocal = localMachine.OpenSubKey(root, false);
+
+                    try
+                    {
+                        foreach (var subKeyName in rootKeyLocal.GetSubKeyNames())
+                        {
+                            var subKey = localMachine.OpenSubKey(string.Format("{0}{1}",root,subKeyName));
+                                
+                            if (subKey == null) continue;
+
+                            var appName = (string)subKey.GetValue("DisplayName");
+
+                            if (appName != null && string.Equals(appName, PackageID, StringComparison.OrdinalIgnoreCase))
+                            {
+                                return (string)subKey.GetValue("DisplayVersion"); ;
+                            }
+                        }
+                    }catch(Exception ex) 
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
+                }
+            }
+            return string.Empty;
         }
     }
 }
