@@ -2,19 +2,15 @@
 using Microsoft.Practices.Prism.Mvvm;
 using Microsoft.Tools.WindowsInstallerXml.Bootstrapper;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Input;
 using Microsoft.Win32;
 using InstallerUI.Api;
-using System.Diagnostics;
-using System.Windows;
 
 namespace InstallerUI
 {
@@ -2563,7 +2559,7 @@ namespace InstallerUI
             get { return this._fifthIBootStrapperInstallerIsSkipEnabled; }
             set
             {
-                this.SetProperty(ref this._sIBootStrapperInstallerIsSkipEnabled, value);
+                this.SetProperty(ref this._fifthIBootStrapperInstallerIsSkipEnabled, value);
             }
         }
 
