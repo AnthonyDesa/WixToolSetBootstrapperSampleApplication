@@ -174,6 +174,17 @@ namespace InstallerUI
                             engine.Log(LogLevel.Verbose, $"ResolveSource::New=>version={version} server={server} downloadFileNameWithExtension={downloadFileNameWithExtension}");
                         }
                     }
+                    else if (_userSelectionDic.Where(x => x.Key.ToLower() == ea.PayloadId.ToLower()
+                                                          && x.Value.ToLower() != UserSelectionEnum.Install.ToString().ToLower()).Any())
+                    {
+                        version = GetInstalledVersion(ea.PayloadId);
+                        this.LogEvent($"ResolveSource::GetInstalledVersion={version}");
+
+                    }
+                    else
+                    {
+                        version = "1.0.0.0";
+                    }
                     this.LogEvent($"ResolveSource::ExistingDownloadSource={ea.DownloadSource}");
                     string newUrl = string.Format(ea.DownloadSource, server, version, downloadFileNameWithExtension);
                     this.LogEvent($"ResolveSource::NewURL={newUrl}");
