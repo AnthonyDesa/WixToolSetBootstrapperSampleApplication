@@ -49,7 +49,9 @@
     <Variable bal:Overridable="yes" Name="IsFourthInstallerBootstrapperInstalled" Value="no"/>
     <Variable bal:Overridable="yes" Name="FifthInstallerBootstrapper" Value="Skip"/>
     <Variable bal:Overridable="yes" Name="IsFifthInstallerBootstrapperInstalled" Value="no"/>
-                                          
+    <Variable bal:Overridable="yes" Name="SixthInstallerBootstrapper" Value="Skip"/>
+    <Variable bal:Overridable="yes" Name="IsSixthInstallerBootstrapperInstalled" Value="no"/>
+
     <!--https://teamcity.netadds.net/repository/download/SciexPdv_LayeredBuilds_ApplicationsAndProducts_BuildInstallers/59464259:id/
                       output.zip!/Setup/Install/postgresql-16.2-1-windows-x64.exe-->
     <Chain>
@@ -91,7 +93,7 @@
       </MsiPackage>
       <ExePackage Id="FirstInstallerBootstrapper"
                   Name="FirstInstallerBootstrapper.exe"
-                  DownloadUrl="http://{0}/MyMsi/CustomBurnUI/Versions/{1}/FirstInstallerBootstrapper.exe"
+                  DownloadUrl="http://{0}/MyMsi/CustomBurnUI/Versions/{1}/{2}"
                   InstallCommand="/install /norestart /quiet"
                   UninstallCommand="/uninstall /quiet"
                   RepairCommand="/repair /quiet"
@@ -113,7 +115,7 @@
       </ExePackage>
       <ExePackage Id="SecondInstallerBootstrapper"
                   Name="SecondInstallerBootstrapper.exe"
-                  DownloadUrl="http://{0}/MyMsi/CustomBurnUI/Versions/{1}/SecondInstallerBootstrapper.exe"
+                  DownloadUrl="http://{0}/MyMsi/CustomBurnUI/Versions/{1}/{2}"
                   InstallCommand="/install /norestart /quiet"
                   UninstallCommand="/uninstall /quiet"
                   RepairCommand="/repair /quiet"
@@ -135,7 +137,7 @@
       </ExePackage>
       <ExePackage Id="ThirdInstallerBootstrapper"
                   Name="ThirdInstallerBootstrapper.exe"
-                  DownloadUrl="http://{0}/MyMsi/CustomBurnUI/Versions/{1}/ThirdInstallerBootstrapper.exe"
+                  DownloadUrl="http://{0}/MyMsi/CustomBurnUI/Versions/{1}/{2}"
                   InstallCommand="/install /norestart /quiet"
                   UninstallCommand="/uninstall /quiet"
                   RepairCommand="/repair /quiet"
@@ -157,7 +159,7 @@
       </ExePackage>
       <ExePackage Id="FourthInstallerBootstrapper"
                   Name="FourthInstallerBootstrapper.exe"
-                  DownloadUrl="http://{0}/MyMsi/CustomBurnUI/Versions/{1}/FourthInstallerBootstrapper.exe"
+                  DownloadUrl="http://{0}/MyMsi/CustomBurnUI/Versions/{1}/{2}"
                   InstallCommand="/install /norestart /quiet"
                   UninstallCommand="/uninstall /quiet"
                   RepairCommand="/repair /quiet"
@@ -179,7 +181,7 @@
       </ExePackage>
       <ExePackage Id="FifthInstallerBootstrapper"
                   Name="FifthInstallerBootstrapper.exe"
-                  DownloadUrl="http://{0}/MyMsi/CustomBurnUI/Versions/{1}/FifthInstallerBootstrapper.exe"
+                  DownloadUrl="http://{0}/MyMsi/CustomBurnUI/Versions/{1}/{2}"
                   InstallCommand="/install /norestart /quiet"
                   UninstallCommand="/uninstall /quiet"
                   RepairCommand="/repair /quiet"
@@ -193,6 +195,28 @@
         <RemotePayload
           ProductName="FifthInstallerBootstrapper"
           Description="FifthInstallerBootstrapper"
+          Hash="EA923B18F48C44637FD3295BC03EB4028ED88C07"
+          CertificatePublicKey="126C892FD591AD2CE058EC194DB5CE85E528A9BB"
+          CertificateThumbprint="AA9325AB2EDFF4A5D745205CBD25B440CB89FDEB"
+          Size="586192"
+          Version="1.0.0.0"/>
+      </ExePackage>
+      <ExePackage Id="SixthInstallerBootstrapper"
+                  Name="SixthInstallerBootstrapper.exe"
+                  DownloadUrl="http://{0}/MyMsi/CustomBurnUI/Versions/{1}/{2}"
+                  InstallCommand="/install /norestart /quiet"
+                  UninstallCommand="/uninstall /quiet"
+                  RepairCommand="/repair /quiet"
+                  DetectCondition="IsSixthInstallerBootstrapperInstalled=&quot;yes&quot;"
+                  Compressed="no"
+                  Cache="no"
+                  Permanent="no"
+                  Vital="yes"
+                  SuppressSignatureVerification="no"
+                  InstallCondition="SixthInstallerBootstrapper = &quot;Install&quot; OR SixthInstallerBootstrapper = &quot;Update&quot;  OR SixthInstallerBootstrapper = &quot;Repair&quot;">
+        <RemotePayload
+          ProductName="SixthInstallerBootstrapper"
+          Description="SixthInstallerBootstrapper"
           Hash="EA923B18F48C44637FD3295BC03EB4028ED88C07"
           CertificatePublicKey="126C892FD591AD2CE058EC194DB5CE85E528A9BB"
           CertificateThumbprint="AA9325AB2EDFF4A5D745205CBD25B440CB89FDEB"

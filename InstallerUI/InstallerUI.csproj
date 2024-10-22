@@ -65,6 +65,11 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Api\AvailableUpdate.cs" />
+    <Compile Include="Api\CheckForUpdates.cs" />
+    <Compile Include="Api\CheckForUpdatesRequest.cs" />
+    <Compile Include="Api\CheckForUpdatesResponse.cs" />
+    <Compile Include="Api\ModulesInstalled.cs" />
     <Compile Include="BootstrapperApplicationData.cs" />
     <Compile Include="InstallationState.cs" />
     <Compile Include="InstallerMainWindow.xaml.cs">
@@ -92,6 +97,7 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

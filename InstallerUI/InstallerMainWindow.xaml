@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
 			 xmlns:vm="clr-namespace:InstallerUI"
              mc:Ignorable="d" 
-             Height="700" Width="600">
+             Height="750" Width="650">
     <Window.Resources>
         <Style TargetType="Button">
             <Setter Property="Margin" Value="5" />
@@ -35,6 +35,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" MinHeight="75" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -147,9 +148,17 @@
         <RadioButton Grid.Column="5" Command="{Binding Path=FifthIBootStapperCommand}" GroupName="FifthIBootStapperInstaller" CommandParameter="Update" IsEnabled="{Binding FifthIBootStrapperInstallerIsUpdateEnabled,Mode=OneWay}" IsChecked="{Binding FifthIBootStapperInstallerIsUpdateChecked, Mode=TwoWay}" Grid.Row="17" Margin="5,10,0,0">Update</RadioButton>
         <RadioButton Grid.Column="6" Command="{Binding Path=FifthIBootStapperCommand}" GroupName="FifthIBootStapperInstaller" CommandParameter="Repair" IsEnabled="{Binding FifthIBootStrapperInstallerIsRepairEnabled,Mode=OneWay}" IsChecked="{Binding FifthIBootStapperInstallerIsRepairChecked, Mode=TwoWay}" Grid.Row="17" Margin="5,10,0,0">Repair</RadioButton>
 
+        <Label Grid.Column="0" Content="{Binding SixthIBootStrapperInstallerLabelContent}" Grid.Row="18" Margin="0,5,0,0" Visibility="{Binding SixthIBootStrapperInstallerLabelVisibility,Mode=TwoWay}" HorizontalAlignment="Left"/>         
+        <RadioButton Grid.Column="1" Visibility="{Binding SixthIBootStrapperInstallerSkipVisibility,Mode=TwoWay}" Command="{Binding SixthIBootStapperCommand}" GroupName="SixthIBootStapperInstaller" CommandParameter="Skip" IsEnabled="{Binding  SixthIBootStrapperInstallerIsSkipEnabled,Mode=OneWay}" IsChecked="{Binding SixthIBootStapperInstallerIsSkipChecked, Mode=TwoWay}" Grid.Row="18" Margin="5,10,0,0">Skip</RadioButton>
+        <RadioButton Grid.Column="2" Visibility="{Binding SixthIBootStrapperInstallerKeepVisibility,Mode=TwoWay}" Command="{Binding Path=SixthIBootStapperCommand}" GroupName="SixthIBootStapperInstaller" CommandParameter="Keep" IsEnabled="{Binding SixthIBootStrapperInstallerIsKeepEnabled,Mode=OneWay}" IsChecked="{Binding SixthIBootStapperInstallerIsKeepChecked, Mode=TwoWay}" Grid.Row="18" Margin="5,10,0,0">Keep</RadioButton>
+        <RadioButton Grid.Column="3" Visibility="{Binding SixthIBootStrapperInstallerInstallVisibility,Mode=TwoWay}" Command="{Binding Path=SixthIBootStapperCommand}" GroupName="SixthIBootStapperInstaller" CommandParameter="Install" IsEnabled="{Binding SixthIBootStrapperInstallerIsInstallEnabled,Mode=OneWay}" IsChecked="{Binding SixthIBootStapperInstallerIsInstallChecked, Mode=TwoWay}" Grid.Row="18" Margin="5,10,0,0">Install</RadioButton>
+        <RadioButton Grid.Column="4" Visibility="{Binding SixthIBootStrapperInstallerUnInstallVisibility,Mode=TwoWay}" Command="{Binding Path=SixthIBootStapperCommand}" GroupName="SixthIBootStapperInstaller" CommandParameter="UnInstall" IsEnabled="{Binding SixthIBootStrapperInstallerIsUnInstallEnabled,Mode=OneWay}" IsChecked="{Binding SixthIBootStapperInstallerIsUnInstallChecked, Mode=TwoWay}" Grid.Row="18" Margin="5,10,0,0">UnInstall</RadioButton>
+        <RadioButton Grid.Column="5" Visibility="{Binding SixthIBootStrapperInstallerUpdateVisibility,Mode=TwoWay}" Command="{Binding Path=SixthIBootStapperCommand}" GroupName="SixthIBootStapperInstaller" CommandParameter="Update" IsEnabled="{Binding SixthIBootStrapperInstallerIsUpdateEnabled,Mode=OneWay}" IsChecked="{Binding SixthIBootStapperInstallerIsUpdateChecked, Mode=TwoWay}" Grid.Row="18" Margin="5,10,0,0">Update</RadioButton>
+        <RadioButton Grid.Column="6" Visibility="{Binding SixthIBootStrapperInstallerRepairVisibility,Mode=TwoWay}" Command="{Binding Path=SixthIBootStapperCommand}" GroupName="SixthIBootStapperInstaller" CommandParameter="Repair" IsEnabled="{Binding SixthIBootStrapperInstallerIsRepairEnabled,Mode=OneWay}" IsChecked="{Binding SixthIBootStapperInstallerIsRepairChecked, Mode=TwoWay}" Grid.Row="18" Margin="5,10,0,0">Repair</RadioButton>
 
-        <Button Grid.Column="1" Command="{Binding Path=ApplyCommand, Mode=OneTime}" Grid.Row="18" Margin="0,30,5,0" Height="35" Background="Aqua" Grid.ColumnSpan="2" FontWeight="Bold" >Apply</Button>
-        <Button Grid.Column="4" Command="{Binding Path=RepairCommand, Mode=OneTime}" Grid.Row="18" Margin="0,30,5,0" Height="35" Background="Aqua" Grid.ColumnSpan="2" FontWeight="Bold" >Repair</Button>
+        <Button Grid.Column="1" Command="{Binding Path=ApplyCommand, Mode=OneTime}" Grid.Row="19" Margin="0,30,5,0" Height="35" Background="Aqua" Grid.ColumnSpan="2" FontWeight="Bold" >Apply</Button>
+        <Button Grid.Column="3" Command="{Binding Path=RepairCommand, Mode=OneTime}" Grid.Row="19" Margin="0,30,5,0" Height="35" Background="Aqua" Grid.ColumnSpan="1" FontWeight="Bold" >Repair</Button>
+        <Button Grid.Column="4" Command="{Binding Path=ShowNewModulesCommand, Mode=OneTime}" Grid.Row="19" Margin="0,30,5,0" Height="35" Background="Aqua" Grid.ColumnSpan="2" FontWeight="Bold" >Show New Modules</Button>
 
     </Grid>
 </Window>
