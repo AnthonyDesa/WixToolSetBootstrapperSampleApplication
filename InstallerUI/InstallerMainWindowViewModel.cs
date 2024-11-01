@@ -3,14 +3,17 @@ using Microsoft.Practices.Prism.Mvvm;
 using Microsoft.Tools.WindowsInstallerXml.Bootstrapper;
 using Newtonsoft.Json;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using System.Xml.Serialization;
 using Microsoft.Win32;
 using InstallerUI.Api;
+using OperatingSystemEnvironment = System.Environment;
 
 namespace InstallerUI
 {
@@ -29,284 +32,299 @@ namespace InstallerUI
         [ImportingConstructor]
         public InstallerMainWindowViewModel(BootstrapperApplication bootstrapper, Engine engine)
         {
-            this.bootstrapper = bootstrapper;
-            this.engine = engine;
-            var request = GetApiRequest();
-            _apiResponse = CheckForUpdates.CheckForUpdateInformation(request);
-
-            //Original Version shipped with Setup
-            _originalVersion.Add(PackageIdEnum.FirstInstallerBootstrapper.ToString(), "1.0.0.0");
-            _originalVersion.Add(PackageIdEnum.SecondInstallerBootstrapper.ToString(), "1.0.0.0");
-            _originalVersion.Add(PackageIdEnum.ThirdInstallerBootstrapper.ToString(), "1.0.0.0");
-            _originalVersion.Add(PackageIdEnum.FourthInstallerBootstrapper.ToString(), "1.0.0.0");
-            _originalVersion.Add(PackageIdEnum.FifthInstallerBootstrapper.ToString(), "1.0.0.0");
-            _originalVersion.Add(PackageIdEnum.SixthInstallerBootstrapper.ToString(), "1.0.0.0");
-            _originalVersion.Add(PackageIdEnum.FirstInstaller.ToString(), "1.0.0.0");
-            _originalVersion.Add(PackageIdEnum.SecondInstaller.ToString(), "1.0.0.0");
-            _originalVersion.Add(PackageIdEnum.ThirdInstaller.ToString(), "1.0.0.0");
-            _originalVersion.Add(PackageIdEnum.FourthInstaller.ToString(), "1.0.0.0");
-            _originalVersion.Add(PackageIdEnum.FifthInstaller.ToString(), "1.0.0.0");
-
-            // For demo purposes, we set two variables here. They are passed on to the chained MSIs.
-            engine.StringVariables["Prerequisite"] = "1";
-            engine.StringVariables["InstallLevel"] = "100";
-
-            engine.Log(LogLevel.Verbose,"Setting Default to skip for StringVariable For Action");
-            Packages.GetPackageIdsAsEnum().ToList().ForEach(x =>
+            try
             {
-                engine.StringVariables[x.ToString()] = UserSelectionEnum.Skip.ToString();
-            });
-            engine.Log(LogLevel.Verbose, "Setting Default to skip for StringVariable For Action");
+                this.bootstrapper = bootstrapper;
+                this.engine = engine;
+                //var request = GetApiRequest();
+                _apiResponse = CheckForUpdates.CheckForUpdateInformation(null);
 
-            // Setup commands
-            this.InstallCommandValue = new DelegateCommand(
-                () =>
+                //Original Version shipped with Setup
+                _originalVersion.Add(PackageIdEnum.FirstInstallerBootstrapper.ToString(), "1.0.0.0");
+                _originalVersion.Add(PackageIdEnum.SecondInstallerBootstrapper.ToString(), "1.0.0.0");
+                _originalVersion.Add(PackageIdEnum.ThirdInstallerBootstrapper.ToString(), "1.0.0.0");
+                _originalVersion.Add(PackageIdEnum.FourthInstallerBootstrapper.ToString(), "1.0.0.0");
+                _originalVersion.Add(PackageIdEnum.FifthInstallerBootstrapper.ToString(), "1.0.0.0");
+                _originalVersion.Add(PackageIdEnum.SixthInstallerBootstrapper.ToString(), "1.0.0.0");
+                _originalVersion.Add(PackageIdEnum.FirstInstaller.ToString(), "1.0.0.0");
+                _originalVersion.Add(PackageIdEnum.SecondInstaller.ToString(), "1.0.0.0");
+                _originalVersion.Add(PackageIdEnum.ThirdInstaller.ToString(), "1.0.0.0");
+                _originalVersion.Add(PackageIdEnum.FourthInstaller.ToString(), "1.0.0.0");
+                _originalVersion.Add(PackageIdEnum.FifthInstaller.ToString(), "1.0.0.0");
+
+                // For demo purposes, we set two variables here. They are passed on to the chained MSIs.
+                engine.StringVariables["Prerequisite"] = "1";
+                engine.StringVariables["InstallLevel"] = "100";
+                if(engine.StringVariables.Contains("PackagesToShow"))
+                    engine.Log(LogLevel.Verbose, $"PackagesToShow={engine.StringVariables["PackagesToShow"]}");
+                engine.Log(LogLevel.Verbose, "Setting Default to skip for StringVariable For Action");
+                Packages.GetPackageIdsAsEnum().ToList().ForEach(x =>
                 {
-                    engine.Plan(LaunchAction.Install);
-                },
-                () => !this.Installing); // && this.State == InstallationState.DetectedAbsent);
-
-            this.UninstallCommandValue = new DelegateCommand(
-                () => engine.Plan(LaunchAction.Uninstall),
-                () => !this.Installing); // && this.State == InstallationState.DetectedPresent);
-
-            //this.FirstInstallerCommandValue = new DelegateCommand<string>(HandleFirstIntallCommand);
-
-            RepairCommandValue = new DelegateCommand(HandleRepairCommand,CanRepairCommandExecute);
-            ApplyCommandValue = new DelegateCommand(HandleApplyCommand, CanApplyCommandExecute);
-            ShowNewModulesCommandValue = new DelegateCommand(HandleShowNewModulesCommand, CanShowNewModulesCommandExecute);
-
-            // Setup event handlers
-            bootstrapper.DetectBegin += (_, ea) =>
-            {
-                this.LogEvent("DetectBegin", ea);
-
-                // Set installation state that controls the install/uninstall buttons
-                this.interactionService.RunOnUIThread(
-                    () => this.State =
-                        ea.Installed ? InstallationState.DetectedPresent : InstallationState.DetectedAbsent);
-            };
-            bootstrapper.DetectRelatedBundle += (_, ea) =>
-            {
-                this.LogEvent("DetectRelatedBundle", ea);
-
-                // Save flag indicating whether this is a downgrade operation
-                this.interactionService.RunOnUIThread(
-                    () => this.Downgrade |= ea.Operation == RelatedOperation.Downgrade);
-            };
-            bootstrapper.DetectComplete += (s, ea) =>
-            {
-                this.LogEvent("DetectComplete");
-                this.DetectComplete(s, ea);
-            };
-            bootstrapper.PlanComplete += (_, ea) =>
-            {
-                this.LogEvent("PlanComplete", ea);
-
-                // Start apply phase
-                if (ea.Status >= 0 /* Success */)
-                {
-                    this.engine.Apply(this.interactionService.GetMainWindowHandle());
-                }
-            };
-            bootstrapper.ApplyBegin += (_, ea) =>
-            {
-                this.LogEvent("ApplyBegin");
-
-                // Set flag indicating that apply phase is running
-                this.interactionService.RunOnUIThread(() => this.Installing = true);
-            };
-            bootstrapper.ExecutePackageBegin += (_, ea) =>
-            {
-                this.LogEvent("ExecutePackageBegin", ea);
-                // Trigger display of currently processed package
-                this.interactionService.RunOnUIThread(() => this.CurrentPackage = ea.PackageId);
-            };
-            bootstrapper.ExecutePackageComplete += (_, ea) =>
-            {
-                this.LogEvent("ExecutePackageComplete", ea);
-                // Remove currently processed package
-                this.interactionService.RunOnUIThread(() => this.CurrentPackage = string.Empty);
-            };
-            bootstrapper.ExecuteProgress += (_, ea) =>
-            {
-                this.LogEvent("ExecuteProgress", ea);
-
-                // Update progress indicator
-                this.interactionService.RunOnUIThread(() =>
-                {
-                    this.LocalProgress = ea.ProgressPercentage;
-                    this.GlobalProgress = ea.OverallPercentage;
+                    engine.StringVariables[x.ToString()] = UserSelectionEnum.Skip.ToString();
                 });
-            };
-            bootstrapper.ApplyComplete += (_, ea) =>
-            {
-                this.LogEvent("ApplyComplete", ea);
+                engine.Log(LogLevel.Verbose, "Setting Default to skip for StringVariable For Action");
 
-                // Everything is done, let's close the installer
-                this.interactionService.CloseUIAndExit();
-            };
-            bootstrapper.ResolveSource += (_, ea) =>
-            {
-                this.LogEvent("ResolveSource::", ea);
-                if (!File.Exists(ea.LocalSource) && !string.IsNullOrEmpty(ea.DownloadSource))
+                // Setup commands
+                this.InstallCommandValue = new DelegateCommand(
+                    () => { engine.Plan(LaunchAction.Install); },
+                    () => !this.Installing); // && this.State == InstallationState.DetectedAbsent);
+
+                this.UninstallCommandValue = new DelegateCommand(
+                    () => engine.Plan(LaunchAction.Uninstall),
+                    () => !this.Installing); // && this.State == InstallationState.DetectedPresent);
+
+                //this.FirstInstallerCommandValue = new DelegateCommand<string>(HandleFirstIntallCommand);
+
+                RepairCommandValue = new DelegateCommand(HandleRepairCommand, CanRepairCommandExecute);
+                ApplyCommandValue = new DelegateCommand(HandleApplyCommand, CanApplyCommandExecute);
+                ShowNewModulesCommandValue =
+                    new DelegateCommand(HandleShowNewModulesCommand, CanShowNewModulesCommandExecute);
+
+                // Setup event handlers
+                bootstrapper.DetectBegin += (_, ea) =>
                 {
-                    //Get Original Version shipped with Setup
-                    string version = "1.0.0.0";
-                    if(_originalVersion.ContainsKey(ea.PayloadId))
-                        version = _originalVersion[ea.PayloadId];
-                    string server = "pc-swd-1455.absciexdev.local";
-                    string downloadFileNameWithExtension = $"{ea.PayloadId}.exe";
-                    engine.Log(LogLevel.Verbose, $"ResolveSource::version={version} server={server} downloadFileNameWithExtension={downloadFileNameWithExtension}");
-                    //Check if user have selected to update the package
-                    if (_userSelectionDic.Where(x => x.Key.ToLower() == ea.PayloadId.ToLower()
-                                                     && x.Value.ToLower() ==
-                                                     UserSelectionEnum.Update.ToString().ToLower()).Any())
+                    this.LogEvent("DetectBegin", ea);
+
+                    // Set installation state that controls the install/uninstall buttons
+                    this.interactionService.RunOnUIThread(
+                        () => this.State =
+                            ea.Installed ? InstallationState.DetectedPresent : InstallationState.DetectedAbsent);
+                };
+                bootstrapper.DetectRelatedBundle += (_, ea) =>
+                {
+                    this.LogEvent("DetectRelatedBundle", ea);
+
+                    // Save flag indicating whether this is a downgrade operation
+                    this.interactionService.RunOnUIThread(
+                        () => this.Downgrade |= ea.Operation == RelatedOperation.Downgrade);
+                };
+                bootstrapper.DetectComplete += (s, ea) =>
+                {
+                    this.LogEvent("DetectComplete");
+                    this.DetectComplete(s, ea);
+                };
+                bootstrapper.PlanComplete += (_, ea) =>
+                {
+                    this.LogEvent("PlanComplete", ea);
+
+                    // Start apply phase
+                    if (ea.Status >= 0 /* Success */)
                     {
-                        //Get Version from Api Response
-                        engine.Log(LogLevel.Verbose, $"ResolveSource::Getting version from api...");
-                        var apiResponse = _apiResponse.AvailableUpdates.Where(x => x.PackageId.ToString().ToLower() == ea.PayloadId.ToLower()).FirstOrDefault();
-                        if (apiResponse != null)
+                        this.engine.Apply(this.interactionService.GetMainWindowHandle());
+                    }
+                };
+                bootstrapper.ApplyBegin += (_, ea) =>
+                {
+                    this.LogEvent("ApplyBegin");
+
+                    // Set flag indicating that apply phase is running
+                    this.interactionService.RunOnUIThread(() => this.Installing = true);
+                };
+                bootstrapper.ExecutePackageBegin += (_, ea) =>
+                {
+                    this.LogEvent("ExecutePackageBegin", ea);
+                    // Trigger display of currently processed package
+                    this.interactionService.RunOnUIThread(() => this.CurrentPackage = ea.PackageId);
+                };
+                bootstrapper.ExecutePackageComplete += (_, ea) =>
+                {
+                    this.LogEvent("ExecutePackageComplete", ea);
+                    // Remove currently processed package
+                    this.interactionService.RunOnUIThread(() => this.CurrentPackage = string.Empty);
+                };
+                bootstrapper.ExecuteProgress += (_, ea) =>
+                {
+                    this.LogEvent("ExecuteProgress", ea);
+
+                    // Update progress indicator
+                    this.interactionService.RunOnUIThread(() =>
+                    {
+                        this.LocalProgress = ea.ProgressPercentage;
+                        this.GlobalProgress = ea.OverallPercentage;
+                    });
+                };
+                bootstrapper.ApplyComplete += (_, ea) =>
+                {
+                    this.LogEvent("ApplyComplete", ea);
+
+                    // Everything is done, let's close the installer
+                    this.interactionService.CloseUIAndExit();
+                };
+
+                bootstrapper.ResolveSource += (_, ea) =>
+                {
+                    this.LogEvent("ResolveSource::", ea);
+                    if (!File.Exists(ea.LocalSource) && !string.IsNullOrEmpty(ea.DownloadSource))
+                    {
+                        //Get Original Version shipped with Setup
+                        string version = "1.0.0.0";
+                        if (_originalVersion.ContainsKey(ea.PayloadId))
+                            version = _originalVersion[ea.PayloadId];
+                        string server = "pc-swd-1455.absciexdev.local";
+                        string downloadFileNameWithExtension = $"{ea.PayloadId}.exe";
+                        engine.Log(LogLevel.Verbose,
+                            $"ResolveSource::version={version} server={server} downloadFileNameWithExtension={downloadFileNameWithExtension}");
+                        //Check if user have selected to update the package
+                        if (_userSelectionDic.Where(x => x.Key.ToLower() == ea.PayloadId.ToLower()
+                                                         && x.Value.ToLower() ==
+                                                         UserSelectionEnum.Update.ToString().ToLower()).Any())
                         {
-                            version = apiResponse.Version;
-                            server = apiResponse.ServerName;
-                            downloadFileNameWithExtension = apiResponse.DownloadFileNameWithExtension;
-                            engine.Log(LogLevel.Verbose, $"ResolveSource::New=>version={version} server={server} downloadFileNameWithExtension={downloadFileNameWithExtension}");
+                            //Get Version from Api Response
+                            engine.Log(LogLevel.Verbose, $"ResolveSource::Getting version from api...");
+                            var apiResponse = _apiResponse.AvailableUpdates
+                                .Where(x => x.PackageId.ToString().ToLower() == ea.PayloadId.ToLower())
+                                .FirstOrDefault();
+                            if (apiResponse != null)
+                            {
+                                version = apiResponse.Version;
+                                server = apiResponse.ServerName;
+                                downloadFileNameWithExtension = apiResponse.DownloadFileNameWithExtension;
+                                engine.Log(LogLevel.Verbose,
+                                    $"ResolveSource::New=>version={version} server={server} downloadFileNameWithExtension={downloadFileNameWithExtension}");
+                            }
                         }
-                    }
-                    else if (_userSelectionDic.Where(x => x.Key.ToLower() == ea.PayloadId.ToLower()
-                                                          && x.Value.ToLower() != UserSelectionEnum.Install.ToString().ToLower()).Any())
-                    {
-                        version = GetInstalledVersion(ea.PayloadId);
-                        this.LogEvent($"ResolveSource::GetInstalledVersion={version}");
+                        else if (_userSelectionDic.Where(x => x.Key.ToLower() == ea.PayloadId.ToLower()
+                                                              && x.Value.ToLower() != UserSelectionEnum.Install
+                                                                  .ToString().ToLower()).Any())
+                        {
+                            version = GetInstalledVersion(ea.PayloadId);
+                            this.LogEvent($"ResolveSource::GetInstalledVersion={version}");
 
-                    }
-                    else
-                    {
-                        version = "1.0.0.0";
-                    }
-                    this.LogEvent($"ResolveSource::ExistingDownloadSource={ea.DownloadSource}");
-                    string newUrl = string.Format(ea.DownloadSource, server, version, downloadFileNameWithExtension);
-                    this.LogEvent($"ResolveSource::NewURL={newUrl}");
-                    engine.SetDownloadSource(ea.PackageOrContainerId, ea.PayloadId, newUrl, null, null);
-                }
+                        }
+                        else
+                        {
+                            version = "1.0.0.0";
+                        }
 
-                ea.Result = Result.Download;
-            };
+                        this.LogEvent($"ResolveSource::ExistingDownloadSource={ea.DownloadSource}");
+                        //string newUrl = string.Format(ea.DownloadSource, server, version, downloadFileNameWithExtension);
+                        int buildNumber = GetBuildNumber();
+                        string newUrl = GetDownloadUrl(ea.PayloadId, version, downloadFileNameWithExtension, buildNumber);
+                        this.LogEvent($"ResolveSource::NewURL={newUrl}");
+                        engine.SetDownloadSource(ea.PackageOrContainerId, ea.PayloadId, newUrl, null, null);
+                    }
 
-            bootstrapper.PlanPackageBegin += (_, ea) =>
-            {
-                this.LogEvent(
-                    $"PlanPackageBegin Selection={_userSelectionDic[ea.PackageId]} ea.State={ea.State} ea.PackageId={ea.PackageId} Command.Action {bootstrapper.Command.Action}",
-                    ea);
-                if (bootstrapper.Command.Action == LaunchAction.Install ||
-                    bootstrapper.Command.Action == LaunchAction.Modify ||
-                    bootstrapper.Command.Action == LaunchAction.Uninstall)
+                    ea.Result = Result.Download;
+                };
+
+                bootstrapper.PlanPackageBegin += (_, ea) =>
                 {
-                    //Note LaunchAction.Install and LaunchAction.UnInstall both will have bootstrapper.Commnad.Action as Install
-                    if (_userSelectionDic[ea.PackageId] == UserSelectionEnum.Skip.ToString())
+                    this.LogEvent(
+                        $"PlanPackageBegin Selection={_userSelectionDic[ea.PackageId]} ea.State={ea.State} ea.PackageId={ea.PackageId} Command.Action {bootstrapper.Command.Action}",
+                        ea);
+                    if (bootstrapper.Command.Action == LaunchAction.Install ||
+                        bootstrapper.Command.Action == LaunchAction.Modify ||
+                        bootstrapper.Command.Action == LaunchAction.Uninstall)
                     {
-                        this.LogEvent($"PlanPackageBegin::{ea.PackageId} ea.State is set to None...");
-                        //Skip means do not install the package
-                        ea.State = RequestState.None;
+                        //Note LaunchAction.Install and LaunchAction.UnInstall both will have bootstrapper.Commnad.Action as Install
+                        if (_userSelectionDic[ea.PackageId] == UserSelectionEnum.Skip.ToString())
+                        {
+                            this.LogEvent($"PlanPackageBegin::{ea.PackageId} ea.State is set to None...");
+                            //Skip means do not install the package
+                            ea.State = RequestState.None;
+                        }
+
+                        if (_userSelectionDic[ea.PackageId] == UserSelectionEnum.Keep.ToString())
+                        {
+                            this.LogEvent($"PlanPackageBegin::{ea.PackageId} ea.State is set to Present...");
+                            //Keep means package is already installed do not uninstall the package
+                            ea.State = RequestState.Present;
+                        }
+
+                        if (_userSelectionDic[ea.PackageId] == UserSelectionEnum.Repair.ToString())
+                        {
+                            this.LogEvent($"PlanPackageBegin::{ea.PackageId} ea.State is set to Repair...");
+                            //Repair means package is already installed but is broken. Fix the broken package
+                            ea.State = RequestState.Repair;
+                        }
+
+                        //if (_userSelectionDic[ea.PackageId] == UserSelectionEnum.Uninstall.ToString())
+                        //{
+                        //    this.LogEvent($"PlanPackageBegin::{ea.PackageId} ea.State is set to Present...");
+                        //    //Repair means package is already installed but is broken. Fix the broken package
+                        //    //Tried and did not worked ea.State
+                        //    //RequestState.Present;
+                        //    //RequestState.ForceAbsent;
+                        //    //RequestState.Absent was default
+                        //    //Request.None is default for skip so its not going to work
+                        //    ea.State = RequestState.Present;
+                        //}
                     }
+                };
 
-                    if (_userSelectionDic[ea.PackageId] == UserSelectionEnum.Keep.ToString())
-                    {
-                        this.LogEvent($"PlanPackageBegin::{ea.PackageId} ea.State is set to Present...");
-                        //Keep means package is already installed do not uninstall the package
-                        ea.State = RequestState.Present;
-                    }
+                this.bootstrapper.PlanRelatedBundle += (_, ea) => { this.LogEvent("PlanRelatedBundle", ea); };
 
-                    if (_userSelectionDic[ea.PackageId] == UserSelectionEnum.Repair.ToString())
-                    {
-                        this.LogEvent($"PlanPackageBegin::{ea.PackageId} ea.State is set to Repair...");
-                        //Repair means package is already installed but is broken. Fix the broken package
-                        ea.State = RequestState.Repair;
-                    }
+                #region sample code
 
-                    //if (_userSelectionDic[ea.PackageId] == UserSelectionEnum.Uninstall.ToString())
-                    //{
-                    //    this.LogEvent($"PlanPackageBegin::{ea.PackageId} ea.State is set to Present...");
-                    //    //Repair means package is already installed but is broken. Fix the broken package
-                    //    //Tried and did not worked ea.State
-                    //    //RequestState.Present;
-                    //    //RequestState.ForceAbsent;
-                    //    //RequestState.Absent was default
-                    //    //Request.None is default for skip so its not going to work
-                    //    ea.State = RequestState.Present;
-                    //}
-                }
-            };
+                //bootstrapper.DetectRelatedMsiPackage += (_, ea) =>
+                //{
+                //    this.LogEvent($"DetectRelatedMsiPackage", ea);
+                //    var existingPackageProductCode = ea.ProductCode;
+                //    var actionToBeAppliedToExistingPackage = ea.Operation;
+                //    var existingPackageId = ea.PackageId;
+                //    var existingPackageVersion = ea.Version;
 
-            this.bootstrapper.PlanRelatedBundle += (_, ea) =>
+                //    this.LogEvent(string.Format(
+                //        "Detected existing related package {0} (product: {1}) at version {2}, which will be {3}",
+                //        existingPackageId, existingPackageProductCode, existingPackageVersion,
+                //        actionToBeAppliedToExistingPackage));
+
+                //    //if (actionToBeAppliedToExistingPackage == RelatedOperation.MajorUpgrade)
+                //    //{
+
+                //    //requires reference to WiX Toolset\SDK\Microsoft.Deployment.WindowsInstaller.dll
+                //    var installedPackage =
+                //        new Microsoft.Deployment.WindowsInstaller.ProductInstallation(existingPackageProductCode);
+                //    if (!installedPackage.IsInstalled)
+                //    {
+                //        LogEvent(string.Format(
+                //            "Migrating Package {0}, which is not installed, so marking it and it's features as Absent",
+                //            existingPackageId));
+                //        //TODO: add logic to store state so that during Plan phase can set package with package with product code = existingPackageProductCode to PackageState.Absent
+                //    }
+                //    else
+                //    {
+                //        LogEvent(string.Format("Migrating features for MajorUpgrade of Package {0}", existingPackageId));
+
+                //        foreach (var currentInstallFeature in installedPackage.Features)
+                //        {
+                //            if (currentInstallFeature.State == InstallState.Local)
+                //            {
+                //                LogEvent(string.Format("Migrating feature {1} of Package {0} - marking as Present",
+                //                    existingPackageId, currentInstallFeature.FeatureName));
+                //                //TODO: add logic to store state so that during Plan phase can set package and feature states based on this info
+                //            }
+                //            else
+                //            {
+                //                LogEvent(string.Format("Migrating feature {1} of Package {0} - marking as Absent",
+                //                    existingPackageId, currentInstallFeature.FeatureName));
+                //                //TODO: add logic to store state so that during Plan phase can set package and feature states based on this info
+                //            }
+                //        }
+                //    }
+                //    //}
+                //};
+
+                #endregion
+
+                SetupEventHandlersForLogging();
+                SelectUnInstallIfInstalled();
+                SelectInstallIfNotInstalled();
+
+                //Initialize User Selection.
+                this.engine.Log(LogLevel.Verbose, "Setting _userSelectionDic Begins");
+                Packages.GetPackageIdsAsEnum().ToList().ForEach(x =>
+                {
+                    if (!_userSelectionDic.ContainsKey(x.ToString()))
+                        _userSelectionDic.Add(x.ToString(), engine.StringVariables[x.ToString()]);
+                });
+                this.engine.Log(LogLevel.Verbose, "Setting _userSelectionDic Ends");
+                this.engine.Log(LogLevel.Verbose, $"SetUpExecutionLocation::{SetUpLocation}");
+            }catch(Exception ex)
             {
-                this.LogEvent("PlanRelatedBundle", ea);
-            };
-
-            #region sample code
-            //bootstrapper.DetectRelatedMsiPackage += (_, ea) =>
-            //{
-            //    this.LogEvent($"DetectRelatedMsiPackage", ea);
-            //    var existingPackageProductCode = ea.ProductCode;
-            //    var actionToBeAppliedToExistingPackage = ea.Operation;
-            //    var existingPackageId = ea.PackageId;
-            //    var existingPackageVersion = ea.Version;
-
-            //    this.LogEvent(string.Format(
-            //        "Detected existing related package {0} (product: {1}) at version {2}, which will be {3}",
-            //        existingPackageId, existingPackageProductCode, existingPackageVersion,
-            //        actionToBeAppliedToExistingPackage));
-
-            //    //if (actionToBeAppliedToExistingPackage == RelatedOperation.MajorUpgrade)
-            //    //{
-
-            //    //requires reference to WiX Toolset\SDK\Microsoft.Deployment.WindowsInstaller.dll
-            //    var installedPackage =
-            //        new Microsoft.Deployment.WindowsInstaller.ProductInstallation(existingPackageProductCode);
-            //    if (!installedPackage.IsInstalled)
-            //    {
-            //        LogEvent(string.Format(
-            //            "Migrating Package {0}, which is not installed, so marking it and it's features as Absent",
-            //            existingPackageId));
-            //        //TODO: add logic to store state so that during Plan phase can set package with package with product code = existingPackageProductCode to PackageState.Absent
-            //    }
-            //    else
-            //    {
-            //        LogEvent(string.Format("Migrating features for MajorUpgrade of Package {0}", existingPackageId));
-
-            //        foreach (var currentInstallFeature in installedPackage.Features)
-            //        {
-            //            if (currentInstallFeature.State == InstallState.Local)
-            //            {
-            //                LogEvent(string.Format("Migrating feature {1} of Package {0} - marking as Present",
-            //                    existingPackageId, currentInstallFeature.FeatureName));
-            //                //TODO: add logic to store state so that during Plan phase can set package and feature states based on this info
-            //            }
-            //            else
-            //            {
-            //                LogEvent(string.Format("Migrating feature {1} of Package {0} - marking as Absent",
-            //                    existingPackageId, currentInstallFeature.FeatureName));
-            //                //TODO: add logic to store state so that during Plan phase can set package and feature states based on this info
-            //            }
-            //        }
-            //    }
-            //    //}
-            //};
-            #endregion
-
-            SetupEventHandlersForLogging();
-            SelectUnInstallIfInstalled();
-            SelectInstallIfNotInstalled();
-
-            //Initialize User Selection.
-            this.engine.Log(LogLevel.Verbose, "Setting _userSelectionDic Begins");
-            Packages.GetPackageIdsAsEnum().ToList().ForEach(x =>
-            {
-                if (!_userSelectionDic.ContainsKey(x.ToString()))
-                    _userSelectionDic.Add(x.ToString(), engine.StringVariables[x.ToString()]);
-            });
-            this.engine.Log(LogLevel.Verbose, "Setting _userSelectionDic Ends");
+                engine.Log(LogLevel.Error, $"InstallerMainWindowViewModel::Exception={ex.ToString()}");
+                MessageBox.Show(ex.ToString());
+            }
         }
 
 
@@ -351,9 +369,14 @@ namespace InstallerUI
             this.bootstrapper.UnregisterComplete += (_, ea) => this.LogEvent("UnregisterComplete", ea);
         }
 
+        private string SetUpLocation
+        {
+            get { return System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location); }
+        }
+
         #region Properties for data binding
 
-        private DelegateCommand InstallCommandValue;
+    private DelegateCommand InstallCommandValue;
 
         public ICommand InstallCommand
         {
@@ -524,7 +547,8 @@ namespace InstallerUI
                 || SIBootStapperInstallerIsRepairChecked
                 || ThirdIBootStapperInstallerIsRepairChecked
                 || FourthIBootStapperInstallerIsRepairChecked
-                || FifthIBootStapperInstallerIsRepairChecked)
+                || FifthIBootStapperInstallerIsRepairChecked
+                || SixthIBootStapperInstallerIsRepairChecked)
             {
                 return true;
             }
@@ -549,8 +573,245 @@ namespace InstallerUI
         private void HandleRepairCommand()
         {
             engine.Log(LogLevel.Verbose, "HandleRepairCommand::Begin");
-            //interactionService.ShowMessageBox("Please note any package that is not set to repair is forced to skip");
-            engine.Plan(LaunchAction.Repair);
+            if (IfNotRepairThenSetToKeepOrSkip())
+            {
+                interactionService.ShowMessageBox("When Repair is selected then Install,Uninstall,Update operations are not permitted. Your selection is update appropriately, please review you updated selection and submit again...");
+            }
+            else
+            {
+                engine.Plan(LaunchAction.Repair);
+                //GetApiRequest();
+            }
+        }
+        //Called from Repair Command
+        //If Installed then set to keep 
+        //If Not Installed then set to skip
+        private bool IfNotRepairThenSetToKeepOrSkip()
+        {
+            bool isSelectionChanged = false;
+            if (!FirstInstallerIsRepairChecked)
+            {
+                if (FirstInstallerIsInstallEnabled)
+                {
+                    if (!FirstInstallerIsSkipChecked)
+                    {
+                        isSelectionChanged = true;
+                        FirstInstallerIsSkipChecked = true;
+                    }
+                }
+                else
+                {
+                    if (!FirstInstallerIsKeepChecked)
+                    {
+                        isSelectionChanged = true;
+                        FirstInstallerIsKeepChecked = true;
+                    }
+                }
+            }
+
+            if (!SecondInstallerIsRepairChecked)
+            {
+                if (SecondInstallerIsInstallEnabled)
+                {
+                    if (!SecondInstallerIsSkipChecked)
+                    {
+                        isSelectionChanged = true;
+                        SecondInstallerIsSkipChecked = true;
+                    }
+                }
+                else
+                {
+                    if (!SecondInstallerIsKeepChecked)
+                    {
+                        isSelectionChanged = true;
+                        SecondInstallerIsKeepChecked = true;
+                    }
+                }
+            }
+
+            if (!ThirdInstallerIsRepairChecked)
+            {
+                if (ThirdInstallerIsInstallEnabled)
+                {
+                    if (!ThirdInstallerIsSkipChecked)
+                    {
+                        isSelectionChanged = true;
+                        ThirdInstallerIsSkipChecked = true;
+                    }
+                }
+                else
+                {
+                    if (!ThirdInstallerIsKeepChecked)
+                    {
+                        isSelectionChanged = true;
+                        ThirdInstallerIsKeepChecked = true;
+                    }
+                }
+            }
+
+            if (!FourthInstallerIsRepairChecked)
+            {
+                if (FourthInstallerIsInstallEnabled)
+                {
+                    if (!FourthInstallerIsSkipChecked)
+                    {
+                        isSelectionChanged = true;
+                        FourthInstallerIsSkipChecked = true;
+                    }
+                }
+                else
+                {
+                    if (!FourthInstallerIsKeepChecked)
+                    {
+                        isSelectionChanged = true;
+                        FourthInstallerIsKeepChecked = true;
+                    }
+                }
+            }
+
+            if (!FifthInstallerIsRepairChecked)
+            {
+                if (FifthInstallerIsInstallEnabled)
+                {
+                    if (!FifthInstallerIsSkipChecked)
+                    {
+                        isSelectionChanged = true;
+                        FifthInstallerIsSkipChecked = true;
+                    }
+                }
+                else
+                {
+                    if (!FifthInstallerIsKeepChecked)
+                    {
+                        isSelectionChanged = true;
+                        FifthInstallerIsKeepChecked = true;
+                    }
+                }
+            }
+
+            if (!FIBootStapperInstallerIsRepairChecked)
+            {
+                if (FIBootStrapperInstallerIsInstallEnabled)
+                {
+                    if (!FIBootStapperInstallerIsSkipChecked)
+                    {
+                        isSelectionChanged = true;
+                        FIBootStapperInstallerIsSkipChecked = true;
+                    }
+                }
+                else
+                {
+                    if (!FIBootStapperInstallerIsKeepChecked)
+                    {
+                        isSelectionChanged = true;
+                        FIBootStapperInstallerIsKeepChecked = true;
+                    }
+                }
+            }
+
+
+            if (!SIBootStapperInstallerIsRepairChecked)
+            {
+                if (SIBootStrapperInstallerIsInstallEnabled)
+                {
+                    if (!SIBootStapperInstallerIsSkipChecked)
+                    {
+                        isSelectionChanged = true;
+                        SIBootStapperInstallerIsSkipChecked = true;
+                    }
+                }
+                else
+                {
+                    if (!SIBootStapperInstallerIsKeepChecked)
+                    {
+                        isSelectionChanged = true;
+                        SIBootStapperInstallerIsKeepChecked = true;
+                    }
+                }
+            }
+
+            if (!ThirdIBootStapperInstallerIsRepairChecked)
+            {
+                if (ThirdIBootStrapperInstallerIsInstallEnabled)
+                {
+                    if (!ThirdIBootStapperInstallerIsSkipChecked)
+                    {
+                        isSelectionChanged = true;
+                        ThirdIBootStapperInstallerIsSkipChecked = true;
+                    }
+                }
+                else
+                {
+                    if (!ThirdIBootStapperInstallerIsKeepChecked)
+                    {
+                        isSelectionChanged = true;
+                        ThirdIBootStapperInstallerIsKeepChecked = true;
+                    }
+                }
+            }
+
+            if (!FourthIBootStapperInstallerIsRepairChecked)
+            {
+                if (FourthIBootStrapperInstallerIsInstallEnabled)
+                {
+                    if (!FourthIBootStapperInstallerIsSkipChecked)
+                    {
+                        isSelectionChanged = true;
+                        FourthIBootStapperInstallerIsSkipChecked = true;
+                    }
+                }
+                else
+                {
+                    if (!FourthIBootStapperInstallerIsKeepChecked)
+                    {
+                        isSelectionChanged = true;
+                        FourthIBootStapperInstallerIsKeepChecked = true;
+                    }
+                }
+            }
+
+            if (!FifthIBootStapperInstallerIsRepairChecked)
+            {
+                if (FifthIBootStrapperInstallerIsInstallEnabled)
+                {
+                    if (!FifthIBootStapperInstallerIsSkipChecked)
+                    {
+                        isSelectionChanged = true;
+                        FifthIBootStapperInstallerIsSkipChecked = true;
+                    }
+                }
+                else
+                {
+                    if (!FifthIBootStapperInstallerIsKeepChecked)
+                    {
+                        isSelectionChanged = true;
+                        FifthIBootStapperInstallerIsKeepChecked = true;
+                    }
+                }
+            }
+
+            if (!SixthIBootStapperInstallerIsRepairChecked)
+            {
+                if (SixthIBootStrapperInstallerIsInstallEnabled)
+                {
+                    if (!SixthIBootStapperInstallerIsSkipChecked)
+                    {
+                        isSelectionChanged = true;
+                        SixthIBootStapperInstallerIsSkipChecked = true;
+                    }
+                }
+                else
+                {
+                    if (!SixthIBootStapperInstallerIsKeepChecked)
+                    {
+                        isSelectionChanged = true;
+                        SixthIBootStapperInstallerIsKeepChecked = true;
+                    }
+                }
+            }
+
+            return isSelectionChanged;
+
         }
 
         //Called from Repair Command
@@ -576,33 +837,8 @@ namespace InstallerUI
                 FourthIBootStapperInstallerIsKeepChecked = true;
             if (!FifthIBootStapperInstallerIsRepairChecked)
                 FifthIBootStapperInstallerIsKeepChecked = true;
-        }
-
-
-        //Called from Apply Command
-        private void SetRepairToSkip()
-        {
-            if (FirstInstallerIsRepairChecked)
-                FirstInstallerIsSkipChecked = true;
-            if (SecondInstallerIsRepairChecked)
-                SecondInstallerIsSkipChecked = true;
-            if (ThirdInstallerIsRepairChecked)
-                ThirdInstallerIsSkipChecked = true;
-            if (FourthInstallerIsRepairChecked)
-                FourthInstallerIsSkipChecked = true;
-            if (FifthInstallerIsRepairChecked)
-                FifthInstallerIsSkipChecked = true;
-            if (FIBootStapperInstallerIsRepairChecked)
-                FIBootStapperInstallerIsSkipChecked = true;
-            if (SIBootStapperInstallerIsRepairChecked)
-                SIBootStapperInstallerIsSkipChecked = true;
-            if (ThirdIBootStapperInstallerIsRepairChecked)
-                ThirdIBootStapperInstallerIsSkipChecked = true;
-            if (FourthIBootStapperInstallerIsRepairChecked)
-                FourthIBootStapperInstallerIsSkipChecked = true;
-            if (FifthIBootStapperInstallerIsRepairChecked)
-                FifthIBootStapperInstallerIsSkipChecked = true;
-
+            if (!SixthIBootStapperInstallerIsRepairChecked)
+                SixthIBootStapperInstallerIsKeepChecked = true;
         }
         #endregion Repair Command
 
@@ -627,7 +863,7 @@ namespace InstallerUI
 
         private void HandleApplyCommand()
         {
-            SetRepairToSkip();
+            //SetRepairToSkip();
             //1). Check what is already installed on users computer
             //2). Check What user is Uninstalling
             //3). Check what user is Installing
@@ -636,7 +872,7 @@ namespace InstallerUI
 
             //1). Check what is already installed on users computer (Registry is not updated immediately after calling the Install command)
             var installedModules = GetModulesInstalledOnClientComputer();
-            var installedModuleName = string.Join(",", installedModules.Select(x => x.Item2).ToArray());
+            var installedModuleName = string.Join(",", installedModules.Select(x => x.ModuleName).ToArray());
             engine.Log(LogLevel.Verbose, $"HandleApplyCommand::Installed Modules = {installedModuleName}");
 
             //2). Check What user is Uninstalling
@@ -703,6 +939,57 @@ namespace InstallerUI
         private bool CanShowNewModulesCommandExecute()
         {
             return true;
+        }
+
+        private Settings _settings = null;
+        private Settings GetSettings()
+        {
+            if (_settings != null)
+                return _settings;
+            string settingFile = $@"{SetUpLocation}\Settings.json";
+            if (File.Exists(settingFile))
+            {
+                File.ReadAllText(settingFile);
+                _settings = JsonConvert.DeserializeObject<Settings>(File.ReadAllText(settingFile));
+                return _settings;
+            }
+            return null;
+        }
+
+        private int GetBuildNumber()
+        {
+            //Build# is availabe to application via dll file property.
+            //Application current saves the build# in registry
+            //We have to use the same mechanism of retrieve the build# from file properties in this function and
+            //return it. Let's hard code for not to complete the full flow
+            return 123456;
+        }
+
+        private string GetDownloadUrl(string packageId, string version, string packageFileNameWithExtension, int buildNumber)
+        {
+            var settings = GetSettings();
+            if (settings != null)
+            {
+                var downloadUrl = settings.DownloadUrls.Where(x => x.Environment.Equals(settings.ActiveEnvironment)).FirstOrDefault();
+                if (downloadUrl != null)
+                {
+                    var downloadUrlForPackage = downloadUrl.Packages.Where(x => x.PackageId.ToLower() == packageId.ToLower()).FirstOrDefault();
+                    if(downloadUrlForPackage != null)
+                    {
+                        return string.Format(downloadUrlForPackage.DownloadUrl,downloadUrl.Host,version,packageFileNameWithExtension, buildNumber);
+                    }
+                    else
+                    {
+                        engine.Log(LogLevel.Error, $"GetDownloadUrl1::DownloadUrl not found for packageId={packageId}");
+                    }
+                }
+                else
+                {
+                    engine.Log(LogLevel.Error, $"GetDownloadUrl2::DownloadUrl not found for packageId={packageId}");
+                }
+            }
+            engine.Log(LogLevel.Error, $"GetDownloadUrl3::DownloadUrl not found for packageId={packageId}");
+            return string.Empty;
         }
         
         private void HandleShowNewModulesCommand()
@@ -2879,7 +3166,7 @@ namespace InstallerUI
         {
             //Select all packages that are installed on client's computer
             var installedPackages = GetModulesInstalledOnClientComputer();
-            var installedPackagesName = installedPackages.Select(x => x.Item2).ToList();
+            var installedPackagesName = installedPackages.Select(x => x.ModuleName).ToList();
             var packageIds = Packages.GetPackageIdsAsEnum().Select(x => x.ToString()).ToList(); 
 
             engine.Log(LogLevel.Verbose, $"SelectInstallIfNotInstalled::PackageIds1={string.Join(",",packageIds.ToArray())}");
@@ -3005,7 +3292,7 @@ namespace InstallerUI
             engine.Log(LogLevel.Verbose, $"SelectUnInstallIfInstalled::Begin Execution");
             //Select all packages that are installed on client's computer
             var installedPackages = GetModulesInstalledOnClientComputer();
-            var installedPackagesName = installedPackages.Select(x => x.Item2).ToList();
+            var installedPackagesName = installedPackages.Select(x => x.ModuleName).ToList();
             installedPackagesName.ForEach(x =>
             {
                 engine.Log(LogLevel.Verbose, $"SelectUnInstallIfInstalled:Installed Package Name = {x}");
@@ -3017,7 +3304,7 @@ namespace InstallerUI
                     FirstInstallerIsSkipEnabled = false;
 
                     //If the installed version and available version is same then disable the update button
-                    var versionInstalled = installedPackages.Where(y => y.Item2 == x).Select(z => z.Item3).FirstOrDefault();
+                    var versionInstalled = installedPackages.Where(y => y.ModuleName == x).Select(z => z.ModuleVersion).FirstOrDefault();
                     if(_originalVersion[x] == versionInstalled) 
                         FirstInstallerIsUpdateEnabled = false;
 
@@ -3029,7 +3316,7 @@ namespace InstallerUI
                     SecondInstallerIsInstallEnabled = false;
                     SecondInstallerIsSkipEnabled = false;
                     //If the installed version and available version is same then disable the update button
-                    var versionInstalled = installedPackages.Where(y => y.Item2 == x).Select(z => z.Item3).FirstOrDefault();
+                    var versionInstalled = installedPackages.Where(y => y.ModuleName == x).Select(z => z.ModuleVersion).FirstOrDefault();
                     if (_originalVersion[x] == versionInstalled)
                         SecondInstallerIsUpdateEnabled = false;
                 }
@@ -3040,7 +3327,7 @@ namespace InstallerUI
                     ThirdInstallerIsInstallEnabled = false;
                     ThirdInstallerIsSkipEnabled = false;
                     //If the installed version and available version is same then disable the update button
-                    var versionInstalled = installedPackages.Where(y => y.Item2 == x).Select(z => z.Item3).FirstOrDefault();
+                    var versionInstalled = installedPackages.Where(y => y.ModuleName == x).Select(z => z.ModuleVersion).FirstOrDefault();
                     if (_originalVersion[x] == versionInstalled)
                         ThirdInstallerIsUpdateEnabled = false;
                 }
@@ -3051,7 +3338,7 @@ namespace InstallerUI
                     FourthInstallerIsInstallEnabled = false;
                     FourthInstallerIsSkipEnabled = false;
                     //If the installed version and available version is same then disable the update button
-                    var versionInstalled = installedPackages.Where(y => y.Item2 == x).Select(z => z.Item3).FirstOrDefault();
+                    var versionInstalled = installedPackages.Where(y => y.ModuleName == x).Select(z => z.ModuleVersion).FirstOrDefault();
                     if (_originalVersion[x] == versionInstalled)
                         FourthInstallerIsUpdateEnabled = false;
                 }
@@ -3062,7 +3349,7 @@ namespace InstallerUI
                     FifthInstallerIsInstallEnabled = false;
                     FifthInstallerIsSkipEnabled = false;
                     //If the installed version and available version is same then disable the update button
-                    var versionInstalled = installedPackages.Where(y => y.Item2 == x).Select(z => z.Item3).FirstOrDefault();
+                    var versionInstalled = installedPackages.Where(y => y.ModuleName == x).Select(z => z.ModuleVersion).FirstOrDefault();
                     if (_originalVersion[x] == versionInstalled)
                         FifthInstallerIsUpdateEnabled = false;
                 }
@@ -3074,7 +3361,7 @@ namespace InstallerUI
                     FIBootStrapperInstallerIsSkipEnabled = false;
                     engine.StringVariables[$"{Packages.GetInstalledPackageName(PackageIdEnum.FirstInstallerBootstrapper)}"] = "yes";
                     //If the installed version and available version is same then disable the update button
-                    var versionInstalled = installedPackages.Where(y => y.Item2 == x).Select(z => z.Item3).FirstOrDefault();
+                    var versionInstalled = installedPackages.Where(y => y.ModuleName == x).Select(z => z.ModuleVersion).FirstOrDefault();
                     var apiVersion = _apiResponse.AvailableUpdates.Where(z => z.PackageId.ToString().ToLower().Equals(x.ToLower())).Select(z => z.Version).FirstOrDefault();
                     if (apiVersion == versionInstalled)
                         FIBootStrapperInstallerIsUpdateEnabled = false;
@@ -3087,7 +3374,7 @@ namespace InstallerUI
                     SIBootStrapperInstallerIsSkipEnabled = false;
                     engine.StringVariables[$"{Packages.GetInstalledPackageName(PackageIdEnum.SecondInstallerBootstrapper)}"] = "yes";
                     //If the installed version and available version is same then disable the update button
-                    var versionInstalled = installedPackages.Where(y => y.Item2 == x).Select(z => z.Item3).FirstOrDefault();
+                    var versionInstalled = installedPackages.Where(y => y.ModuleName == x).Select(z => z.ModuleVersion).FirstOrDefault();
                     var apiVersion = _apiResponse.AvailableUpdates.Where(z => z.PackageId.ToString().ToLower().Equals(x.ToLower())).Select(z => z.Version).FirstOrDefault();
                     if (versionInstalled == apiVersion)
                     {
@@ -3103,7 +3390,7 @@ namespace InstallerUI
                     ThirdIBootStrapperInstallerIsSkipEnabled = false;
                     engine.StringVariables[$"{Packages.GetInstalledPackageName(PackageIdEnum.ThirdInstallerBootstrapper)}"] = "yes";
                     //If the installed version and available version is same then disable the update button
-                    var versionInstalled = installedPackages.Where(y => y.Item2 == x).Select(z => z.Item3).FirstOrDefault();
+                    var versionInstalled = installedPackages.Where(y => y.ModuleName == x).Select(z => z.ModuleVersion).FirstOrDefault();
                     var apiVersion = _apiResponse.AvailableUpdates.Where(z => z.PackageId.ToString().ToLower().Equals(x.ToLower())).Select(z => z.Version).FirstOrDefault();
                     if (versionInstalled == apiVersion)
                     {
@@ -3118,7 +3405,7 @@ namespace InstallerUI
                     FourthIBootStrapperInstallerIsSkipEnabled = false;
                     engine.StringVariables[$"{Packages.GetInstalledPackageName(PackageIdEnum.FourthInstallerBootstrapper)}"] = "yes";
                     //If the installed version and available version is same then disable the update button
-                    var versionInstalled = installedPackages.Where(y => y.Item2 == x).Select(z => z.Item3).FirstOrDefault();
+                    var versionInstalled = installedPackages.Where(y => y.ModuleName == x).Select(z => z.ModuleVersion).FirstOrDefault();
                     var apiVersion = _apiResponse.AvailableUpdates.Where(z => z.PackageId.ToString().ToLower().Equals(x.ToLower())).Select(z => z.Version).FirstOrDefault();
                     if (versionInstalled == apiVersion)
                     {
@@ -3133,7 +3420,7 @@ namespace InstallerUI
                     FifthIBootStrapperInstallerIsSkipEnabled = false;
                     engine.StringVariables[$"{Packages.GetInstalledPackageName(PackageIdEnum.FifthInstallerBootstrapper)}"] = "yes";
                     //If the installed version and available version is same then disable the update button
-                    var versionInstalled = installedPackages.Where(y => y.Item2 == x).Select(z => z.Item3).FirstOrDefault();
+                    var versionInstalled = installedPackages.Where(y => y.ModuleName == x).Select(z => z.ModuleVersion).FirstOrDefault();
                     var apiVersion = _apiResponse.AvailableUpdates.Where(z => z.PackageId.ToString().ToLower().Equals(x.ToLower())).Select(z => z.Version).FirstOrDefault();
                     if (versionInstalled == apiVersion)
                     {
@@ -3153,7 +3440,7 @@ namespace InstallerUI
                     SixthIBootStrapperInstallerIsSkipEnabled = false;
                     engine.StringVariables[$"{Packages.GetInstalledPackageName(PackageIdEnum.SixthInstallerBootstrapper)}"] = "yes";
                     //If the installed version and available version is same then disable the update button
-                    var versionInstalled = installedPackages.Where(y => y.Item2 == x).Select(z => z.Item3).FirstOrDefault();
+                    var versionInstalled = installedPackages.Where(y => y.ModuleName == x).Select(z => z.ModuleVersion).FirstOrDefault();
                     if (newSixthModule.Version == versionInstalled)
                         SixthIBootStrapperInstallerIsUpdateEnabled = false;
                     HandleShowNewModulesCommand();
@@ -3210,12 +3497,13 @@ namespace InstallerUI
                     : string.Format("EVENT: {0} ({1})", eventName, JsonConvert.SerializeObject(arguments)));
         }
 
-        private List<Tuple<string, string, string>> GetModulesInstalledOnClientComputer()
+        private IList<InstalledModule> GetModulesInstalledOnClientComputer(bool includeMainBundle=false)
         {
+            IList<InstalledModule> installedModuleLst = new List<InstalledModule>();
+            InstalledModule installedModule = new InstalledModule();
             string packageNames = string.Join("-", _apiResponse.AvailableUpdates.Select(z => z.PackageNameToShowInAddRemoveProgram).ToArray());
             engine.Log(LogLevel.Verbose, $"PackageName={packageNames}");
-            List <Tuple<string, string, string>> installedModules = new List<Tuple<string, string, string>>();
-            var registryView = Environment.Is64BitOperatingSystem ? RegistryView.Registry64 : RegistryView.Registry32;
+            var registryView = OperatingSystemEnvironment.Is64BitOperatingSystem ? RegistryView.Registry64 : RegistryView.Registry32;
             //Get SciexOS Module Installed Version
             //string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall";
             var roots = new string[] { @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\", @"SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\" };
@@ -3240,21 +3528,62 @@ namespace InstallerUI
                                     .Where(x => x.ToString().ToLower().Equals((_softwareName.ToLower())) || x.ToString().ToLower().Equals((newModulePackageId.ToLower()))).Any()
                                     )
                                 {
-                                    installedModules.Add(new Tuple<string, string, string>(a, _softwareName,
-                                        subkey.GetValue("DisplayVersion").ToString()));
+                                    string displayVersion = subkey.GetValue("DisplayVersion") != null ? subkey.GetValue("DisplayVersion").ToString() : string.Empty;
+                                    installedModule = new InstalledModule();
+                                    installedModule.RegistryKey = a;
+                                    installedModule.ModuleName = _softwareName;
+                                    installedModule.ModuleVersion = displayVersion;
+                                    installedModule.RegistryRoot = root;
+                                    installedModule.BundleCachePath = subkey.GetValue("BundleCachePath") != null ? subkey.GetValue("BundleCachePath").ToString() :string.Empty;
+                                    installedModule.ModifyPath = subkey.GetValue("ModifyPath") != null ? subkey.GetValue("ModifyPath").ToString() : string.Empty;
+                                    installedModule.UninstallString = subkey.GetValue("UninstallString") != null ? subkey.GetValue("UninstallString").ToString() : string.Empty;
+                                    installedModule.QuietUninstallString = subkey.GetValue("QuietUninstallString") != null ? subkey.GetValue("QuietUninstallString").ToString() : string.Empty;
+                                    installedModuleLst.Add(installedModule);
+                                }
+                                else
+                                {
+                                    if (includeMainBundle)
+                                    {
+                                        if(_softwareName.ToLower().Equals("Bootstrapper".ToLower()))
+                                        {
+                                            string displayVersion = subkey.GetValue("DisplayVersion") != null ? subkey.GetValue("DisplayVersion").ToString() : string.Empty;
+                                            installedModule = new InstalledModule();
+                                            installedModule.RegistryKey = a;
+                                            installedModule.ModuleName = _softwareName;
+                                            installedModule.ModuleVersion = displayVersion;
+                                            installedModule.RegistryRoot = root;
+                                            installedModule.BundleCachePath = subkey.GetValue("BundleCachePath") != null ? subkey.GetValue("BundleCachePath").ToString() : string.Empty;
+                                            installedModule.ModifyPath = subkey.GetValue("ModifyPath") != null ? subkey.GetValue("ModifyPath").ToString() : string.Empty;
+                                            installedModule.UninstallString = subkey.GetValue("UninstallString") != null ? subkey.GetValue("UninstallString").ToString() : string.Empty;
+                                            installedModule.QuietUninstallString = subkey.GetValue("QuietUninstallString") != null ? subkey.GetValue("QuietUninstallString").ToString() : string.Empty;
+                                            installedModuleLst.Add(installedModule);
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
                 }
             }
-            return installedModules;
+            foreach (var module in installedModuleLst)
+            {
+                engine.Log(LogLevel.Verbose,$"GetModulesInstalledOnClientComputer:: " +
+                                            $"RegistryRoot={module.RegistryRoot} " +
+                                            $"RegistryKey={module.RegistryKey} " +
+                                            $"ModuleName={module.ModuleName} " +
+                                            $"ModuleVersion={module.ModuleVersion} " +
+                                            $"BundleCachePath={module.BundleCachePath} " +
+                                            $"ModifyPath={module.ModifyPath} " +
+                                            $"UninstallString={module.UninstallString} " +
+                                            $"QuietUninstallString={module.QuietUninstallString} ");
+            }
+            return installedModuleLst;
         }
 
 
         private void DeleteInstalledRegistryKey(IList<string> registryKeyToDeleteList)
         {
-            var registryView = Environment.Is64BitOperatingSystem ? RegistryView.Registry64 : RegistryView.Registry32;
+            var registryView = OperatingSystemEnvironment.Is64BitOperatingSystem ? RegistryView.Registry64 : RegistryView.Registry32;
             RegistryKey key = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, registryView);
             //Get SciexOS Module Installed Version
             foreach (string keyToDelete in registryKeyToDeleteList)
@@ -3307,7 +3636,7 @@ namespace InstallerUI
 
         private string GetInstalledVersion(string PackageID)
         {
-            var registryView = Environment.Is64BitOperatingSystem ? RegistryView.Registry64 : RegistryView.Registry32;
+            var registryView = OperatingSystemEnvironment.Is64BitOperatingSystem ? RegistryView.Registry64 : RegistryView.Registry32;
             var roots = new string[] { @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\", @"SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\" };
             foreach (var root in roots)
             {
@@ -3341,18 +3670,7 @@ namespace InstallerUI
         private CheckForUpdatesRequest GetApiRequest()
         {
             CheckForUpdatesRequest request = new CheckForUpdatesRequest();
-            var installedModules = GetModulesInstalledOnClientComputer();
-            IList<ModulesInstalled> modulesInstalledList = new List<ModulesInstalled>();
-            ModulesInstalled modulesInstalled;
-            foreach (var module in installedModules)
-            {
-                modulesInstalled = new ModulesInstalled();
-                modulesInstalled.RegistryKey = module.Item1;
-                modulesInstalled.ModuleName = module.Item2;
-                modulesInstalled.ModuleVersion = module.Item3;
-                modulesInstalledList.Add(modulesInstalled);
-            }
-            request.ModulesInstalled = modulesInstalledList;
+            request.InstalledModule = GetModulesInstalledOnClientComputer(true);
             return request;
         }
 

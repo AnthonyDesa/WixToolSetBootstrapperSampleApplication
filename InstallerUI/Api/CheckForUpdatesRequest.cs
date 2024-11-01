@@ -8,6 +8,6 @@ namespace InstallerUI.Api
 {
     public class CheckForUpdatesRequest
     {
-        public IList<ModulesInstalled> ModulesInstalled { get; set; }
+        public IList<InstalledModule> InstalledModule { get; set; }
     }
 }

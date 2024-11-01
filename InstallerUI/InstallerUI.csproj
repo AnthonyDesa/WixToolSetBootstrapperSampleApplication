@@ -69,9 +69,9 @@
     <Compile Include="Api\CheckForUpdates.cs" />
     <Compile Include="Api\CheckForUpdatesRequest.cs" />
     <Compile Include="Api\CheckForUpdatesResponse.cs" />
-    <Compile Include="Api\ModulesInstalled.cs" />
     <Compile Include="BootstrapperApplicationData.cs" />
     <Compile Include="InstallationState.cs" />
+    <Compile Include="InstalledModule.cs" />
     <Compile Include="InstallerMainWindow.xaml.cs">
       <DependentUpon>InstallerMainWindow.xaml</DependentUpon>
     </Compile>
@@ -80,6 +80,9 @@
     <Compile Include="IUIInteractionService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Packages.cs" />
+    <Compile Include="Settings\DownloadUrl.cs" />
+    <Compile Include="Settings\Package.cs" />
+    <Compile Include="Settings\Settings.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -87,9 +90,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
-    <Content Include="Settings.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <Page Include="InstallerMainWindow.xaml">

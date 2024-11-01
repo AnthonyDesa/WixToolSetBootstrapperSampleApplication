@@ -1,11 +1,83 @@
 {
-  "UrlSettings": [
+  "DownloadUrls": [
     {
-      "ApiServerUrl": "http:\\bla\bla\bla",
-      "DownloadUrlFragments": {
-        "hostName": "localhost",
-        "BuildNumber": "9494949999"
-      }
+      "Environment": "Development",
+      "Host": "localhost",
+      "Packages": [
+        {
+          "PackageId": "FirstInstallerBootstrapper",
+          "DownloadUrl": "http://{0}/OnlineSetupArtifacts/Versions/{1}/{2}"
+        },
+        {
+          "PackageId": "SecondInstallerBootstrapper",
+          "DownloadUrl": "http://{0}/OnlineSetupArtifacts/Versions/{1}/{2}"
+        },
+        {
+          "PackageId": "ThirdInstallerBootstrapper",
+          "DownloadUrl": "http://{0}/OnlineSetupArtifacts/Versions/{1}/{2}"
+        },
+        {
+          "PackageId": "FourthInstallerBootstrapper",
+          "DownloadUrl": "http://{0}/OnlineSetupArtifacts/Versions/{1}/{2}"
+        },
+        {
+          "PackageId": "FifthInstallerBootstrapper",
+          "DownloadUrl": "http://{0}/OnlineSetupArtifacts/Versions/{1}/{2}"
+        }
+      ]
+    },
+    {
+      "Environment": "Staging",
+      "Host": "pc-swd-1455.absciexdev.local",
+      "Packages": [
+        {
+          "PackageId": "FirstInstallerBootstrapper",
+          "DownloadUrl": "http://{0}/OnlineSetupArtifacts/{3}/Versions/{1}/{2}"
+        },
+        {
+          "PackageId": "SecondInstallerBootstrapper",
+          "DownloadUrl": "http://{0}/OnlineSetupArtifacts/{3}/Versions/{1}/{2}"
+        },
+        {
+          "PackageId": "ThirdInstallerBootstrapper",
+          "DownloadUrl": "http://{0}/OnlineSetupArtifacts/{3}/Versions/{1}/{2}"
+        },
+        {
+          "PackageId": "FourthInstallerBootstrapper",
+          "DownloadUrl": "http://{0}/OnlineSetupArtifacts/{3}/Versions/{1}/{2}"
+        },
+        {
+          "PackageId": "FifthInstallerBootstrapper",
+          "DownloadUrl": "http://{0}/OnlineSetupArtifacts/{3}/Versions/{1}/{2}"
+        }
+      ]
+    },
+    {
+      "Environment": "Production",
+      "Host": "pc-swd-1455.absciexdev.local",
+      "Packages": [
+        {
+          "PackageId": "FirstInstallerBootstrapper",
+          "DownloadUrl": "http://{0}/OnlineSetupArtifacts/Versions/{1}/{2}"
+        },
+        {
+          "PackageId": "SecondInstallerBootstrapper",
+          "DownloadUrl": "http://{0}/OnlineSetupArtifacts/Versions/{1}/{2}"
+        },
+        {
+          "PackageId": "ThirdInstallerBootstrapper",
+          "DownloadUrl": "http://{0}/OnlineSetupArtifacts/Versions/{1}/{2}"
+        },
+        {
+          "PackageId": "FourthInstallerBootstrapper",
+          "DownloadUrl": "http://{0}/OnlineSetupArtifacts/Versions/{1}/{2}"
+        },
+        {
+          "PackageId": "FifthInstallerBootstrapper",
+          "DownloadUrl": "http://{0}/OnlineSetupArtifacts/Versions/{1}/{2}"
+        }
+      ]
     }
-  ]
+  ],
+  "ActiveEnvironment": "Staging"
 }

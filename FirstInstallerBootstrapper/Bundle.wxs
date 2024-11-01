@@ -1,10 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:bal="http://schemas.microsoft.com/wix/BalExtension"
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
 	<Bundle Name="FirstInstallerBootstrapper" Version="1.0.0.0" Manufacturer="SciexOS" UpgradeCode="717b8215-109a-4f8e-9fd0-5f974125f577">
-		<BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense" />
-
+    <BootstrapperApplicationRef Id="ManagedBootstrapperApplicationHost">
+      <Payload Name="BootstrapperCore.config" SourceFile="$(var.InstallerUI.TargetDir)InstallerUI.BootstrapperCore.config" />
+      <Payload SourceFile="$(var.InstallerUI.TargetPath)" />
+      <Payload SourceFile="$(var.InstallerUI.TargetDir)Microsoft.Practices.Prism.Mvvm.dll" />
+      <Payload SourceFile="$(var.InstallerUI.TargetDir)Microsoft.Practices.Prism.Mvvm.Desktop.dll" />
+      <Payload SourceFile="$(var.InstallerUI.TargetDir)Microsoft.Practices.Prism.SharedInterfaces.dll" />
+      <Payload SourceFile="$(var.InstallerUI.TargetDir)Newtonsoft.Json.dll" />
+    </BootstrapperApplicationRef>
+    <Variable bal:Overridable="yes" Name="PackagesToShow" Value="FirstInstallerBootstrapper"/>
+    <WixVariable Id="WixMbaPrereqPackageId" Value="Netfx4Full" />
+    <WixVariable Id="WixMbaPrereqLicenseUrl" Value="NetfxLicense.rtf" />
 		<Chain>
-			<!-- TODO: Define the list of chained packages. -->
+      <!-- TODO: Define the list of chained packages. -->
 			<!-- <MsiPackage SourceFile="path\to\your.msi" /> -->
       <MsiPackage Id="FirstInstallerMsi"
                   SourceFile="$(var.FirstInstaller4BS.TargetPath)"

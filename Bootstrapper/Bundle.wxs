@@ -3,7 +3,7 @@
 	 xmlns:bal="http://schemas.microsoft.com/wix/BalExtension"
    xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
   <Bundle Name="Bootstrapper" Version="1.0.0.0" Manufacturer="Sciex" UpgradeCode="06A19F6F-688C-44A6-B3D3-26F72DE50689"
-			DisableModify="no">
+			DisableModify="no" DisableRemove="no" >
     <BootstrapperApplicationRef Id="ManagedBootstrapperApplicationHost">
       <Payload Name="BootstrapperCore.config" SourceFile="$(var.InstallerUI.TargetDir)InstallerUI.BootstrapperCore.config" />
       <Payload SourceFile="$(var.InstallerUI.TargetPath)" />
@@ -51,6 +51,7 @@
     <Variable bal:Overridable="yes" Name="IsFifthInstallerBootstrapperInstalled" Value="no"/>
     <Variable bal:Overridable="yes" Name="SixthInstallerBootstrapper" Value="Skip"/>
     <Variable bal:Overridable="yes" Name="IsSixthInstallerBootstrapperInstalled" Value="no"/>
+    <Variable bal:Overridable="yes" Name="PackagesToShow" Value="All"/>
 
     <!--https://teamcity.netadds.net/repository/download/SciexPdv_LayeredBuilds_ApplicationsAndProducts_BuildInstallers/59464259:id/
                       output.zip!/Setup/Install/postgresql-16.2-1-windows-x64.exe-->
@@ -124,7 +125,7 @@
                   Cache="no"
                   Permanent="no"
                   Vital="yes"
-                  SuppressSignatureVerification="no"
+                  SuppressSignatureVerification="yes"
                   InstallCondition="SecondInstallerBootstrapper = &quot;Install&quot; OR SecondInstallerBootstrapper = &quot;Update&quot;  OR SecondInstallerBootstrapper = &quot;Repair&quot;">
         <RemotePayload
           ProductName="SecondInstallerBootstrapper"
