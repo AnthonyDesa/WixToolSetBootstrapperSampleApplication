@@ -79,5 +79,5 @@
       ]
     }
   ],
-  "ActiveEnvironment": "Staging"
+  "ActiveEnvironment": "Production"
 }

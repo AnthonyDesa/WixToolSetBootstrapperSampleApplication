@@ -12,10 +12,5 @@ namespace InstallerUI
         public Environment ActiveEnvironment { get; set; }
     }
 
-    public enum Environment
-    {
-        Development,
-        Staging,
-        Production
-    }
+    
 }

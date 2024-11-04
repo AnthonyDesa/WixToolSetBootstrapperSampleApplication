@@ -198,7 +198,7 @@ namespace InstallerUI
 
                         this.LogEvent($"ResolveSource::ExistingDownloadSource={ea.DownloadSource}");
                         //string newUrl = string.Format(ea.DownloadSource, server, version, downloadFileNameWithExtension);
-                        int buildNumber = GetBuildNumber();
+                        var buildNumber = GetBuildNumber();
                         string newUrl = GetDownloadUrl(ea.PayloadId, version, downloadFileNameWithExtension, buildNumber);
                         this.LogEvent($"ResolveSource::NewURL={newUrl}");
                         engine.SetDownloadSource(ea.PackageOrContainerId, ea.PayloadId, newUrl, null, null);
@@ -956,26 +956,35 @@ namespace InstallerUI
             return null;
         }
 
-        private int GetBuildNumber()
+        private string GetBuildNumber()
         {
             //Build# is availabe to application via dll file property.
             //Application current saves the build# in registry
             //We have to use the same mechanism of retrieve the build# from file properties in this function and
             //return it. Let's hard code for not to complete the full flow
-            return 123456;
+            return 123456.ToString();
         }
 
-        private string GetDownloadUrl(string packageId, string version, string packageFileNameWithExtension, int buildNumber)
+        private string GetDownloadUrl(string packageId, string version, string packageFileNameWithExtension, string buildNumber)
         {
             var settings = GetSettings();
             if (settings != null)
             {
+                //Get Setting specific to Active Environment
                 var downloadUrl = settings.DownloadUrls.Where(x => x.Environment.Equals(settings.ActiveEnvironment)).FirstOrDefault();
                 if (downloadUrl != null)
                 {
+                    //Get Setting specific to PackageId
                     var downloadUrlForPackage = downloadUrl.Packages.Where(x => x.PackageId.ToLower() == packageId.ToLower()).FirstOrDefault();
                     if(downloadUrlForPackage != null)
                     {
+                        //if ActiveEnvironment is Staging and the operation is Update then set buildNumber to empty to force URL to use new version 
+                        //which is not associated with current build number but is generic to any build number (It is tied to version#)
+                        //This approach will allow us to maintain new version artifacts separately from team city posted builds (Which is expected to be under build number)
+                        if(settings.ActiveEnvironment.ToString().ToLower() == "staging" && _userSelectionDic[packageId] == UserSelectionEnum.Update.ToString())
+                        {
+                            buildNumber = string.Empty;
+                        }
                         return string.Format(downloadUrlForPackage.DownloadUrl,downloadUrl.Host,version,packageFileNameWithExtension, buildNumber);
                     }
                     else
