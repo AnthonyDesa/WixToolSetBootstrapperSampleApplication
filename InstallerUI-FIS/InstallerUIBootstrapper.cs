@@ -26,8 +26,6 @@ namespace InstallerUI_FIS
         /// </summary>
         protected override void Run()
         {
-            Debugger.Launch();
-
             string[] commandLine = this.Command.GetCommandLineArgs();
             if (commandLine != null)
             {

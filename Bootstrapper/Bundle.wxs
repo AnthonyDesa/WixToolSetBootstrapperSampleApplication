@@ -94,7 +94,7 @@
       <ExePackage Id="FirstInstallerBootstrapper"
                   Name="FirstInstallerBootstrapper.exe"
                   DownloadUrl="http://localhost/sciexos/FirstInstallerBootstrapper.exe"
-                  InstallCommand="/silentinstall /install /norestart /quiet"
+                  InstallCommand="/silentinstall /install"
                   UninstallCommand="/silentinstall /uninstall"
                   RepairCommand="/silentinstall /repair"
                   DetectCondition="IsFirstInstallerBootstrapperInstalled=&quot;yes&quot;"

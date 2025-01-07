@@ -3205,41 +3205,63 @@ namespace InstallerUI
 
         private List<Tuple<string, string, string>> GetModulesInstalledOnClientComputer()
         {
-            string packageNames = string.Join("-", _apiResponse.AvailableUpdates.Select(z => z.PackageNameToShowInAddRemoveProgram).ToArray());
-            engine.Log(LogLevel.Verbose, $"PackageName={packageNames}");
-            List <Tuple<string, string, string>> installedModules = new List<Tuple<string, string, string>>();
-            var registryView = Environment.Is64BitOperatingSystem ? RegistryView.Registry64 : RegistryView.Registry32;
-            //Get SciexOS Module Installed Version
-            //string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall";
-            var roots = new string[] { @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\", @"SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\" };
-            RegistryKey key = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, registryView); //Registry.LocalMachine.OpenSubKey(registryKey);
-            foreach (var root in roots)
+            List<Tuple<string, string, string>> installedModules = new List<Tuple<string, string, string>>();
+            
+            try
             {
-                RegistryKey regKey = key.OpenSubKey(root);
-                //key = Registry.LocalMachine.OpenSubKey(registryKey);
-                if (regKey != null)
+                string packageNames = string.Join("-", _apiResponse.AvailableUpdates.Select(z => z.PackageNameToShowInAddRemoveProgram).ToArray());
+                engine.Log(LogLevel.Verbose, $"PackageName={packageNames}");
+                
+                var registryView = Environment.Is64BitOperatingSystem ? RegistryView.Registry64 : RegistryView.Registry32;
+                engine.Log(LogLevel.Verbose, "1");
+                
+                //Get SciexOS Module Installed Version
+                //string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall";
+                var roots = new string[] { @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\", @"SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\" };
+                RegistryKey key = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, registryView); //Registry.LocalMachine.OpenSubKey(registryKey);
+                engine.Log(LogLevel.Verbose, "2: " + key.ToString());
+                
+                foreach (var root in roots)
                 {
-                    foreach (String a in regKey.GetSubKeyNames())
+                    RegistryKey regKey = key.OpenSubKey(root);
+                    engine.Log(LogLevel.Verbose, "3: " + regKey.ToString());
+
+                    //key = Registry.LocalMachine.OpenSubKey(registryKey);
+                    if (regKey != null)
                     {
-                        RegistryKey subkey = regKey.OpenSubKey(a);
-                        if (subkey.GetValue("DisplayName") != null)
+                        foreach (String a in regKey.GetSubKeyNames())
                         {
-                            string _softwareName = subkey.GetValue("DisplayName").ToString();
-                            if (!string.IsNullOrWhiteSpace(_softwareName))
+                            RegistryKey subkey = regKey.OpenSubKey(a);
+                            engine.Log(LogLevel.Verbose, "4: " + subkey.ToString());
+
+                            if (subkey.GetValue("DisplayName") != null)
                             {
-                                var newModule = _apiResponse.AvailableUpdates.Where(z => z.PackageNameToShowInAddRemoveProgram.ToLower().Equals(_softwareName.ToLower())).FirstOrDefault();
-                                string newModulePackageId = newModule != null ? newModule.PackageId.ToString() : string.Empty;
-                                if (Packages.GetPackageIdsAsEnum().ToList()
-                                    .Where(x => x.ToString().ToLower().Equals((_softwareName.ToLower())) || x.ToString().ToLower().Equals((newModulePackageId.ToLower()))).Any()
-                                    )
+                                string _softwareName = subkey.GetValue("DisplayName").ToString();
+                                engine.Log(LogLevel.Verbose, "5: " + _softwareName.ToString());
+
+                                if (!string.IsNullOrWhiteSpace(_softwareName) && _softwareName.Contains("Bootstrapper"))
                                 {
-                                    installedModules.Add(new Tuple<string, string, string>(a, _softwareName,
-                                        subkey.GetValue("DisplayVersion").ToString()));
+                                    var newModule = _apiResponse.AvailableUpdates.Where(z => z.PackageNameToShowInAddRemoveProgram.ToLower().Equals(_softwareName.ToLower())).FirstOrDefault();
+                                    engine.Log(LogLevel.Verbose, "6: " + newModule.ToString());
+
+                                    string newModulePackageId = newModule != null ? newModule.PackageId.ToString() : string.Empty;
+                                    engine.Log(LogLevel.Verbose, "7: " + newModulePackageId.ToString());
+
+                                    if (Packages.GetPackageIdsAsEnum().ToList()
+                                        .Where(x => x.ToString().ToLower().Equals((_softwareName.ToLower())) || x.ToString().ToLower().Equals((newModulePackageId.ToLower()))).Any()
+                                        )
+                                    {
+                                        installedModules.Add(new Tuple<string, string, string>(a, _softwareName,
+                                            subkey.GetValue("DisplayVersion").ToString()));
+                                    }
                                 }
                             }
                         }
                     }
                 }
+            }catch (Exception ex)
+            {
+                engine.Log(LogLevel.Verbose, ex.Message);
             }
             return installedModules;
         }
