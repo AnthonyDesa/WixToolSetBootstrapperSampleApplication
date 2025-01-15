@@ -33,6 +33,7 @@ namespace InstallerUI
         [ImportingConstructor]
         public InstallerMainWindowViewModel(BootstrapperApplication bootstrapper, Engine engine)
         {
+            Debugger.Launch();
             this.bootstrapper = bootstrapper;
             this.engine = engine;
             CheckForUpdatesRequest request = new CheckForUpdatesRequest();
