@@ -88,10 +88,7 @@ namespace InstallerUI_FIS
                 // Set installation state that controls the install/uninstall buttons
                 this.interactionService.RunOnUIThread(
                     () => this.State =
-                    
-                    ea.Installed ? InstallationState.DetectedPresent : InstallationState.DetectedAbsent);
-
-                
+                        ea.Installed ? InstallationState.DetectedPresent : InstallationState.DetectedAbsent);
             };
             bootstrapper.DetectRelatedBundle += (_, ea) =>
             {
@@ -105,10 +102,6 @@ namespace InstallerUI_FIS
             {
                 this.LogEvent("DetectComplete");
                 this.DetectComplete(s, ea);
-            };
-            bootstrapper.PlanBegin += (s, ea) =>
-            {
-                this.LogEvent("Planbegins here");
             };
             bootstrapper.PlanComplete += (_, ea) =>
             {
@@ -2486,23 +2479,23 @@ namespace InstallerUI_FIS
         //}
         //#endregion
 
-        //#region Uninstall
-        //private bool _fifthIBootStrapperInstallerIsUnInstallChecked = false;
-        //public bool FifthIBootStapperInstallerIsUnInstallChecked
-        //{
-        //    get { return this._fifthIBootStrapperInstallerIsUnInstallChecked; }
-        //    set
-        //    {
-        //        this.SetProperty(ref this._fifthIBootStrapperInstallerIsUnInstallChecked, value);
-        //        if (value)
-        //        {
-        //            engine.StringVariables[PackageIdEnum.FifthInstallerBootstrapper.ToString()] = UserSelectionEnum.Uninstall.ToString();
-        //            _userSelectionDic[PackageIdEnum.FifthInstallerBootstrapper.ToString()] = UserSelectionEnum.Uninstall.ToString();
-        //            RaiseCanExecuteCommandForRepairAndApply();
-        //        }
-        //    }
-        //}
-        //#endregion
+        #region Uninstall
+        private bool _fifthIBootStrapperInstallerIsUnInstallChecked = false;
+        public bool FifthIBootStapperInstallerIsUnInstallChecked
+        {
+            get { return this._fifthIBootStrapperInstallerIsUnInstallChecked; }
+            set
+            {
+                this.SetProperty(ref this._fifthIBootStrapperInstallerIsUnInstallChecked, value);
+                if (value)
+                {
+                    engine.StringVariables[PackageIdEnum.FifthInstallerBootstrapper.ToString()] = UserSelectionEnum.Uninstall.ToString();
+                    _userSelectionDic[PackageIdEnum.FifthInstallerBootstrapper.ToString()] = UserSelectionEnum.Uninstall.ToString();
+                    RaiseCanExecuteCommandForRepairAndApply();
+                }
+            }
+        }
+        #endregion
 
         //#region Update
         //private bool _fifthIBootStrapperInstallerIsUpdateChecked = false;
@@ -2547,55 +2540,55 @@ namespace InstallerUI_FIS
         //#endregion
 
         //#region  IsEnabled
-        //private bool _fifthIBootStrapperInstallerIsInstallEnabled = true;
-        //public bool FifthIBootStrapperInstallerIsInstallEnabled
-        //{
-        //    get { return this._fifthIBootStrapperInstallerIsInstallEnabled; }
-        //    set
-        //    {
-        //        this.SetProperty(ref this._fifthIBootStrapperInstallerIsInstallEnabled, value);
-        //    }
-        //}
+        private bool _fifthIBootStrapperInstallerIsInstallEnabled = true;
+        public bool FifthIBootStrapperInstallerIsInstallEnabled
+        {
+            get { return this._fifthIBootStrapperInstallerIsInstallEnabled; }
+            set
+            {
+                this.SetProperty(ref this._fifthIBootStrapperInstallerIsInstallEnabled, value);
+            }
+        }
 
-        //private bool _fifthIBootStrapperInstallerIsUnInstallEnabled = true;
-        //public bool FifthIBootStrapperInstallerIsUnInstallEnabled
-        //{
-        //    get { return this._fifthIBootStrapperInstallerIsUnInstallEnabled; }
-        //    set
-        //    {
-        //        this.SetProperty(ref this._fifthIBootStrapperInstallerIsUnInstallEnabled, value);
-        //    }
-        //}
+        private bool _fifthIBootStrapperInstallerIsUnInstallEnabled = true;
+        public bool FifthIBootStrapperInstallerIsUnInstallEnabled
+        {
+            get { return this._fifthIBootStrapperInstallerIsUnInstallEnabled; }
+            set
+            {
+                this.SetProperty(ref this._fifthIBootStrapperInstallerIsUnInstallEnabled, value);
+            }
+        }
 
-        //private bool _fifthIBootStrapperInstallerIsSkipEnabled = true;
-        //public bool FifthIBootStrapperInstallerIsSkipEnabled
-        //{
-        //    get { return this._fifthIBootStrapperInstallerIsSkipEnabled; }
-        //    set
-        //    {
-        //        this.SetProperty(ref this._sIBootStrapperInstallerIsSkipEnabled, value);
-        //    }
-        //}
+        private bool _fifthIBootStrapperInstallerIsSkipEnabled = true;
+        public bool FifthIBootStrapperInstallerIsSkipEnabled
+        {
+            get { return this._fifthIBootStrapperInstallerIsSkipEnabled; }
+            set
+            {
+                this.SetProperty(ref this._fifthIBootStrapperInstallerIsSkipEnabled, value);
+            }
+        }
 
-        //private bool _fifthIBootStrapperInstallerIsKeepEnabled = true;
-        //public bool FifthIBootStrapperInstallerIsKeepEnabled
-        //{
-        //    get { return this._fifthIBootStrapperInstallerIsKeepEnabled; }
-        //    set
-        //    {
-        //        this.SetProperty(ref this._fifthIBootStrapperInstallerIsKeepEnabled, value);
-        //    }
-        //}
+        private bool _fifthIBootStrapperInstallerIsKeepEnabled = true;
+        public bool FifthIBootStrapperInstallerIsKeepEnabled
+        {
+            get { return this._fifthIBootStrapperInstallerIsKeepEnabled; }
+            set
+            {
+                this.SetProperty(ref this._fifthIBootStrapperInstallerIsKeepEnabled, value);
+            }
+        }
 
-        //private bool _fifthIBootStrapperInstallerIsRepairEnabled = true;
-        //public bool FifthIBootStrapperInstallerIsRepairEnabled
-        //{
-        //    get { return this._fifthIBootStrapperInstallerIsRepairEnabled; }
-        //    set
-        //    {
-        //        this.SetProperty(ref this._fifthIBootStrapperInstallerIsRepairEnabled, value);
-        //    }
-        //}
+        private bool _fifthIBootStrapperInstallerIsRepairEnabled = true;
+        public bool FifthIBootStrapperInstallerIsRepairEnabled
+        {
+            get { return this._fifthIBootStrapperInstallerIsRepairEnabled; }
+            set
+            {
+                this.SetProperty(ref this._fifthIBootStrapperInstallerIsRepairEnabled, value);
+            }
+        }
 
         //private bool _fifthIBootStrapperInstallerIsUpdateEnabled = true;
         //public bool FifthIBootStrapperInstallerIsUpdateEnabled
@@ -2983,14 +2976,14 @@ namespace InstallerUI_FIS
                 //    FourthIBootStrapperInstallerIsRepairEnabled = false;
                 //    FourthIBootStrapperInstallerIsUpdateEnabled = false;
                 //}
-                //if (x.ToLower().Equals(PackageIdEnum.FifthInstallerBootstrapper.ToString().ToLower()))
-                //{
-                //    engine.Log(LogLevel.Verbose, $"SelectInstallIfNotInstalled::Disabling {x}");
-                //    FifthIBootStrapperInstallerIsUnInstallEnabled = false;
-                //    FifthIBootStrapperInstallerIsKeepEnabled = false;
-                //    FifthIBootStrapperInstallerIsRepairEnabled = false;
-                //    FifthIBootStrapperInstallerIsUpdateEnabled = false;
-                //}
+                if (x.ToLower().Equals(PackageIdEnum.FifthInstallerBootstrapper.ToString().ToLower()))
+                {
+                    engine.Log(LogLevel.Verbose, $"SelectInstallIfNotInstalled::Disabling {x}");
+                    FifthIBootStrapperInstallerIsUnInstallEnabled = false;
+                    FifthIBootStrapperInstallerIsKeepEnabled = false;
+                    FifthIBootStrapperInstallerIsRepairEnabled = false;
+                    //FifthIBootStrapperInstallerIsUpdateEnabled = false;
+                }
                 //if (x.ToLower().Equals(PackageIdEnum.SixthInstallerBootstrapper.ToString().ToLower()))
                 //{
                 //    engine.Log(LogLevel.Verbose, $"SelectInstallIfNotInstalled::Disabling {x}");
@@ -3128,21 +3121,21 @@ namespace InstallerUI_FIS
                 //        FourthIBootStrapperInstallerIsUpdateEnabled = false;
                 //    }
                 //}
-                //if (x.ToLower().Equals(PackageIdEnum.FifthInstallerBootstrapper.ToString().ToLower()))
-                //{
-                //    engine.Log(LogLevel.Verbose, $"SelectUnInstallIfInstalled:10Installed Package Name = {x}");
-                //    FifthIBootStapperInstallerIsUnInstallChecked = true;
-                //    FifthIBootStrapperInstallerIsInstallEnabled = false;
-                //    FifthIBootStrapperInstallerIsSkipEnabled = false;
-                //    engine.StringVariables[$"{Packages.GetInstalledPackageName(PackageIdEnum.FifthInstallerBootstrapper)}"] = "yes";
-                //    //If the installed version and available version is same then disable the update button
-                //    var versionInstalled = installedPackages.Where(y => y.Item2 == x).Select(z => z.Item3).FirstOrDefault();
-                //    var apiVersion = _apiResponse.AvailableUpdates.Where(z => z.PackageId.ToString().ToLower().Equals(x.ToLower())).Select(z => z.Version).FirstOrDefault();
-                //    if (versionInstalled == apiVersion)
-                //    {
-                //        FifthIBootStrapperInstallerIsUpdateEnabled = false;
-                //    }
-                //}
+                if (x.ToLower().Equals(PackageIdEnum.FifthInstallerBootstrapper.ToString().ToLower()))
+                {
+                    engine.Log(LogLevel.Verbose, $"SelectUnInstallIfInstalled:10Installed Package Name = {x}");
+                    FifthIBootStapperInstallerIsUnInstallChecked = true;
+                    FifthIBootStrapperInstallerIsInstallEnabled = false;
+                    //FifthIBootStrapperInstallerIsSkipEnabled = false;
+                    engine.StringVariables[$"{Packages.GetInstalledPackageName(PackageIdEnum.FifthInstallerBootstrapper)}"] = "yes";
+                    //If the installed version and available version is same then disable the update button
+                    var versionInstalled = installedPackages.Where(y => y.Item2 == x).Select(z => z.Item3).FirstOrDefault();
+                    var apiVersion = _apiResponse.AvailableUpdates.Where(z => z.PackageId.ToString().ToLower().Equals(x.ToLower())).Select(z => z.Version).FirstOrDefault();
+                    if (versionInstalled == apiVersion)
+                    {
+                        //FifthIBootStrapperInstallerIsUpdateEnabled = false;
+                    }
+                }
 
                 ////Sixth Installer is not installed and is only a place holder
                 //var newSixthModule = _apiResponse.AvailableUpdates.Where(z => x.ToLower().Equals(z.PackageNameToShowInAddRemoveProgram.ToLower())
@@ -3215,64 +3208,41 @@ namespace InstallerUI_FIS
 
         private List<Tuple<string, string, string>> GetModulesInstalledOnClientComputer()
         {
-            List<Tuple<string, string, string>> installedModules = new List<Tuple<string, string, string>>();
-
-            try
+            string packageNames = string.Join("-", _apiResponse.AvailableUpdates.Select(z => z.PackageNameToShowInAddRemoveProgram).ToArray());
+            engine.Log(LogLevel.Verbose, $"PackageName={packageNames}");
+            List <Tuple<string, string, string>> installedModules = new List<Tuple<string, string, string>>();
+            var registryView = Environment.Is64BitOperatingSystem ? RegistryView.Registry64 : RegistryView.Registry32;
+            //Get SciexOS Module Installed Version
+            //string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall";
+            var roots = new string[] { @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\", @"SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\" };
+            RegistryKey key = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, registryView); //Registry.LocalMachine.OpenSubKey(registryKey);
+            foreach (var root in roots)
             {
-                string packageNames = string.Join("-", _apiResponse.AvailableUpdates.Select(z => z.PackageNameToShowInAddRemoveProgram).ToArray());
-                engine.Log(LogLevel.Verbose, $"PackageName={packageNames}");
-
-                var registryView = Environment.Is64BitOperatingSystem ? RegistryView.Registry64 : RegistryView.Registry32;
-                engine.Log(LogLevel.Verbose, "1");
-
-                //Get SciexOS Module Installed Version
-                //string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall";
-                var roots = new string[] { @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\", @"SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\" };
-                RegistryKey key = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, registryView); //Registry.LocalMachine.OpenSubKey(registryKey);
-                engine.Log(LogLevel.Verbose, "2: " + key.ToString());
-
-                foreach (var root in roots)
+                RegistryKey regKey = key.OpenSubKey(root);
+                //key = Registry.LocalMachine.OpenSubKey(registryKey);
+                if (regKey != null)
                 {
-                    RegistryKey regKey = key.OpenSubKey(root);
-                    engine.Log(LogLevel.Verbose, "3: " + regKey.ToString());
-
-                    //key = Registry.LocalMachine.OpenSubKey(registryKey);
-                    if (regKey != null)
+                    foreach (String a in regKey.GetSubKeyNames())
                     {
-                        foreach (String a in regKey.GetSubKeyNames())
+                        RegistryKey subkey = regKey.OpenSubKey(a);
+                        if (subkey.GetValue("DisplayName") != null)
                         {
-                            RegistryKey subkey = regKey.OpenSubKey(a);
-                            engine.Log(LogLevel.Verbose, "4: " + subkey.ToString());
-
-                            if (subkey.GetValue("DisplayName") != null)
+                            string _softwareName = subkey.GetValue("DisplayName").ToString();
+                            if (!string.IsNullOrWhiteSpace(_softwareName))
                             {
-                                string _softwareName = subkey.GetValue("DisplayName").ToString();
-                                engine.Log(LogLevel.Verbose, "5: " + _softwareName.ToString());
-
-                                if (!string.IsNullOrWhiteSpace(_softwareName) && !_softwareName.Contains("7-Zip"))
+                                var newModule = _apiResponse.AvailableUpdates.Where(z => z.PackageNameToShowInAddRemoveProgram.ToLower().Equals(_softwareName.ToLower())).FirstOrDefault();
+                                string newModulePackageId = newModule != null ? newModule.PackageId.ToString() : string.Empty;
+                                if (Packages.GetPackageIdsAsEnum().ToList()
+                                    .Where(x => x.ToString().ToLower().Equals((_softwareName.ToLower())) || x.ToString().ToLower().Equals((newModulePackageId.ToLower()))).Any()
+                                    )
                                 {
-                                    var newModule = _apiResponse.AvailableUpdates.Where(z => z.PackageNameToShowInAddRemoveProgram.ToLower().Equals(_softwareName.ToLower())).FirstOrDefault();
-                                    engine.Log(LogLevel.Verbose, "6: " + newModule.ToString());
-
-                                    string newModulePackageId = newModule != null ? newModule.PackageId.ToString() : string.Empty;
-                                    engine.Log(LogLevel.Verbose, "7: " + newModulePackageId.ToString());
-
-                                    if (Packages.GetPackageIdsAsEnum().ToList()
-                                        .Where(x => x.ToString().ToLower().Equals((_softwareName.ToLower())) || x.ToString().ToLower().Equals((newModulePackageId.ToLower()))).Any()
-                                        )
-                                    {
-                                        installedModules.Add(new Tuple<string, string, string>(a, _softwareName,
-                                            subkey.GetValue("DisplayVersion").ToString()));
-                                    }
+                                    installedModules.Add(new Tuple<string, string, string>(a, _softwareName,
+                                        subkey.GetValue("DisplayVersion").ToString()));
                                 }
                             }
                         }
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                engine.Log(LogLevel.Verbose, ex.Message);
             }
             return installedModules;
         }

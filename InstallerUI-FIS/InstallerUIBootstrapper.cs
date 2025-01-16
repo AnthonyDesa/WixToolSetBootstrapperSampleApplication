@@ -38,7 +38,7 @@ namespace InstallerUI_FIS
             this.Engine.Log(LogLevel.Verbose, "InstallerUI-FIS ... ");
 
             var modifyPath = GetModifyPath();
-            if (!string.IsNullOrEmpty(modifyPath) && (!(commandLine.Length > 0 && commandLine[0] != null && commandLine[0].Contains("silentinstall"))))
+            if (!string.IsNullOrEmpty(modifyPath) && (!(commandLine.Length > 0 && commandLine[0] != null && commandLine[0].Contains("mainsetupinstall"))))
             {
                 try
                 {

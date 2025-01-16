@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Bundle Name="FifthInstallerBootstrapper" Version="1.0.0.0" Manufacturer="Sciex" UpgradeCode="e371c493-06bc-448b-beba-25ca4ddb6b2f">
-		<BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense" />
+	<Bundle Name="FifthInstallerBootstrapper" Version="1.0.0.0" Manufacturer="SciexOS" UpgradeCode="e371c493-06bc-448b-beba-25ca4ddb6b2f">
+    <BootstrapperApplicationRef Id="ManagedBootstrapperApplicationHost">
+      <Payload Name="BootstrapperCore.config" SourceFile="D:\\GitHub\\WixToolSetBootstrapperSampleApplication\\InstallerUI-FIS\\bin\\Debug\\InstallerUI.BootstrapperCore.config" />
+      <Payload SourceFile="D:\\GitHub\\WixToolSetBootstrapperSampleApplication\\InstallerUI-FIS\\bin\\Debug\\InstallerUI_FIS.dll" />
+      <Payload SourceFile="D:\\GitHub\\WixToolSetBootstrapperSampleApplication\\InstallerUI-FIS\\bin\\Debug\\Microsoft.Practices.Prism.Mvvm.dll" />
+      <Payload SourceFile="D:\\GitHub\\WixToolSetBootstrapperSampleApplication\\InstallerUI-FIS\\bin\\Debug\\Microsoft.Practices.Prism.Mvvm.Desktop.dll" />
+      <Payload SourceFile="D:\\GitHub\\WixToolSetBootstrapperSampleApplication\\InstallerUI-FIS\\bin\\Debug\\Microsoft.Practices.Prism.SharedInterfaces.dll" />
+      <Payload SourceFile="D:\\GitHub\\WixToolSetBootstrapperSampleApplication\\InstallerUI-FIS\\bin\\Debug\\Newtonsoft.Json.dll" />
+      <Payload SourceFile="Settings.json" />
+      <PayloadGroupRef Id="LicensePayload"/>
+    </BootstrapperApplicationRef>
 
 		<Chain>
+      <PackageGroupRef Id='NetFx45Web' />
 			<!-- TODO: Define the list of chained packages. -->
 			<!-- <MsiPackage SourceFile="path\to\your.msi" /> -->
-      <MsiPackage Id="FifthInstaller4BMsi"
+      <MsiPackage Id="FifthInstallerMsi"
                   SourceFile="$(var.FifthInstaller4BS.TargetPath)"
                   Compressed="yes"
                   Vital="yes"
@@ -15,4 +25,27 @@
       </MsiPackage>
 		</Chain>
 	</Bundle>
+
+  <!-- License data -->
+  <Fragment>
+    <!-- Payload for license file -->
+    <PayloadGroup Id="LicensePayload">
+      <Payload SourceFile="License.txt" />
+    </PayloadGroup>
+
+    <!-- Add custom table with reference to license file -->
+    <CustomTable Id='LicenseInformation'>
+      <Row>
+        <Data Column='LicenseFile'>License.txt</Data>
+      </Row>
+    </CustomTable>
+  </Fragment>
+
+  <!-- Custom table definition for license file data -->
+  <Fragment>
+    <CustomTable Id='LicenseInformation' BootstrapperApplicationData='yes'>
+      <Column Id='LicenseFile' Category='Text' Type='string' Width='0' Nullable='yes' PrimaryKey='yes' />
+    </CustomTable>
+  </Fragment>
+  
 </Wix>
